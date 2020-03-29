@@ -13,7 +13,7 @@
           <span>用户管理</span>
         </template>
         <el-menu-item index="/admin/teacherManagement">教师管理</el-menu-item>
-        <el-menu-item index="/studentManagement">学生管理</el-menu-item>
+        <el-menu-item index="/admin/studentManagement">学生管理</el-menu-item>
         <el-menu-item index="/authorityManagement">权限管理</el-menu-item>
       </el-submenu>
       <el-submenu index='/undefined'>
