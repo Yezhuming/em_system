@@ -14,11 +14,24 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
 html, body, #app{
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
+}
+#app{
+  background-color: aliceblue;
+}
+body{
+  .el-table{
+    th.gutter{
+      display: table-cell!important;
+    }
+    colgroup.gutter{
+      display: table-cell!important;
+    }
+ }
 }
 </style>

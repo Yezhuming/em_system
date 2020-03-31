@@ -2,15 +2,15 @@
   <div class="admin-index">
     <el-container>
       <div class="admin-header">
-        <Header />
+        <adHeader />
       </div>
       <div class="admin-container">
         <el-aside class="admin-aside">
-          <navMenu />
+          <adMenu />
         </el-aside>
         <el-main>
           <div class="admin-main">
-            <router-view></router-view>
+            <transition name="move" mode="out-in"><router-view></router-view></transition>
           </div>
         </el-main>
       </div>
@@ -19,13 +19,13 @@
 </template>
 
 <script>
-import Header from '../../components/header.vue'
-import navMenu from '../../components/navMenu.vue'
+import adHeader from '../../components/adminHeader.vue'
+import adMenu from '../../components/adminMenu.vue'
 
 export default {
   components: {
-    Header,
-    navMenu
+    adHeader,
+    adMenu
   }
 }
 </script>
@@ -33,6 +33,7 @@ export default {
 <style lang="scss">
   .admin-index{
     height: 100%;
+    overflow: hidden;
     .el-header{
       padding: 0;
     }
@@ -41,7 +42,10 @@ export default {
       flex-direction: column;
     }
     .el-main{
-      background-color: #CCCCCC;
+      // padding: 15px;
+      overflow-y: auto;
+      height: 100%;
+      background-color: #dedeff;
     }
   }
   .admin-container{
@@ -52,5 +56,15 @@ export default {
   .admin-aside{
     width: 200px !important;
     background-color: #545c64;
+  }
+  .admin-main{
+    background-color: white;
+    min-height: 620px;
+  }
+  .move-enter-active,.move-leave-active{
+    transition: opacity .5s;
+  }
+  .move-enter,.move-leave{
+    opacity: 0;
   }
 </style>
