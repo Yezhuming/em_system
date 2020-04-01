@@ -7,8 +7,35 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'index',
-      component: () => import('../views/index.vue')
+      name: 'sygl',
+      component: () => import('../views/user/sygl.vue'),
+      children: [
+        {
+          path: 'uIndex',
+          name: 'uIndex',
+          component: () => import('../views/user/uIndex.vue')
+        },
+        {
+          path: 'uIntroduction',
+          name: 'uIntroduction',
+          component: () => import('../views/user/uIntroduction.vue')
+        },
+        {
+          path: 'uNotice',
+          name: 'uNotice',
+          component: () => import('../views/user/uNotice.vue')
+        },
+        {
+          path: 'uExperience',
+          name: 'uExperience',
+          component: () => import('../views/user/uExperience.vue')
+        },
+        {
+          path: 'uResource',
+          name: 'uResource',
+          component: () => import('../views/user/uResource.vue')
+        }
+      ]
     },
     {
       path: '/login',
@@ -16,39 +43,39 @@ export default new Router({
       component: () => import('../views/login.vue')
     },
     {
-      path: '/admin',
-      name: 'admin',
-      component: () => import('../views/admin/adminIndex.vue'),
+      path: '/adIndex',
+      name: 'adIndex',
+      component: () => import('../views/admin/adIndex.vue'),
       children: [
         {
-          path: 'user',
-          name: 'user',
-          component: () => import('../views/admin/user.vue')
+          path: 'adUser',
+          name: 'adUser',
+          component: () => import('../views/admin/adUser.vue')
         },
         {
-          path: 'account',
-          name: 'account',
-          component: () => import('../views/admin/account.vue')
+          path: 'adAccount',
+          name: 'adAccount',
+          component: () => import('../views/admin/adAccount.vue')
         },
         {
-          path: 'notice',
-          name: 'notice',
-          component: () => import('../views/admin/notice.vue')
+          path: 'adNotice',
+          name: 'adNotice',
+          component: () => import('../views/admin/adNotice.vue')
         },
         {
-          path: 'experienceContent',
-          name: 'experienceContent',
-          component: () => import('../views/admin/experienceContent.vue')
+          path: 'adExperienceContent',
+          name: 'adExperienceContent',
+          component: () => import('../views/admin/adExperienceContent.vue')
         },
         {
-          path: 'score',
-          name: 'score',
-          component: () => import('../views/admin/score.vue')
+          path: 'adScore',
+          name: 'adScore',
+          component: () => import('../views/admin/adScore.vue')
         },
         {
-          path: 'resource',
-          name: 'resource',
-          component: () => import('../views/admin/resource.vue')
+          path: 'adResource',
+          name: 'adResource',
+          component: () => import('../views/admin/adResource.vue')
         }
       ]
     }

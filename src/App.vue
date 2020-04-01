@@ -5,7 +5,6 @@
 </template>
 
 <script>
-
 export default {
   data () {
     return {
@@ -18,11 +17,9 @@ export default {
 html, body, #app{
   margin: 0;
   padding: 0;
-  width: 100%;
-  height: 100%;
-}
-#app{
-  background-color: aliceblue;
+  // width: 100%;
+  // height: 100%;
+  min-height: 720px;
 }
 body{
   .el-table{

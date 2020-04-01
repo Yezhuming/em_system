@@ -8,15 +8,15 @@
       active-text-color="#ffd04b"
       router>
       <!-- 管理教师和学生信息以及权限 -->
-      <el-menu-item index="/admin/user">
+      <el-menu-item index="/adIndex/adUser">
         <i class="el-icon-s-custom"></i>
         <span @click="con">用户管理</span>
       </el-menu-item>
-      <el-menu-item index="/admin/account">
+      <el-menu-item index="/adIndex/adAccount">
         <i class="el-icon-info"></i>
         <span>账号管理</span>
       </el-menu-item>
-      <el-menu-item index="/admin/notice">
+      <el-menu-item index="/adIndex/adNotice">
         <i class="el-icon-info"></i>
         <span>通知公告</span>
       </el-menu-item>
@@ -25,11 +25,11 @@
           <i class="el-icon-notebook-1"></i>
           <span>教学管理</span>
         </template>
-        <el-menu-item index="/admin/experienceContent">实验内容</el-menu-item>
+        <el-menu-item index="/adIndex/adExperienceContent">实验内容</el-menu-item>
         <!-- 教师才有 -->
-        <el-menu-item index="/admin/score">成绩管理</el-menu-item>
+        <el-menu-item index="/adIndex/adScore">成绩管理</el-menu-item>
         <!-- 发布实验内容ppt -->
-        <el-menu-item index="/admin/resource">资源管理</el-menu-item>
+        <el-menu-item index="/adIndex/adResource">资源管理</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>

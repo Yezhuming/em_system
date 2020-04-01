@@ -19,13 +19,16 @@
 </template>
 
 <script>
-import adHeader from '../../components/adminHeader.vue'
-import adMenu from '../../components/adminMenu.vue'
+import adHeader from '../../components/adHeader.vue'
+import adMenu from '../../components/adMenu.vue'
 
 export default {
   components: {
     adHeader,
     adMenu
+  },
+  mounted() {
+    this.$router.push('/adIndex/adUser')
   }
 }
 </script>

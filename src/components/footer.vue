@@ -1,6 +1,7 @@
 <template>
   <div class="footer">
-    <p>Copyright © 2020 华南师范大学</p>
+    <p>Copyright © 2020 Yezhuming All Rights Reserved</p>
+    <p>学校地址：广东省广州市天河区中山大道西55号 | 邮政编码：510631</p>
   </div>
 </template>
 
@@ -13,12 +14,12 @@ export default {
 .footer {
   font-size: 14px;
   text-align: center;
-  background-color: #545c64;
+  background-color: #0066CC;
   color: #fff;
 }
 .footer p {
-  height: 60px;
-  line-height: 60px;
+  height: 30px;
+  line-height: 30px;
   margin: 0;
 }
 </style>

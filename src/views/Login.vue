@@ -26,7 +26,7 @@
 </template>
 
 <script scoped>
-import img from '../assets/login.jpg'
+import img from '../assets/xiaohui.jpg'
 
 export default {
   data () {
@@ -49,11 +49,12 @@ export default {
 
 <style lang="scss">
 .login{
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  // height: 100%;
   .container{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     width: 700px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
