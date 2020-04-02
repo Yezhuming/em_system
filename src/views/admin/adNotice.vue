@@ -1,5 +1,5 @@
 <template>
-  <div class="lab">
-    实验室管理
+  <div class="adnotice">
+    通知公告
   </div>
 </template>
