@@ -48,6 +48,50 @@ export default {
       flex-direction: column;
     }
   }
+  .sygl-nav{
+    width: 200px;
+    min-height: 450px;
+    background-color: #f0f8ff;
+  }
+  .sygl-main{
+    width: 900px;
+    padding: 10px 20px;
+  }
+  .nav-header{
+    background-color: aliceblue;
+    color: #000;
+    border-bottom: dotted 1px #000;
+    padding: 5px 0 5px 5px;
+  }
+  .nav-main{
+    .el-menu{
+      border: 0;
+    }
+    .el-menu-item{
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      font-size: 16px;
+    }
+  }
+  .main-header{
+    border-bottom: solid 1px #000;
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 10px;
+  }
+  .main-content{
+    padding: 0 30px;
+    h3{
+      text-align: center;
+      margin-top: 0;
+    }
+    .paragraph{
+      text-indent: 2em;
+      line-height: 25px;
+      margin: 0;
+    }
+  }
 </style>
 
 <style lang="scss" scoped>

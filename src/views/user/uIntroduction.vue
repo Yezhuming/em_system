@@ -1,6 +1,6 @@
 <template>
   <div class="uintroduction flex">
-    <div class="uintroduction-nav">
+    <div class="sygl-nav">
       <div class="nav-header">
         <i class="el-icon-office-building"></i>
         实验室概况
@@ -16,7 +16,7 @@
         </el-menu>
       </div>
     </div>
-    <div class="uintroduction-main" v-show="path=='abstract'">
+    <div class="sygl-main" v-show="path=='abstract'">
       <div class="main-header">
         <span>实验室概况</span>
         <span style="float:right;">您的位置：首页 >> 实验室概况</span>
@@ -28,7 +28,7 @@
         <p class="paragraph">该中心为实验教学和科研提供了一个良好的工作场所、且在实验体系、管理模式、技术先进性和资产利用率方面达到国内高校中先进水平，同时成为广东省具有示范性意义的高校教学实验室。</p>
       </div>
     </div>
-    <div class="uintroduction-main" v-show="path=='contact'">
+    <div class="sygl-main" v-show="path=='contact'">
       <div class="main-header">
         <span>联系方式</span>
         <span style="float:right;">您的位置：首页 >> 实验室概况 >> 联系方式</span>
@@ -56,50 +56,3 @@ export default {
   }
 }
 </script>
-
-<style lang="scss">
-.uintroduction-nav{
-  width: 200px;
-  min-height: 450px;
-  background-color: #f0f8ff;
-}
-.nav-header{
-  background-color: aliceblue;
-  color: #000;
-  border-bottom: dotted 1px #000;
-  padding: 5px 0 5px 5px;
-}
-.nav-main{
-  .el-menu{
-    border: 0;
-  }
-  .el-menu-item{
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    font-size: 16px;
-  }
-}
-.uintroduction-main{
-  width: 900px;
-  padding: 10px 20px;
-}
-.main-header{
-  border-bottom: solid 1px #000;
-  height: 30px;
-  line-height: 30px;
-  margin-bottom: 10px;
-}
-.main-content{
-  padding: 0 30px;
-  h3{
-    text-align: center;
-    margin-top: 0;
-  }
-  .paragraph{
-    text-indent: 2em;
-    line-height: 25px;
-    margin: 0;
-  }
-}
-</style>

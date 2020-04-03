@@ -1,6 +1,6 @@
 <template>
   <div class="uresource flex">
-    <div class="uintroduction-nav">
+    <div class="sygl-nav">
       <div class="nav-header">
         <i class="el-icon-download"></i>
         资源下载
@@ -16,7 +16,7 @@
         </el-menu>
       </div>
     </div>
-    <div class="uintroduction-main" v-show="path=='curriculum'">
+    <div class="sygl-main" v-show="path=='curriculum'">
       <div class="main-header">
         <span>实验室课表</span>
         <span style="float:right;">您的位置：首页 >> 实验室课表</span>
@@ -24,7 +24,7 @@
       <div class="main-content">
       </div>
     </div>
-    <div class="uintroduction-main" v-show="path=='template'">
+    <div class="sygl-main" v-show="path=='template'">
       <div class="main-header">
         <span>模板表格</span>
         <span style="float:right;">您的位置：首页 >> 模板表格</span>

@@ -24,7 +24,7 @@
 export default {
   methods: {
     toIndex() {
-      this.$router.push('/admin')
+      this.$router.push('/adIndex')
     }
   }
 }

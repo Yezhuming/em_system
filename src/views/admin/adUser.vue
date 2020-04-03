@@ -18,9 +18,11 @@
         <el-table
           :data="teacherData"
           border
+          header-cell-class-name="bgblue"
           max-height="380">
           <el-table-column type="selection" width="35" align="center"></el-table-column>
           <el-table-column prop="name" align="center" label="姓名"></el-table-column>
+          <el-table-column prop="class" align="center" label="班级"></el-table-column>
           <el-table-column prop="account" align="center" label="账号"></el-table-column>
           <el-table-column prop="password" align="center" label="密码"></el-table-column>
           <el-table-column label="操作" align="center">
@@ -39,8 +41,8 @@
           <el-table-column type="selection" width="35" align="center"></el-table-column>
           <el-table-column prop="name" align="center" label="姓名"></el-table-column>
           <el-table-column prop="stuNumber" align="center" label="学号"></el-table-column>
+          <el-table-column prop="class" align="center" label="班级"></el-table-column>
           <el-table-column prop="password" align="center" label="密码"></el-table-column>
-          <el-table-column prop="belongToTeacher" align="center" label="所属教师"></el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">编 辑</el-button>
@@ -63,21 +65,25 @@ export default {
       teacherData: [
         {
           name: '王小虎',
+          class: '网工七班',
           account: 'teacher',
           password: 123456
         },
         {
           name: '王小虎',
+          class: '网工七班',
           account: 'teacher',
           password: 123456
         },
         {
           name: '王小虎',
+          class: '网工七班',
           account: 'teacher',
           password: 123456
         },
         {
           name: '王小虎',
+          class: '网工七班',
           account: 'teacher',
           password: 123456
         }

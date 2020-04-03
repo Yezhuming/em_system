@@ -1,6 +1,6 @@
 <template>
   <div class="unotice flex">
-    <div class="uintroduction-nav">
+    <div class="sygl-nav">
       <div class="nav-header">
         <i class="el-icon-bell"></i>
         通知公告
@@ -16,7 +16,7 @@
         </el-menu>
       </div>
     </div>
-    <div class="uintroduction-main" v-show="path=='notice'">
+    <div class="sygl-main" v-show="path=='notice'">
       <div class="main-header">
         <span>课程通知</span>
         <span style="float:right;">您的位置：首页 >> 通知公告 >> 课程通知</span>
@@ -24,7 +24,7 @@
       <div class="main-content">
       </div>
     </div>
-    <div class="uintroduction-main" v-show="path=='announcement'">
+    <div class="sygl-main" v-show="path=='announcement'">
       <div class="main-header">
         <span>系统公告</span>
         <span style="float:right;">您的位置：首页 >> 通知公告 >> 系统公告</span>
