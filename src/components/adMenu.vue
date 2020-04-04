@@ -16,7 +16,7 @@
         <i class="el-icon-info"></i>
         <span>账号管理</span>
       </el-menu-item>
-      <el-menu-item index="/adIndex/adNotice">
+      <el-menu-item index="/adIndex/adAnnouncement">
         <i class="el-icon-info"></i>
         <span>通知公告</span>
       </el-menu-item>
@@ -26,10 +26,9 @@
           <span>教学管理</span>
         </template>
         <el-menu-item index="/adIndex/adExperienceContent">实验内容</el-menu-item>
-        <!-- 教师才有 -->
         <el-menu-item index="/adIndex/adScore">成绩管理</el-menu-item>
-        <!-- 发布实验内容ppt -->
         <el-menu-item index="/adIndex/adResource">资源管理</el-menu-item>
+        <el-menu-item index="/adIndex/adAttendance">考勤管理</el-menu-item>
       </el-submenu>
     </el-menu>
   </div>

@@ -12,7 +12,7 @@
           active-text-color="#0066CC"
           @select="modifyPath">
           <el-menu-item index="courseIntro">课程介绍</el-menu-item>
-          <el-menu-item index="experienceCourse">实验课程</el-menu-item>
+          <el-menu-item index="experienceCourse">实验内容</el-menu-item>
           <el-menu-item index="onlineExperience">在线实验</el-menu-item>
         </el-menu>
       </div>
@@ -29,15 +29,16 @@
     </div>
     <div class="sygl-main" v-show="path=='experienceCourse'">
       <div class="main-header">
-        <span>实验课程</span>
-        <span style="float:right;">您的位置：首页 >> 实验教学 >> 实验课程</span>
+        <span>实验内容</span>
+        <span style="float:right;">您的位置：首页 >> 实验教学 >> 实验内容</span>
       </div>
       <div class="main-content">
         <el-table
           :data="experienceData"
           style="width: 100%"
           border
-          header-cell-class-name="bgblue">
+          header-cell-class-name="bgblue"
+          tooltip-effect="light">
           <!-- 实验提交状态 0-未提交 1-已提交 2-已批改 -->
           <el-table-column label="状态" align="center" width="100">
             <template slot-scope="scope">
@@ -46,10 +47,10 @@
               <el-tag type="success" effect="dark" v-show="scope.row.status==2">已批改</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="experienceName" label="实验课程名称" align="center"></el-table-column>
-          <el-table-column prop="deadline" label="截止时间" align="center" width="100"></el-table-column>
+          <el-table-column prop="experienceName" label="实验课程名称" align="center" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="deadline" label="截止时间" align="center" width="150"></el-table-column>
           <el-table-column prop="score" label="成绩" align="center" width="50"></el-table-column>
-          <el-table-column label="操作" align="center">
+          <el-table-column label="操作" align="center" width="300">
             <template slot-scope="scope">
               <el-button @click="deleteRow(scope.row)" type="primary">查 看</el-button>
               <el-button @click="deleteRow(scope.row)" type="primary">提 交</el-button>
@@ -71,7 +72,7 @@ export default {
         {
           status: 0,
           experienceName: '实验一 运算器组成原理',
-          deadline: '2020/3/1',
+          deadline: '2020/3/1 00:00:00',
           score: 100
         }
       ]

@@ -58,9 +58,9 @@ export default new Router({
           component: () => import('../views/admin/adAccount.vue')
         },
         {
-          path: 'adNotice',
-          name: 'adNotice',
-          component: () => import('../views/admin/adNotice.vue')
+          path: 'adAnnouncement',
+          name: 'adAnnouncement',
+          component: () => import('../views/admin/adAnnouncement.vue')
         },
         {
           path: 'adExperienceContent',
@@ -76,6 +76,11 @@ export default new Router({
           path: 'adResource',
           name: 'adResource',
           component: () => import('../views/admin/adResource.vue')
+        },
+        {
+          path: 'adAttendance',
+          name: 'adAttendance',
+          component: () => import('../views/admin/adAttendance.vue')
         }
       ]
     }

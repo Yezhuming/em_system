@@ -65,7 +65,7 @@ export default {
     min-height: 620px;
   }
   .move-enter-active,.move-leave-active{
-    transition: opacity .5s;
+    transition: opacity .3s;
   }
   .move-enter,.move-leave{
     opacity: 0;

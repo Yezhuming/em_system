@@ -46,7 +46,7 @@ export default {
     position: relative;
     background: url('../assets/background.jpg') no-repeat right center;
     .el-image{
-      transform: translateY(50px);
+      transform: translate(20px,50px);
     }
   }
   .title-word{

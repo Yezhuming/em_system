@@ -1,5 +1,5 @@
 <template>
-  <page class="user" title="用户管理">
+  <page class="aduser" title="用户管理">
     <el-form inline :model="searchForm">
       <el-form-item>
         <el-input v-model="searchForm.value" placeholder="请输入学号或姓名"></el-input>
@@ -37,6 +37,7 @@
         <el-table
           :data="studentData"
           border
+          header-cell-class-name="bgblue"
           max-height="380">
           <el-table-column type="selection" width="35" align="center"></el-table-column>
           <el-table-column prop="name" align="center" label="姓名"></el-table-column>
