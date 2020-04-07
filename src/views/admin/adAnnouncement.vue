@@ -8,7 +8,7 @@
         <el-button type="primary">查 询</el-button>
       </el-form-item>
       <el-form-item style="float:right;">
-        <el-button type="primary">新增用户</el-button>
+        <el-button type="primary" @click="toDetails">发 布</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -21,8 +21,8 @@
       <el-table-column prop="publishDate" label="发布日期" align="center"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">编 辑</el-button>
-          <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">删 除</el-button>
+          <el-button type="primary" @click="handleEdit(scope.row)">编 辑</el-button>
+          <el-button type="danger" @click="handleDelete(scope.row)">删 除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -35,7 +35,19 @@ export default {
     return {
       searchForm: {
         date: ''
-      }
+      },
+      articleData: [
+        {
+          title: '关于作业完成通知',
+          type: '通知',
+          publishDate: '2020/3/1'
+        }
+      ]
+    }
+  },
+  methods: {
+    toDetails() {
+      this.$router.push('/adIndex/adAcmDetails')
     }
   }
 }

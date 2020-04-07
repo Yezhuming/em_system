@@ -63,6 +63,11 @@ export default new Router({
           component: () => import('../views/admin/adAnnouncement.vue')
         },
         {
+          path: 'adAcmDetails',
+          name: 'adAcmDetails',
+          component: () => import('../views/admin/adAcmDetails.vue')
+        },
+        {
           path: 'adExperienceContent',
           name: 'adExperienceContent',
           component: () => import('../views/admin/adExperienceContent.vue')
@@ -71,6 +76,11 @@ export default new Router({
           path: 'adScore',
           name: 'adScore',
           component: () => import('../views/admin/adScore.vue')
+        },
+        {
+          path: 'adScoreDetails',
+          name: 'adScoreDetails',
+          component: () => import('../views/admin/adScoreDetails.vue')
         },
         {
           path: 'adResource',

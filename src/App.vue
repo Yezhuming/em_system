@@ -20,6 +20,7 @@ html, body, #app{
   // width: 100%;
   // height: 100%;
   min-height: 720px;
+  font-size: 16px;
 }
 body{
   .el-table{

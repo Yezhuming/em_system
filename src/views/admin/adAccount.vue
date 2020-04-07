@@ -26,6 +26,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary">确 定</el-button>
+          <el-button style="margin-right:10px;" @click="reset">重 置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -42,6 +43,12 @@ export default {
         newPassword: '',
         checkPassword: ''
       }
+    }
+  },
+  methods: {
+    reset() {
+      this.passwordFrom.newPassword = ''
+      this.passwordFrom.checkPassword = ''
     }
   }
 }
