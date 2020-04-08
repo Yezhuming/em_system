@@ -26,9 +26,9 @@ export default new Router({
           component: () => import('../views/user/uNotice.vue')
         },
         {
-          path: 'uExperience',
-          name: 'uExperience',
-          component: () => import('../views/user/uExperience.vue')
+          path: 'uExperiment',
+          name: 'uExperiment',
+          component: () => import('../views/user/uExperiment.vue')
         },
         {
           path: 'uResource',
@@ -63,14 +63,14 @@ export default new Router({
           component: () => import('../views/admin/adAnnouncement.vue')
         },
         {
-          path: 'adAcmDetails',
-          name: 'adAcmDetails',
-          component: () => import('../views/admin/adAcmDetails.vue')
+          path: 'adArticleDetails',
+          name: 'adArticleDetails',
+          component: () => import('../views/admin/adArticleDetails.vue')
         },
         {
-          path: 'adExperienceContent',
-          name: 'adExperienceContent',
-          component: () => import('../views/admin/adExperienceContent.vue')
+          path: 'adExperiment',
+          name: 'adExperiment',
+          component: () => import('../views/admin/adExperiment.vue')
         },
         {
           path: 'adScore',
@@ -91,6 +91,11 @@ export default new Router({
           path: 'adAttendance',
           name: 'adAttendance',
           component: () => import('../views/admin/adAttendance.vue')
+        },
+        {
+          path: 'adAttendanceDetails',
+          name: 'adAttendanceDetails',
+          component: () => import('../views/admin/adAttendanceDetails.vue')
         }
       ]
     }

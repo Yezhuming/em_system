@@ -25,7 +25,7 @@
           <i class="el-icon-notebook-1"></i>
           <span>教学管理</span>
         </template>
-        <el-menu-item index="/adIndex/adExperienceContent">实验内容</el-menu-item>
+        <el-menu-item index="/adIndex/adExperiment">实验内容</el-menu-item>
         <el-menu-item index="/adIndex/adScore">成绩管理</el-menu-item>
         <el-menu-item index="/adIndex/adResource">资源管理</el-menu-item>
         <el-menu-item index="/adIndex/adAttendance">考勤管理</el-menu-item>

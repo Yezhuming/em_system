@@ -1,7 +1,7 @@
 <template>
   <page class="adexperience-content" title="实验内容">
     <el-form inline :model="searchForm">
-      <el-form-item label="实验">
+      <el-form-item label="实验章节">
         <el-select v-model="value" placeholder="请选择">
           <el-option
             v-for="item in options"
@@ -15,7 +15,7 @@
         <el-button type="primary">查 询</el-button>
       </el-form-item>
       <el-form-item style="float:right;">
-        <el-button type="primary">发 布</el-button>
+        <el-button type="primary" @click="toDetails">发 布</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -29,8 +29,8 @@
       <!-- <el-table-column prop="submitNum" label="已提交/未提交" align="center"></el-table-column> -->
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button type="primary" @click="handleEdit(scope.$index, scope.row)">修 改</el-button>
-          <el-button type="danger" @click="handleDelete(scope.$index, scope.row)">删 除</el-button>
+          <el-button type="primary" @click="updateExperience(scope.row)">修 改</el-button>
+          <el-button type="danger" @click="handleDelete(scope.row)">删 除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -50,6 +50,18 @@ export default {
           deadline: '2020/3/1'
         }
       ]
+    }
+  },
+  methods: {
+    toDetails() {
+      this.$toPage('/adIndex/adArticleDetails', {
+        page: 'experience'
+      })
+    },
+    updateExperience(row) {
+      this.$toPage('/adIndex/adArticleDetails', {
+        page: 'experience'
+      })
     }
   }
 }

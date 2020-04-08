@@ -19,6 +19,20 @@ Vue.config.productionTip = false
 
 Vue.component('page', adPage)
 
+Vue.prototype.$toPage = function (val, obj) {
+  let self = this
+  if (typeof val == 'object') {
+    obj = val
+    val = self.$router.path
+  }
+  setTimeout(function () {
+    self.$router.push({
+      path: val,
+      query: obj || {}
+    })
+  }, 0)
+}
+
 /* eslint-disable no-new */
 new Vue({
   router,

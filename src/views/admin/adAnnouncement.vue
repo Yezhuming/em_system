@@ -21,7 +21,7 @@
       <el-table-column prop="publishDate" label="发布日期" align="center"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button type="primary" @click="handleEdit(scope.row)">编 辑</el-button>
+          <el-button type="primary" @click="updateAnnouncement(scope.row)">编 辑</el-button>
           <el-button type="danger" @click="handleDelete(scope.row)">删 除</el-button>
         </template>
       </el-table-column>
@@ -47,7 +47,14 @@ export default {
   },
   methods: {
     toDetails() {
-      this.$router.push('/adIndex/adAcmDetails')
+      this.$toPage('/adIndex/adArticleDetails', {
+        page: 'announcement'
+      })
+    },
+    updateAnnouncement() {
+      this.$toPage('/adIndex/adArticleDetails', {
+        page: 'announcement'
+      })
     }
   }
 }
