@@ -2,13 +2,12 @@
   <div class="header">
     <div class="title">实验管理系统</div>
     <div class="info">
-      <div class="avatar">
-        <el-avatar icon="el-icon-user-solid" />
-      </div>
       <div class="username">
         <el-dropdown @command="handleCommand">
           <span class="el-dropdown-link">
-            Admin<i class="el-icon-arrow-down el-icon--right"></i>
+            <span v-if="user.role==0">Admin</span>
+            <span v-else>{{user.tName}}</span>
+            <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="toAccount">修改信息</el-dropdown-item>
@@ -22,12 +21,14 @@
 
 <script>
 export default {
+  props: ['user'],
   methods: {
     handleCommand(command) {
       if (command == 'toAccount') {
-        this.$router.push('/adIndex/adAccount')
+        this.$toPage('/adIndex/adAccount')
       } else if (command == 'exit') {
-        this.$router.push('/login')
+        this.$toPage('/login')
+        localStorage.removeItem('user')
       }
     }
   }
@@ -36,11 +37,7 @@ export default {
 
 <style lang="scss">
   .info{
-    display: flex;
     width: 200px;
-    .el-avatar{
-      margin-top: 10px;
-    }
     .el-dropdown-link {
       cursor: pointer;
       color: white;
@@ -52,7 +49,6 @@ export default {
     }
   }
   .username{
-    flex: 1;
     text-align: center;
   }
 </style>

@@ -9,11 +9,12 @@
         <p>Management System</p>
         <el-form :model="loginForm">
           <el-form-item>
-            <el-input v-model="loginForm.name" placeholder="学号"></el-input>
+            <el-input v-model="loginForm.account" placeholder="学号" v-if="loginForm.role == '1'"></el-input>
+            <el-input v-model="loginForm.account" placeholder="账号" v-else></el-input>
             <el-input v-model="loginForm.password" placeholder="密码" show-password></el-input>
             <el-radio v-model="loginForm.role" label="1">学生</el-radio>
             <el-radio v-model="loginForm.role" label="2">教师</el-radio>
-            <el-radio v-model="loginForm.role" label="3">管理员</el-radio>
+            <el-radio v-model="loginForm.role" label="0">管理员</el-radio>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" round @click="submit">立即登录</el-button>
@@ -41,7 +42,45 @@ export default {
   },
   methods: {
     submit() {
-      this.$router.push('/admin')
+      switch (this.loginForm.role) {
+        case '0': // 管理员登录
+          this.$axios.post('/admin/login', {
+            account: this.loginForm.account,
+            password: this.loginForm.password
+          })
+            .then(res => {
+              console.log(res)
+              if (res.data.status == 200) {
+                let user = JSON.parse(JSON.stringify(res.data.result[0]))
+                localStorage.setItem('user', JSON.stringify(user))
+                this.$toPage('/adIndex')
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
+          break
+        case '2': // 教师登录
+          this.$axios.post('/teacher/login', {
+            account: this.loginForm.account,
+            password: this.loginForm.password
+          })
+            .then(res => {
+              console.log(res)
+              if (res.data.status == 200) {
+                let user = JSON.parse(JSON.stringify(res.data.result[0]))
+                localStorage.setItem('user', JSON.stringify(user))
+                this.$toPage('/adIndex')
+              } else {
+                alert(res.data)
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
+          break
+        default: console.log('请选择身份')
+      }
     }
   }
 }

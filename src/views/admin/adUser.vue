@@ -22,13 +22,12 @@
           max-height="380">
           <el-table-column type="selection" width="35" align="center"></el-table-column>
           <el-table-column prop="name" align="center" label="姓名"></el-table-column>
-          <el-table-column prop="class" align="center" label="班级"></el-table-column>
           <el-table-column prop="account" align="center" label="账号"></el-table-column>
           <el-table-column prop="password" align="center" label="密码"></el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
-              <el-button size="small" type="primary" @click="showUpdateUserDialog(scope.row)">编 辑</el-button>
-              <el-button size="small" type="danger" @click="handleDelete(scope.row)">删 除</el-button>
+              <el-button type="primary" @click="showUpdateUserDialog(scope.row)">编 辑</el-button>
+              <el-button type="danger" @click="handleDelete(scope.row)">删 除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -41,8 +40,10 @@
           max-height="380">
           <el-table-column type="selection" width="35" align="center"></el-table-column>
           <el-table-column prop="name" align="center" label="姓名"></el-table-column>
-          <el-table-column prop="account" align="center" label="学号(账号)"></el-table-column>
+          <el-table-column prop="grade" align="center" label="年级"></el-table-column>
           <el-table-column prop="class" align="center" label="班级"></el-table-column>
+          <el-table-column prop="discipline" align="center" label="专业"></el-table-column>
+          <el-table-column prop="account" align="center" label="学号(账号)"></el-table-column>
           <el-table-column prop="password" align="center" label="密码"></el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
@@ -171,7 +172,6 @@ export default {
         {
           role: '1',
           name: '王小虎',
-          class: '网工七班',
           account: 'teacher',
           password: 123456
         }
@@ -180,8 +180,10 @@ export default {
         {
           role: '2',
           name: '王小虎',
-          account: 20162180203,
+          grade: '2016级',
           class: '网工七班',
+          discipline: '网络工程',
+          account: 20162180203,
           password: 123456
         }
       ]

@@ -2,15 +2,15 @@
   <div class="admin-index">
     <el-container>
       <div class="admin-header">
-        <adHeader />
+        <adHeader :user="user" />
       </div>
       <div class="admin-container">
         <el-aside class="admin-aside">
-          <adMenu />
+          <adMenu  :user="user"  />
         </el-aside>
         <el-main>
           <div class="admin-main">
-            <transition name="move" mode="out-in"><router-view></router-view></transition>
+            <transition name="move" mode="out-in"><router-view  :user="user" ></router-view></transition>
           </div>
         </el-main>
       </div>
@@ -23,9 +23,18 @@ import adHeader from '../../components/adHeader.vue'
 import adMenu from '../../components/adMenu.vue'
 
 export default {
+  data() {
+    return {
+      user: {}
+    }
+  },
   components: {
     adHeader,
     adMenu
+  },
+  created() {
+    this.user = JSON.parse(localStorage.getItem('user'))
+    console.log(this.user)
   },
   mounted() {
     this.$router.push('/adIndex/adUser')
