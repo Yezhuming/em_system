@@ -1,8 +1,8 @@
 const connection = require('../mysql')
 
-const teacher = {
+const student = {
   seachOne(req, res) {
-    let selectSql = 'SELECT * FROM teacher WHERE uID = ?'
+    let selectSql = 'SELECT * FROM student WHERE uID = ?'
     let sqlParams = [req.query.uID]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
@@ -17,7 +17,7 @@ const teacher = {
         } else {
           let response = {
             status: -1,
-            result: '不存在此教师！'
+            result: '不存在此学生'
           }
           res.end(JSON.stringify(response))
         }
@@ -25,7 +25,7 @@ const teacher = {
     })
   },
   login(req, res) {
-    let selectSql = 'SELECT * FROM teacher WHERE account = ? AND password = ?'
+    let selectSql = 'SELECT * FROM student WHERE account = ? AND password = ?'
     let sqlParams = [req.body.account, req.body.password]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
@@ -38,17 +38,13 @@ const teacher = {
           }
           res.end(JSON.stringify(response))
         } else {
-          let response = {
-            status: -1,
-            result: '账号或密码错误！'
-          }
-          res.end(JSON.stringify(response))
+          res.end('账号或密码错误！')
         }
       }
     })
   },
   updatePassword(req, res) {
-    let updateSql = 'UPDATE teacher SET password = ? WHERE uID = ?'
+    let updateSql = 'UPDATE student SET password = ? WHERE uID = ?'
     let sqlParams = [req.body.newPassword, req.body.uID]
     connection.query(updateSql, sqlParams, (err, result) => {
       if (err) {
@@ -63,4 +59,4 @@ const teacher = {
   }
 }
 
-module.exports = teacher
+module.exports = student

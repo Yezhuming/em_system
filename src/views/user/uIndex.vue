@@ -2,22 +2,19 @@
   <div class="uindex flex">
     <div class="row flex">
       <div class="person-info bgblue flex">
-        <div class="headimg">
-          <el-avatar shape="square" :size="60" :src="avatar"></el-avatar>
+        <div v-if="!isLogin" style="width:230px;position:relative;">
+          <div class="userinfo">时间：{{nowDate}}</div>
+          <div class="userinfo"><span style="visibility:hidden;">时间：</span>{{nowTime}}</div>
+          <el-button type="text" @click="login" class="login-btn">请先登录</el-button>
         </div>
-        <div class="info">
-          <div v-show="isLogin">
-            <el-button type="text" @click="login">请先登录</el-button>
-          </div>
-          <div v-show="!isLogin">
-            <div class="userinfo">姓名：叶柱铭</div>
-            <div class="userinfo">学号：20162180203</div>
-            <div class="userinfo">时间：{{nowDate}}</div>
-            <div class="userinfo">{{nowTime}}</div>
-            <div class="options">
-              <el-button type="text">修改密码</el-button>
-              <el-button type="text">退出</el-button>
-            </div>
+        <div v-else style="width:230px;">
+          <div class="userinfo">姓名：{{ user.name}}</div>
+          <div class="userinfo">学号：{{ user.account}}</div>
+          <div class="userinfo">时间：{{nowDate}}</div>
+          <div class="userinfo"><span style="visibility:hidden;">时间：</span>{{nowTime}}</div>
+          <div class="options">
+            <el-button type="text" @click="showUpdatePwdDialog">修改密码</el-button>
+            <el-button type="text" @click="exit">退出</el-button>
           </div>
         </div>
       </div>
@@ -30,9 +27,9 @@
         <p>实验中心建筑面积1064平方米，现有单价800元以上的设备771件 ，总值548.6万元，承担40门实验课程，现有专职人员有14人，其中高级职称6人。</p>
       </div>
       <div class="carousel bgblue">
-        <el-carousel trigger="click" height="170px">
+        <el-carousel trigger="click" height="177px">
           <el-carousel-item v-for="item in carouselImg" :key="item">
-            <el-image :src="item"></el-image>
+            <el-image :src="item" fit="fill" style="height:177px"></el-image>
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -66,37 +63,139 @@
         <div class="content flex"></div>
       </div>
     </div>
+    <el-dialog title="修改密码" :visible.sync="pwdFormVisible" width="22%">
+      <el-form :model="pwdForm" ref="pwdForm" :rules="rules" label-width="100px" label-position="left">
+        <el-form-item label="原密码" prop="oldPassword" label-width="70px">
+          <el-input type="password" v-model="pwdForm.oldPassword" show-password ref="oldPwdInput"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword" label-width="70px">
+          <el-input type="password" v-model="pwdForm.newPassword" show-password></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="checkPassword" label-width="70px">
+          <el-input type="password" v-model="pwdForm.checkPassword" show-password></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="pwdFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="updatePassword">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import avatar from '../../assets/avatar.png'
 import carousel1 from '../../assets/carousel1.jpg'
 import carousel2 from '../../assets/carousel2.jpg'
 
 export default {
   data() {
+    // 表单验证规则
+    let pwdCheck = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.pwdForm.newPassword) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
-      isLogin: true,
-      avatar: avatar,
       interval: '',
       nowDate: '',
       nowTime: '',
-      carouselImg: [carousel1, carousel2]
+      carouselImg: [carousel1, carousel2],
+      user: {},
+      pwdFormVisible: false,
+      pwdForm: {
+        oldPassword: '',
+        newPassword: '',
+        checkPassword: ''
+      },
+      rules: {
+        checkPassword: [
+          {validator: pwdCheck, trigger: 'blur'}
+        ]
+      }
+    }
+  },
+  computed: {
+    isLogin() {
+      if (this.user == null) {
+        return false
+      } else {
+        return true
+      }
     }
   },
   methods: {
     login() {
-      this.$router.push('/login')
-    }
-  },
-  created() {
-    this.interval = setInterval(() => {
+      this.$toPage('/login')
+    },
+    // 计算时间
+    calculatTime() {
       let date = new Date()
       let weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
       this.nowDate = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`
       this.nowTime = `${weekdays[date.getDay()]} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
-    })
+    },
+    // 弹出修改密码对话框
+    showUpdatePwdDialog() {
+      this.$refs.pwdForm.resetFields()
+      this.pwdFormVisible = true
+    },
+    // 修改密码
+    updatePassword() {
+      this.$refs.pwdForm.validate((valid) => {
+        if (valid) {
+          this.$axios.get('/student/seachOne', {
+            params: {
+              uID: this.user.uID
+            }
+          })
+            .then(res => {
+              console.log(res)
+              if (res.data.status == 200) {
+                let oldPassword = res.data.result[0].password
+                if (this.pwdForm.oldPassword != oldPassword) {
+                  this.$message.error('原密码错误！')
+                  this.$refs.oldPwdInput.select()
+                } else {
+                  this.$axios.post('/student/updatePassword', {
+                    uID: this.user.uID,
+                    newPassword: this.pwdForm.newPassword
+                  })
+                    .then(res => {
+                      console.log(res)
+                      if (res.data.status == 200) {
+                        this.pwdFormVisible = false
+                        this.$message.success('修改成功！')
+                        this.$refs.pwdForm.resetFields()
+                      }
+                    })
+                    .catch(err => {
+                      console.log(err)
+                    })
+                }
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
+        } else {
+          this.$message.error('修改失败！')
+          return false
+        }
+      })
+    },
+    // 退出
+    exit() {
+      localStorage.removeItem('user')
+      this.user = null
+    }
+  },
+  created() {
+    this.interval = setInterval(this.calculatTime)
+    this.user = JSON.parse(localStorage.getItem('user'))
   },
   beforeDestroy() {
     if (this.interval) {
@@ -118,9 +217,11 @@ export default {
     width: 230px;
     padding: 10px;
   }
-  .info{
-    margin-left: 10px;
-    text-align: center;
+  .login-btn{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 16px;
   }
   .userinfo{
     text-align: left;

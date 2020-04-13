@@ -11,7 +11,7 @@
           <el-form-item>
             <el-input v-model="loginForm.account" placeholder="学号" v-if="loginForm.role == '1'"></el-input>
             <el-input v-model="loginForm.account" placeholder="账号" v-else></el-input>
-            <el-input v-model="loginForm.password" placeholder="密码" show-password></el-input>
+            <el-input v-model="loginForm.password" placeholder="密码" show-password ref="pwdInput"></el-input>
             <el-radio v-model="loginForm.role" label="1">学生</el-radio>
             <el-radio v-model="loginForm.role" label="2">教师</el-radio>
             <el-radio v-model="loginForm.role" label="0">管理员</el-radio>
@@ -54,6 +54,33 @@ export default {
                 let user = JSON.parse(JSON.stringify(res.data.result[0]))
                 localStorage.setItem('user', JSON.stringify(user))
                 this.$toPage('/adIndex')
+              } else {
+                this.$message.error(res.data.result)
+                this.$refs.pwdInput.select()
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
+          break
+        case '1': // 学生登录
+          this.$axios.post('/student/login', {
+            account: this.loginForm.account,
+            password: this.loginForm.password
+          })
+            .then(res => {
+              console.log(res)
+              if (res.data.status == 200) {
+                let user = {
+                  uID: res.data.result[0].uID,
+                  name: res.data.result[0].name,
+                  account: res.data.result[0].account
+                }
+                localStorage.setItem('user', JSON.stringify(user))
+                this.$toPage('/uIndex')
+              } else {
+                this.$message.error(res.data.result)
+                this.$refs.pwdInput.select()
               }
             })
             .catch(err => {
@@ -68,11 +95,17 @@ export default {
             .then(res => {
               console.log(res)
               if (res.data.status == 200) {
-                let user = JSON.parse(JSON.stringify(res.data.result[0]))
+                let user = {
+                  uID: res.data.result[0].uID,
+                  name: res.data.result[0].name,
+                  account: res.data.result[0].account,
+                  role: res.data.result[0].role
+                }
                 localStorage.setItem('user', JSON.stringify(user))
                 this.$toPage('/adIndex')
               } else {
-                alert(res.data)
+                this.$message.error(res.data.result)
+                this.$refs.pwdInput.select()
               }
             })
             .catch(err => {

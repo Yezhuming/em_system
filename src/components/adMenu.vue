@@ -8,9 +8,9 @@
       active-text-color="#ffd04b"
       router>
       <!-- 管理教师和学生信息以及权限 -->
-      <el-menu-item index="/adIndex/adUser">
+      <el-menu-item index="/adIndex/adUser" v-if="user.role==0">
         <i class="el-icon-s-custom"></i>
-        <span @click="con">用户管理</span>
+        <span>用户管理</span>
       </el-menu-item>
       <el-menu-item index="/adIndex/adAccount">
         <i class="el-icon-info"></i>
@@ -38,13 +38,12 @@
 export default {
   data() {
     return {
-      defaultOpeneds: ['/edu']
+      defaultOpeneds: ['/edu'],
+      user: {}
     }
   },
-  methods: {
-    con() {
-      console.log(this.$router)
-    }
+  created() {
+    this.user = JSON.parse(localStorage.getItem('user'))
   }
 }
 </script>

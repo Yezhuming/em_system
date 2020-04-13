@@ -13,27 +13,42 @@ export default new Router({
         {
           path: 'uIndex',
           name: 'uIndex',
-          component: () => import('../views/user/uIndex.vue')
+          component: () => import('../views/user/uIndex.vue'),
+          meta: {
+            requireLogin: false
+          }
         },
         {
           path: 'uIntroduction',
           name: 'uIntroduction',
-          component: () => import('../views/user/uIntroduction.vue')
+          component: () => import('../views/user/uIntroduction.vue'),
+          meta: {
+            requireLogin: false
+          }
         },
         {
           path: 'uNotice',
           name: 'uNotice',
-          component: () => import('../views/user/uNotice.vue')
+          component: () => import('../views/user/uNotice.vue'),
+          meta: {
+            requireLogin: false
+          }
         },
         {
           path: 'uExperiment',
           name: 'uExperiment',
-          component: () => import('../views/user/uExperiment.vue')
+          component: () => import('../views/user/uExperiment.vue'),
+          meta: {
+            requireLogin: true
+          }
         },
         {
           path: 'uResource',
           name: 'uResource',
-          component: () => import('../views/user/uResource.vue')
+          component: () => import('../views/user/uResource.vue'),
+          meta: {
+            requireLogin: false
+          }
         }
       ]
     },

@@ -15,7 +15,11 @@ const admin = {
           }
           res.end(JSON.stringify(response))
         } else {
-          res.end('账号或密码错误！')
+          let response = {
+            status: -1,
+            result: '账号或密码错误！'
+          }
+          res.end(JSON.stringify(response))
         }
       }
     })

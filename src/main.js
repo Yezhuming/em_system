@@ -43,3 +43,16 @@ new Vue({
   router,
   render: h => h(App)
 }).$mount('#app')
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requireLogin) {
+    if (localStorage.getItem('user')) {
+      next()
+    } else {
+      Vue.prototype.$message.warning('请先登陆！')
+      next('/login')
+    }
+  } else {
+    next()
+  }
+})

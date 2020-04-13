@@ -2,15 +2,15 @@
   <div class="admin-index">
     <el-container>
       <div class="admin-header">
-        <adHeader :user="user" />
+        <adHeader />
       </div>
       <div class="admin-container">
         <el-aside class="admin-aside">
-          <adMenu  :user="user"  />
+          <adMenu />
         </el-aside>
         <el-main>
           <div class="admin-main">
-            <transition name="move" mode="out-in"><router-view  :user="user" ></router-view></transition>
+            <transition name="move" mode="out-in"><router-view :user="user"></router-view></transition>
           </div>
         </el-main>
       </div>
@@ -37,7 +37,11 @@ export default {
     console.log(this.user)
   },
   mounted() {
-    this.$router.push('/adIndex/adUser')
+    if (this.user.role == 0) {
+      this.$toPage('/adIndex/adUser')
+    } else {
+      this.$toPage('/adIndex/adAnnouncement')
+    }
   }
 }
 </script>
