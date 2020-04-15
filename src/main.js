@@ -24,20 +24,6 @@ Vue.prototype.$axios = axios
 // 配置公共的url
 axios.defaults.baseURL = 'http://127.0.0.1:8081'
 
-Vue.prototype.$toPage = function (val, obj) {
-  let self = this
-  if (typeof val == 'object') {
-    obj = val
-    val = self.$router.path
-  }
-  setTimeout(function () {
-    self.$router.push({
-      path: val,
-      query: obj || {}
-    })
-  }, 0)
-}
-
 /* eslint-disable no-new */
 new Vue({
   router,

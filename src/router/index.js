@@ -30,6 +30,18 @@ export default new Router({
           path: 'uNotice',
           name: 'uNotice',
           component: () => import('../views/user/uNotice.vue'),
+          children: [
+            {
+              path: 'uNoticeList/:type',
+              name: 'uNoticeList',
+              component: () => import('../views/user/uNoticeList')
+            },
+            {
+              path: 'uNoticeDetails',
+              name: 'uNoticeDetails',
+              component: () => import('../views/user/uNoticeDetails')
+            }
+          ],
           meta: {
             requireLogin: false
           }
@@ -38,6 +50,18 @@ export default new Router({
           path: 'uExperiment',
           name: 'uExperiment',
           component: () => import('../views/user/uExperiment.vue'),
+          children: [
+            {
+              path: 'uExperimentList/:type',
+              name: 'uExperimentList',
+              component: () => import('../views/user/uExperimentList')
+            },
+            {
+              path: 'uExperimentDetails',
+              name: 'uExperimentDetails',
+              component: () => import('../views/user/uExperimentDetails')
+            }
+          ],
           meta: {
             requireLogin: true
           }
@@ -46,6 +70,13 @@ export default new Router({
           path: 'uResource',
           name: 'uResource',
           component: () => import('../views/user/uResource.vue'),
+          children: [
+            {
+              path: 'uResourceList/:type',
+              name: 'uResourceList',
+              component: () => import('../views/user/uResourceList')
+            }
+          ],
           meta: {
             requireLogin: false
           }

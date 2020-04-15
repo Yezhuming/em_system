@@ -16,20 +16,13 @@
         </el-menu>
       </div>
     </div>
-    <div class="sygl-main" v-show="path=='notice'">
+    <div class="sygl-main">
       <div class="main-header">
-        <span>课程通知</span>
-        <span style="float:right;">您的位置：首页 >> 通知公告 >> 课程通知</span>
+        <span>{{title}}</span>
+        <span style="float:right;">您的位置：首页 >> 通知公告 >> {{title}}</span>
       </div>
       <div class="main-content">
-      </div>
-    </div>
-    <div class="sygl-main" v-show="path=='announcement'">
-      <div class="main-header">
-        <span>系统公告</span>
-        <span style="float:right;">您的位置：首页 >> 通知公告 >> 系统公告</span>
-      </div>
-      <div class="main-content">
+        <router-view></router-view>
       </div>
     </div>
   </div>
@@ -39,13 +32,33 @@
 export default {
   data() {
     return {
-      path: 'notice'
+      title: '课程通知'
     }
   },
   methods: {
     modifyPath(index) {
-      this.path = index
+      this.$router.push({name: 'uNoticeList', params: {type: index}})
+      this.title = index == 'notice' ? '课程通知' : '系统公告'
+    }
+  }
+  // created() {
+  //   this.$router.push({name: 'uNoticeList', params: {type: 'notice'}})
+  // }
+}
+</script>
+
+<style lang="scss">
+.main-content{
+  .el-table{
+    tr:hover>td {
+      background-color:#fff!important
     }
   }
 }
-</script>
+.article-title{
+  cursor: pointer;
+  &:hover{
+    color: #66b1ff;
+  }
+}
+</style>

@@ -53,14 +53,40 @@
           <i class="el-icon-office-building"></i>
           <span>通知公告</span>
         </div>
-        <div class="content flex"></div>
+        <div class="content flex">
+          <el-table
+            :data="noticeData.list"
+            :show-header="false"
+            style="width: 100%">
+            <el-table-column prop="order" label="order" width="18"></el-table-column>
+            <el-table-column label="标题" width="250">
+              <template slot-scope="scope">
+                <span class="article-title">{{scope.row.title}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="date" label="日期" align="right"></el-table-column>
+          </el-table>
+        </div>
       </div>
       <div class="index-resource bgblue">
         <div class="subtitle">
           <i class="el-icon-office-building"></i>
           <span>资源下载</span>
         </div>
-        <div class="content flex"></div>
+        <div class="content flex">
+          <el-table
+            :data="resourceData.list"
+            :show-header="false"
+            style="width: 100%">
+            <el-table-column prop="order" label="order" width="18"></el-table-column>
+            <el-table-column label="标题" width="250">
+              <template slot-scope="scope">
+                <span class="article-title">{{scope.row.title}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="date" label="日期" align="right"></el-table-column>
+          </el-table>
+        </div>
       </div>
     </div>
     <el-dialog title="修改密码" :visible.sync="pwdFormVisible" width="22%">
@@ -115,6 +141,28 @@ export default {
         checkPassword: [
           {validator: pwdCheck, trigger: 'blur'}
         ]
+      },
+      noticeData: {
+        total: 5,
+        size: 7, // 一页最多7条
+        list: [
+          {
+            order: '•',
+            title: '文件1',
+            date: '2020-3-1'
+          }
+        ]
+      },
+      resourceData: {
+        total: 5,
+        size: 7, // 一页最多7条
+        list: [
+          {
+            order: '•',
+            title: '文件1',
+            date: '2020-3-1'
+          }
+        ]
       }
     }
   },
@@ -123,13 +171,17 @@ export default {
       if (this.user == null) {
         return false
       } else {
-        return true
+        if (this.user.role == 1) {
+          return true
+        } else {
+          return false
+        }
       }
     }
   },
   methods: {
     login() {
-      this.$toPage('/login')
+      this.$router.push('/login')
     },
     // 计算时间
     calculatTime() {
@@ -282,6 +334,11 @@ export default {
     .el-link{
       font-size: 16px;
       margin: 6px 0;
+    }
+    .el-table{
+      tr{
+        background-color: aliceblue;
+      }
     }
   }
 </style>

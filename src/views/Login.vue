@@ -53,7 +53,7 @@ export default {
               if (res.data.status == 200) {
                 let user = JSON.parse(JSON.stringify(res.data.result[0]))
                 localStorage.setItem('user', JSON.stringify(user))
-                this.$toPage('/adIndex')
+                this.$router.push('/adIndex')
               } else {
                 this.$message.error(res.data.result)
                 this.$refs.pwdInput.select()
@@ -77,7 +77,7 @@ export default {
                   account: res.data.result[0].account
                 }
                 localStorage.setItem('user', JSON.stringify(user))
-                this.$toPage('/uIndex')
+                this.$router.push('/uIndex')
               } else {
                 this.$message.error(res.data.result)
                 this.$refs.pwdInput.select()
@@ -102,7 +102,7 @@ export default {
                   role: res.data.result[0].role
                 }
                 localStorage.setItem('user', JSON.stringify(user))
-                this.$toPage('/adIndex')
+                this.$router.push('/adIndex')
               } else {
                 this.$message.error(res.data.result)
                 this.$refs.pwdInput.select()

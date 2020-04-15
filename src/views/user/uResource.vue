@@ -16,20 +16,13 @@
         </el-menu>
       </div>
     </div>
-    <div class="sygl-main" v-show="path=='curriculum'">
+    <div class="sygl-main">
       <div class="main-header">
-        <span>实验室课表</span>
-        <span style="float:right;">您的位置：首页 >> 实验室课表</span>
+        <span>{{title}}</span>
+        <span style="float:right;">您的位置：首页 >> 通知公告 >> {{title}}</span>
       </div>
       <div class="main-content">
-      </div>
-    </div>
-    <div class="sygl-main" v-show="path=='template'">
-      <div class="main-header">
-        <span>模板表格</span>
-        <span style="float:right;">您的位置：首页 >> 模板表格</span>
-      </div>
-      <div class="main-content">
+        <router-view></router-view>
       </div>
     </div>
   </div>
@@ -39,12 +32,13 @@
 export default {
   data() {
     return {
-      path: 'curriculum'
+      title: '实验室课表'
     }
   },
   methods: {
     modifyPath(index) {
-      this.path = index
+      this.$router.push({name: 'uResourceList', params: {type: index}})
+      this.title = index == 'curriculum' ? '实验室课表' : '模板表格'
     }
   }
 }
