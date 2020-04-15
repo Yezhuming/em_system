@@ -6,8 +6,7 @@
           <el-option
             v-for="item in options"
             :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :label="item.label">
           </el-option>
         </el-select>
       </el-form-item>

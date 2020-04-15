@@ -16,7 +16,7 @@
         <i class="el-icon-info"></i>
         <span>账号管理</span>
       </el-menu-item>
-      <el-menu-item index="/adIndex/adAnnouncement">
+      <el-menu-item index="/adIndex/adNotice">
         <i class="el-icon-message-solid"></i>
         <span>通知公告</span>
       </el-menu-item>

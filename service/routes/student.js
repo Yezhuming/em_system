@@ -1,7 +1,7 @@
 const connection = require('../mysql')
 
 const student = {
-  seachOne(req, res) {
+  getOne(req, res) {
     let selectSql = 'SELECT * FROM student WHERE uID = ?'
     let sqlParams = [req.query.uID]
     connection.query(selectSql, sqlParams, (err, result) => {

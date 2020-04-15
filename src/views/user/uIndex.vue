@@ -199,7 +199,7 @@ export default {
     updatePassword() {
       this.$refs.pwdForm.validate((valid) => {
         if (valid) {
-          this.$axios.get('/student/seachOne', {
+          this.$axios.get('/student/getOne', {
             params: {
               uID: this.user.uID
             }

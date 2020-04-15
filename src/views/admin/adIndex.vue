@@ -38,9 +38,9 @@ export default {
   },
   mounted() {
     if (this.user.role == 0) {
-      this.$toPage('/adIndex/adUser')
+      this.$router.push('/adIndex/adUser')
     } else {
-      this.$toPage('/adIndex/adAnnouncement')
+      this.$router.push('/adIndex/adNotice')
     }
   }
 }
