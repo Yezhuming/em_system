@@ -47,6 +47,8 @@
         </el-form>
       </div>
     </div>
+    <div class="ql-editor" v-html="articleEditorForm.content">
+    </div>
   </page>
 </template>
 
@@ -90,21 +92,42 @@ export default {
     },
     articlePulish() {
       let date = new Date()
-      let pulishDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+      let publishDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+      console.log(publishDate)
       if (this.$route.query.aID) { // 更新文章
-        console.log('yes')
+        this.$axios.post('/article/update', {
+          title: this.articleEditorForm.title,
+          content: this.articleEditorForm.content,
+          type: this.articleEditorForm.type,
+          publishDate: publishDate,
+          aID: this.$route.query.aID
+        })
+          .then(res => {
+            console.log(res)
+            if (res.data.status == 200) {
+              this.$message.success(res.data.result)
+              this.$refs.articleEditorForm.resetFields()
+              this.goBack()
+            } else {
+              this.$message.error('修改失败！')
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
       } else { // 发布新文章
         this.$axios.post('/article/add', {
           title: this.articleEditorForm.title,
           content: this.articleEditorForm.content,
           type: this.articleEditorForm.type,
-          pulishDate: pulishDate
+          publishDate: publishDate
         })
           .then(res => {
             console.log(res)
             if (res.data.status == 200) {
-              this.$message.success('发布成功！')
+              this.$message.success(res.data.result)
               this.$refs.articleEditorForm.resetFields()
+              this.goBack()
             } else {
               this.$message.success('发布失败！')
             }

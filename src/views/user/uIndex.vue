@@ -58,13 +58,13 @@
             :data="noticeData.list"
             :show-header="false"
             style="width: 100%">
-            <el-table-column prop="order" label="order" width="18"></el-table-column>
+            <el-table-column label="order" width="18">•</el-table-column>
             <el-table-column label="标题" width="250">
               <template slot-scope="scope">
-                <span class="article-title">{{scope.row.title}}</span>
+                <span class="article-title" @click="toDetails(scope.row)">{{scope.row.title}}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="date" label="日期" align="right"></el-table-column>
+            <el-table-column prop="publishDate" label="日期" align="right"></el-table-column>
           </el-table>
         </div>
       </div>
@@ -78,7 +78,7 @@
             :data="resourceData.list"
             :show-header="false"
             style="width: 100%">
-            <el-table-column prop="order" label="order" width="18"></el-table-column>
+            <el-table-column label="order" width="18">•</el-table-column>
             <el-table-column label="标题" width="250">
               <template slot-scope="scope">
                 <span class="article-title">{{scope.row.title}}</span>
@@ -145,20 +145,13 @@ export default {
       noticeData: {
         total: 5,
         size: 7, // 一页最多7条
-        list: [
-          {
-            order: '•',
-            title: '文件1',
-            date: '2020-3-1'
-          }
-        ]
+        list: []
       },
       resourceData: {
         total: 5,
         size: 7, // 一页最多7条
         list: [
           {
-            order: '•',
             title: '文件1',
             date: '2020-3-1'
           }
@@ -239,6 +232,31 @@ export default {
         }
       })
     },
+    // 获取通知公告列表
+    getNoticeList() {
+      this.$axios.get('/article/getLimited')
+        .then(res => {
+          console.log(res)
+          if (res.data.status == 200) {
+            this.noticeData.total = res.data.result.length
+            this.noticeData.list = res.data.result
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    // 跳转通知公告详情
+    toDetails(row) {
+      this.$router.push({
+        name: 'uNoticeDetails',
+        query: {
+          aID: row.aID
+        }
+      })
+    },
+    // 获取资源下载列表
+    getResourceList() {},
     // 退出
     exit() {
       localStorage.removeItem('user')
@@ -248,6 +266,8 @@ export default {
   created() {
     this.interval = setInterval(this.calculatTime)
     this.user = JSON.parse(localStorage.getItem('user'))
+    console.log(this.user)
+    this.getNoticeList()
   },
   beforeDestroy() {
     if (this.interval) {
@@ -339,6 +359,18 @@ export default {
       tr{
         background-color: aliceblue;
       }
+      tr:hover>td {
+        background-color: aliceblue!important
+      }
+      td{
+        padding: 6px 0;
+      }
+    }
+  }
+  .article-title{
+    cursor: pointer;
+    &:hover{
+      color: #66b1ff;
     }
   }
 </style>

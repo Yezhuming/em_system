@@ -29,10 +29,10 @@ export default {
   methods: {
     handleCommand(command) {
       if (command == 'toAccount') {
-        this.$toPage('/adIndex/adAccount')
+        this.$router.push('/adIndex/adAccount')
       } else if (command == 'exit') {
         localStorage.removeItem('user')
-        this.$toPage('/login')
+        this.$router.push('/login')
       }
     }
   },

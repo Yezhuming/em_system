@@ -11,9 +11,10 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="searchByDate">查 询</el-button>
+        <el-button @click="reset">重 置</el-button>
       </el-form-item>
       <el-form-item style="float:right;">
-        <el-button type="primary" @click="toDetail">发 布</el-button>
+        <el-button type="primary" @click="publish">发 布</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -32,7 +33,7 @@
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
           <el-button size="small" type="primary" @click="updateAnnouncement(scope.row)">编 辑</el-button>
-          <el-button size="small" type="danger" @click="handleDelete(scope.row)">删 除</el-button>
+          <el-button size="small" type="danger" @click="deleteAnnouncement(scope.row)">删 除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -50,10 +51,31 @@ export default {
     }
   },
   methods: {
+    // 查询
     searchByDate() {
       console.log(this.searchForm.date)
+      this.$axios.get('/article/getListByDate', {
+        params: {
+          publishDate: this.searchForm.date
+        }
+      })
+        .then(res => {
+          console.log(res)
+          if (res.data.status == 200) {
+            this.articleData = res.data.result
+            this.$message.success('查询成功！')
+          } else {
+            this.articleData = []
+            this.$message(res.data.result)
+          }
+        })
     },
-    toDetail() {
+    // 重置
+    reset() {
+      this.getArticleData()
+    },
+    // 发布
+    publish() {
       this.$router.push({
         path: '/adIndex/adArticleDetails',
         query: {
@@ -61,6 +83,7 @@ export default {
         }
       })
     },
+    // 编辑
     updateAnnouncement(row) {
       console.log(row)
       this.$router.push({
@@ -74,13 +97,31 @@ export default {
         }
       })
     },
+    // 删除
+    deleteAnnouncement(row) {
+      this.$axios.post('/article/deleteByaID', {
+        aID: row.aID
+      })
+        .then(res => {
+          if (res.data.status == 200) {
+            this.getArticleData()
+            this.$message.success(res.data.result)
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    // 获取全部数据
     getArticleData() {
       this.$axios.get('/article/getAll')
         .then(res => {
-          console.log(res)
           if (res.data.status == 200) {
             this.articleData = res.data.result
           }
+        })
+        .catch(err => {
+          console.log(err)
         })
     }
   },

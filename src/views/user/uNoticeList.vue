@@ -4,21 +4,21 @@
       :data="noticeData.list"
       :show-header="false"
       style="width: 100%">
-      <el-table-column prop="order" label="order" width="18"></el-table-column>
+      <el-table-column label="order" width="18">•</el-table-column>
       <el-table-column label="标题" width="250">
         <template slot-scope="scope">
-          <span @click="toDetail" class="article-title">{{scope.row.title}}</span>
+          <span @click="toDetail(scope.row)" class="article-title">{{scope.row.title}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="date" label="日期" align="right"></el-table-column>
+      <el-table-column prop="publishDate" label="日期" align="right"></el-table-column>
     </el-table>
     <el-pagination
       style="float:right;margin-top:5px;"
       :hide-on-single-page="true"
       @current-change="noticePageChange"
-      :page-size="1"
+      :page-size="7"
       layout="prev, pager, next, jumper"
-      :total="1">
+      :total="noticeData.total">
     </el-pagination>
   </div>
 </template>
@@ -28,31 +28,53 @@ export default {
   data() {
     return {
       noticeData: {
-        total: 5,
+        total: 7,
+        page: 1,
         size: 7, // 一页最多7条
-        list: [
-          {
-            order: '·',
-            title: '通知1',
-            date: '2020/3/1'
-          }
-        ]
+        list: []
       }
     }
   },
   watch: {
-    // 获取数据
+    '$route' (to, from) {
+      this.getNoticeData()
+    }
   },
   methods: {
-    toDetail() {
+    toDetail(row) {
+      console.log(row)
       this.$router.push({
         name: 'uNoticeDetails',
         query: {
-          nID: '1'
+          aID: row.aID
         }
       })
     },
-    noticePageChange() {}
+    // 换页
+    noticePageChange() {},
+    // 获取数据
+    getNoticeData() {
+      this.$axios.get('/article/getByTypeLimit', {
+        params: {
+          page: this.noticeData.page,
+          size: this.noticeData.size,
+          type: this.$route.params.type == 'notice' ? 1 : 2
+        }
+      })
+        .then(res => {
+          console.log(res)
+          if (res.data.status == 200) {
+            this.noticeData.total = res.data.result.length
+            this.noticeData.list = res.data.result
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  },
+  created() {
+    this.getNoticeData()
   }
 }
 </script>

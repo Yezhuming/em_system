@@ -84,12 +84,11 @@ export default {
     padding: 0 30px;
     h3{
       text-align: center;
-      margin-top: 0;
-    }
-    .paragraph{
-      text-indent: 2em;
-      line-height: 25px;
       margin: 0;
+    }
+    .date{
+      margin-top: 5px;
+      text-align: center;
     }
   }
 </style>

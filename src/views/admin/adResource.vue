@@ -16,12 +16,18 @@
       border
       header-cell-class-name="bgblue"
       max-height="380">
-      <el-table-column prop="fileName" label="文件名" align="center"></el-table-column>
-      <el-table-column prop="fileType" label="类型" align="center"></el-table-column>
+      <el-table-column prop="fileName" label="文件名" align="center">
+        <!-- TODO -->
+      </el-table-column>
+      <el-table-column label="类型" align="center">
+        <template slot-scope="scope">
+          <span v-if="scope.row.fileType=='1'">实验室课表</span>
+          <span v-else>模板表格</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="uploadDate" label="上传日期" align="center"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
-          <el-button type="primary" @click="handleEdit(scope.row)">修 改</el-button>
           <el-button type="danger" @click="handleDelete(scope.row)">删 除</el-button>
         </template>
       </el-table-column>
@@ -30,29 +36,32 @@
       title="文件上传"
       class="upload-dialog"
       :visible.sync="uploadDialogVisible"
-      width="30%">
-      <el-upload
-        drag
-        action="https://jsonplaceholder.typicode.com/posts/">
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-      </el-upload>
+      width="25%">
       <el-form :model="uploadForm">
-        <el-form-item label="类型">
-          <el-select v-model="value" placeholder="请选择">
-            <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
+        <el-upload
+          ref="upload"
+          drag
+          :auto-upload="false"
+          :on-success="uploadSuccess"
+          :data="uploadForm"
+          action="http://127.0.0.1:8081/resource/upload">
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip" slot="tip"></div>
+        </el-upload>
+        <el-form-item
+          label="类型"
+          prop="type"
+          :rules="{ required: true, trigger: 'blur'}">
+          <el-select v-model="uploadForm.type" placeholder="请选择" ref="selectType">
+            <el-option label="实验室课表" value="1"></el-option>
+            <el-option label="模板表格" value="2"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="uploadDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="uploadDialogVisible = false">确 定</el-button>
+        <el-button type="primary" @click="fileUpload">确 定</el-button>
       </span>
     </el-dialog>
   </page>
@@ -65,29 +74,65 @@ export default {
       searchForm: {
         date: ''
       },
-      resourceData: [
-        {
-          fileName: '实验报告模板',
-          fileType: '模板表格',
-          uploadDate: '2020/3/1'
-        }
-      ],
-      uploadDialogVisible: false
+      resourceData: [],
+      uploadDialogVisible: false,
+      uploadForm: {
+        type: '',
+        uploadDate: ''
+      }
     }
   },
   methods: {
     showUploadDialog() {
+      this.uploadForm.type = ''
       this.uploadDialogVisible = true
     },
-    handleEdit(row) {
-      this.uploadDialogVisible = true
-    }
+    // 上传文件
+    fileUpload() {
+      if (this.uploadForm.type) {
+        let date = new Date()
+        let uploadDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+        this.uploadForm.uploadDate = uploadDate
+        this.$refs.upload.submit()
+        this.uploadDialogVisible = false
+        this.$refs.upload.clearFiles()
+      } else {
+        this.$message.error('请选择文件类型！')
+        this.$refs.selectType.focus()
+      }
+    },
+    // 文件上传成功
+    uploadSuccess() {
+      this.$message.success('上传成功！')
+    },
+    // 获取资源数据
+    getResourceData() {
+      this.$axios.get('/resource/getAll')
+        .then(res => {
+          if (res.data.status == 200) {
+            console.log(res.data.result)
+            this.resourceData = res.data.result
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    // 按日期查询资源
+    searchByDate() {}
+  },
+  created() {
+    this.getResourceData()
   }
 }
 </script>
 
 <style lang="scss">
 .upload-dialog{
+  .el-form{
+    width: 200px;
+    margin: 0 auto;
+  }
   .el-upload-dragger{
     width: 200px;
   }
@@ -96,7 +141,7 @@ export default {
     margin-bottom: 0;
   }
   .el-input{
-    width: 160px;
+    width: 149px;
   }
 }
 </style>

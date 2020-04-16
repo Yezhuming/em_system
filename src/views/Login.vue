@@ -54,6 +54,7 @@ export default {
                 let user = JSON.parse(JSON.stringify(res.data.result[0]))
                 localStorage.setItem('user', JSON.stringify(user))
                 this.$router.push('/adIndex')
+                this.$message.success('登录成功！')
               } else {
                 this.$message.error(res.data.result)
                 this.$refs.pwdInput.select()
@@ -74,10 +75,12 @@ export default {
                 let user = {
                   uID: res.data.result[0].uID,
                   name: res.data.result[0].name,
-                  account: res.data.result[0].account
+                  account: res.data.result[0].account,
+                  role: res.data.result[0].role
                 }
                 localStorage.setItem('user', JSON.stringify(user))
                 this.$router.push('/uIndex')
+                this.$message.success('登录成功！')
               } else {
                 this.$message.error(res.data.result)
                 this.$refs.pwdInput.select()
@@ -103,6 +106,7 @@ export default {
                 }
                 localStorage.setItem('user', JSON.stringify(user))
                 this.$router.push('/adIndex')
+                this.$message.success('登录成功！')
               } else {
                 this.$message.error(res.data.result)
                 this.$refs.pwdInput.select()
