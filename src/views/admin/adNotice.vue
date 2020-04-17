@@ -72,6 +72,7 @@ export default {
     },
     // 重置
     reset() {
+      this.searchForm.date = ''
       this.getArticleData()
     },
     // 发布
@@ -99,18 +100,24 @@ export default {
     },
     // 删除
     deleteAnnouncement(row) {
-      this.$axios.post('/article/deleteByaID', {
-        aID: row.aID
+      this.$confirm(`确定删除该${row.type == '1' ? '通知' : '公告'}?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$axios.post('/article/deleteByaID', {
+          aID: row.aID
+        })
+          .then(res => {
+            if (res.data.status == 200) {
+              this.getArticleData()
+              this.$message.success(res.data.result)
+            }
+          })
+          .catch(err => {
+            console.log(err)
+          })
       })
-        .then(res => {
-          if (res.data.status == 200) {
-            this.getArticleData()
-            this.$message.success(res.data.result)
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
     },
     // 获取全部数据
     getArticleData() {

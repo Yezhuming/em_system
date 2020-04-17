@@ -7,7 +7,7 @@
       <el-table-column label="order" width="18">•</el-table-column>
       <el-table-column label="标题" width="250">
         <template slot-scope="scope">
-          <span @click="toDetail(scope.row)" class="article-title">{{scope.row.title}}</span>
+          <el-link @click="toDetail(scope.row)" :underline="false">{{scope.row.title}}</el-link>
         </template>
       </el-table-column>
       <el-table-column prop="publishDate" label="日期" align="right"></el-table-column>
@@ -16,7 +16,7 @@
       style="float:right;margin-top:5px;"
       :hide-on-single-page="true"
       @current-change="noticePageChange"
-      :page-size="7"
+      :page-size="noticeData.size"
       layout="prev, pager, next, jumper"
       :total="noticeData.total">
     </el-pagination>
@@ -51,10 +51,13 @@ export default {
       })
     },
     // 换页
-    noticePageChange() {},
+    noticePageChange(page) {
+      this.noticeData.page = page
+      this.getNoticeData()
+    },
     // 获取数据
     getNoticeData() {
-      this.$axios.get('/article/getByTypeLimit', {
+      this.$axios.get('/article/getByTypeLimited', {
         params: {
           page: this.noticeData.page,
           size: this.noticeData.size,
@@ -64,7 +67,7 @@ export default {
         .then(res => {
           console.log(res)
           if (res.data.status == 200) {
-            this.noticeData.total = res.data.result.length
+            this.noticeData.total = res.data.total
             this.noticeData.list = res.data.result
           }
         })

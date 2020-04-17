@@ -92,24 +92,37 @@ const article = {
       }
     })
   },
-  getByTypeLimit(req, res) {
-    let selectSql = `SELECT aID,title,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
-    FROM article WHERE type = ? order by publishDate DESC limit ?,?`
-    let startIndex = req.query.page * req.query.size - req.query.size
-    let sqlParams = [req.query.type, startIndex, Number(req.query.size)]
-    connection.query(selectSql, sqlParams, (err, result) => {
+  getByTypeLimited(req, res) {
+    let countSql = 'SELECT count(*) as total FROM article WHERE type = ?;'
+    let sqlParams = [req.query.type]
+    connection.query(countSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
       } else {
-        if (result.length != 0) {
-          let response = {
-            status: 200,
-            result: result
-          }
-          res.end(JSON.stringify(response))
+        let total = result[0].total
+        if (total != 0) {
+          let selectSql = `SELECT aID,title,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
+                           FROM article WHERE type = ? order by publishDate DESC limit ?,?`
+          let startIndex = req.query.page * req.query.size - req.query.size
+          let sqlParams = [req.query.type, startIndex, Number(req.query.size)]
+          connection.query(selectSql, sqlParams, (err, result) => {
+            if (err) {
+              console.log('[SELECT ERROR] - ', err.message)
+            } else {
+              if (result.length != 0) {
+                let response = {
+                  status: 200,
+                  total: total,
+                  result: result
+                }
+                res.end(JSON.stringify(response))
+              }
+            }
+          })
         } else {
           let response = {
             status: -1,
+            total: 0,
             result: '该表无数据'
           }
           res.end(JSON.stringify(response))
@@ -119,7 +132,7 @@ const article = {
   },
   getLimited(req, res) {
     let selectSql = `SELECT aID,title,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
-    FROM article order by publishDate DESC limit 0,6`
+    FROM article order by publishDate DESC limit 0,5`
     connection.query(selectSql, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)

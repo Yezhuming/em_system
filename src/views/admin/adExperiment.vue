@@ -14,7 +14,7 @@
         <el-button type="primary">查 询</el-button>
       </el-form-item>
       <el-form-item style="float:right;">
-        <el-button type="primary" @click="toDetails">发 布</el-button>
+        <el-button type="primary" @click="toDetail">发 布</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -52,13 +52,16 @@ export default {
     }
   },
   methods: {
-    toDetails() {
-      this.$toPage('/adIndex/adArticleDetails', {
-        page: 'experience'
+    toDetail() {
+      this.$router.push({
+        path: '/adIndex/adArticleDetails',
+        query: {
+          page: 'announcement'
+        }
       })
     },
     updateExperience(row) {
-      this.$toPage('/adIndex/adArticleDetails', {
+      this.$router.push('/adIndex/adArticleDetails', {
         page: 'experience'
       })
     }

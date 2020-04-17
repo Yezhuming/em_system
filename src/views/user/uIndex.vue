@@ -55,13 +55,13 @@
         </div>
         <div class="content flex">
           <el-table
-            :data="noticeData.list"
+            :data="noticeData"
             :show-header="false"
             style="width: 100%">
             <el-table-column label="order" width="18">•</el-table-column>
             <el-table-column label="标题" width="250">
               <template slot-scope="scope">
-                <span class="article-title" @click="toDetails(scope.row)">{{scope.row.title}}</span>
+                <el-link @click="toDetail(scope.row)" :underline="false">{{scope.row.title}}</el-link>
               </template>
             </el-table-column>
             <el-table-column prop="publishDate" label="日期" align="right"></el-table-column>
@@ -75,16 +75,16 @@
         </div>
         <div class="content flex">
           <el-table
-            :data="resourceData.list"
+            :data="resourceData"
             :show-header="false"
             style="width: 100%">
             <el-table-column label="order" width="18">•</el-table-column>
-            <el-table-column label="标题" width="250">
+            <el-table-column label="文件名" width="250">
               <template slot-scope="scope">
-                <span class="article-title">{{scope.row.title}}</span>
+                <el-link @click="openLink(scope.row)" :underline="false">{{scope.row.fileName}}</el-link>
               </template>
             </el-table-column>
-            <el-table-column prop="date" label="日期" align="right"></el-table-column>
+            <el-table-column prop="uploadDate" label="上传日期" align="right"></el-table-column>
           </el-table>
         </div>
       </div>
@@ -142,21 +142,8 @@ export default {
           {validator: pwdCheck, trigger: 'blur'}
         ]
       },
-      noticeData: {
-        total: 5,
-        size: 7, // 一页最多7条
-        list: []
-      },
-      resourceData: {
-        total: 5,
-        size: 7, // 一页最多7条
-        list: [
-          {
-            title: '文件1',
-            date: '2020-3-1'
-          }
-        ]
-      }
+      noticeData: [],
+      resourceData: []
     }
   },
   computed: {
@@ -238,8 +225,7 @@ export default {
         .then(res => {
           console.log(res)
           if (res.data.status == 200) {
-            this.noticeData.total = res.data.result.length
-            this.noticeData.list = res.data.result
+            this.noticeData = res.data.result
           }
         })
         .catch(err => {
@@ -247,7 +233,7 @@ export default {
         })
     },
     // 跳转通知公告详情
-    toDetails(row) {
+    toDetail(row) {
       this.$router.push({
         name: 'uNoticeDetails',
         query: {
@@ -256,7 +242,23 @@ export default {
       })
     },
     // 获取资源下载列表
-    getResourceList() {},
+    getResourceList() {
+      this.$axios.get('/resource/getLimited')
+        .then(res => {
+          console.log(res)
+          if (res.data.status == 200) {
+            this.resourceData = res.data.result
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    // 下载资源
+    openLink(row) {
+      console.log(row)
+      window.open(`http://localhost:8081/resource/${row.fileName}`)
+    },
     // 退出
     exit() {
       localStorage.removeItem('user')
@@ -268,6 +270,7 @@ export default {
     this.user = JSON.parse(localStorage.getItem('user'))
     console.log(this.user)
     this.getNoticeList()
+    this.getResourceList()
   },
   beforeDestroy() {
     if (this.interval) {
@@ -356,6 +359,7 @@ export default {
       margin: 6px 0;
     }
     .el-table{
+      background-color: aliceblue;
       tr{
         background-color: aliceblue;
       }
@@ -365,12 +369,9 @@ export default {
       td{
         padding: 6px 0;
       }
-    }
-  }
-  .article-title{
-    cursor: pointer;
-    &:hover{
-      color: #66b1ff;
+      .el-link{
+        margin: 0;
+      }
     }
   }
 </style>
