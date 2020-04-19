@@ -54,13 +54,16 @@ export default new Router({
             {
               path: 'uExperimentList/:type',
               name: 'uExperimentList',
-              component: () => import('../views/user/uExperimentList')
-            },
-            {
-              path: 'uExperimentDetails',
-              name: 'uExperimentDetails',
-              component: () => import('../views/user/uExperimentDetails')
+              component: () => import('../views/user/uExperimentList'),
+              meta: {
+                requireLogin: true
+              }
             }
+            // {
+            //   path: 'uExperimentDetails',
+            //   name: 'uExperimentDetails',
+            //   component: () => import('../views/user/uExperimentDetails')
+            // }
           ],
           meta: {
             requireLogin: true

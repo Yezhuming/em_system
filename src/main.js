@@ -31,12 +31,15 @@ new Vue({
 }).$mount('#app')
 
 router.beforeEach((to, from, next) => {
+  let user = JSON.parse(localStorage.getItem('user'))
   if (to.meta.requireLogin) {
-    if (localStorage.getItem('user')) {
+    if (user.role == 1) {
       next()
     } else {
       Vue.prototype.$message.warning('请先登陆！')
-      next('/login')
+      setTimeout(() => {
+        next('/login')
+      }, 1000)
     }
   } else {
     next()

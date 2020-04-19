@@ -1,7 +1,7 @@
 <template>
   <page class="adresource" title="资源管理">
     <el-form inline :model="searchForm">
-      <el-form-item label="日期">
+      <el-form-item label="上传日期">
         <el-date-picker
           v-model="searchForm.date"
           type="date"
@@ -54,6 +54,7 @@
           :on-change="addFile"
           :before-remove="beforeRemove"
           :on-remove="handleRemove"
+          :file-list="fileList"
           :data="uploadForm"
           :limit="1"
           accept=".xls,.xlsx,.doc,.docx"
@@ -73,7 +74,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="uploadDialogVisible = false">取 消</el-button>
+        <el-button @click="closeUploadDialog">取 消</el-button>
         <el-button type="primary" @click="fileUpload">确 定</el-button>
       </span>
     </el-dialog>
@@ -97,12 +98,18 @@ export default {
     }
   },
   methods: {
+    // 打开上传对话框
     showUploadDialog() {
       this.uploadForm.type = ''
       this.uploadDialogVisible = true
+      this.fileList = []
+    },
+    // 关闭上传对话框
+    closeUploadDialog() {
+      this.fileList = []
+      this.uploadDialogVisible = false
     },
     addFile(file, fileList) {
-      console.log(file)
       console.log(fileList)
       this.fileList = fileList
     },
