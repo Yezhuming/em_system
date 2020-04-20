@@ -52,7 +52,7 @@ export default {
               console.log(res)
               if (res.data.status == 200) {
                 let user = JSON.parse(JSON.stringify(res.data.result[0]))
-                localStorage.setItem('user', JSON.stringify(user))
+                sessionStorage.setItem('user', JSON.stringify(user))
                 this.$router.push('/adIndex')
                 this.$message.success('登录成功！')
               } else {
@@ -78,7 +78,7 @@ export default {
                   account: res.data.result[0].account,
                   role: res.data.result[0].role
                 }
-                localStorage.setItem('user', JSON.stringify(user))
+                sessionStorage.setItem('user', JSON.stringify(user))
                 this.$router.push('/uIndex')
                 this.$message.success('登录成功！')
               } else {
@@ -104,7 +104,7 @@ export default {
                   account: res.data.result[0].account,
                   role: res.data.result[0].role
                 }
-                localStorage.setItem('user', JSON.stringify(user))
+                sessionStorage.setItem('user', JSON.stringify(user))
                 this.$router.push('/adIndex')
                 this.$message.success('登录成功！')
               } else {

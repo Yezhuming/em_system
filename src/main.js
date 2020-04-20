@@ -31,7 +31,7 @@ new Vue({
 }).$mount('#app')
 
 router.beforeEach((to, from, next) => {
-  let user = JSON.parse(localStorage.getItem('user'))
+  let user = JSON.parse(sessionStorage.getItem('user'))
   if (to.meta.requireLogin) {
     if (user.role == 1) {
       next()

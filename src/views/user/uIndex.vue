@@ -261,13 +261,13 @@ export default {
     },
     // 退出
     exit() {
-      localStorage.removeItem('user')
+      sessionStorage.removeItem('user')
       this.user = null
     }
   },
   created() {
     this.interval = setInterval(this.calculatTime)
-    this.user = JSON.parse(localStorage.getItem('user'))
+    this.user = JSON.parse(sessionStorage.getItem('user'))
     console.log(this.user)
     this.getNoticeList()
     this.getResourceList()

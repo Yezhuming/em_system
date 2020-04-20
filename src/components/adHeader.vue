@@ -31,13 +31,13 @@ export default {
       if (command == 'toAccount') {
         this.$router.push('/adIndex/adAccount')
       } else if (command == 'exit') {
-        localStorage.removeItem('user')
+        sessionStorage.removeItem('user')
         this.$router.push('/login')
       }
     }
   },
   created() {
-    this.user = JSON.parse(localStorage.getItem('user'))
+    this.user = JSON.parse(sessionStorage.getItem('user'))
   }
 }
 </script>

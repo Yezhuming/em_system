@@ -25,7 +25,6 @@ const resourse = {
     })
   },
   upload(req, res) {
-    console.log(req.files[0])
     let insertSql = 'INSERT INTO resource(fileName,fileType,url,uploadDate) VALUES(?,?,?,?)'
     let sqlParams = [req.files[0].filename, req.body.type, req.files[0].path, req.body.uploadDate]
     connection.query(insertSql, sqlParams, err => {

@@ -33,10 +33,10 @@ export default {
     adMenu
   },
   created() {
-    this.user = JSON.parse(localStorage.getItem('user'))
+    this.user = JSON.parse(sessionStorage.getItem('user'))
     console.log(this.user)
   },
-  mounted() {
+  beforeMount() {
     if (this.user.role == 0) {
       this.$router.push('/adIndex/adUser')
     } else {
