@@ -33,7 +33,7 @@ new Vue({
 router.beforeEach((to, from, next) => {
   let user = JSON.parse(sessionStorage.getItem('user'))
   if (to.meta.requireLogin) {
-    if (user.role == 1) {
+    if (user != null && user.role == 1) {
       next()
     } else {
       Vue.prototype.$message.warning('请先登陆！')

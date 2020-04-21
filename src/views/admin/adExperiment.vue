@@ -117,7 +117,7 @@ export default {
   methods: {
     // 打开上传对话框
     showUploadDialog() {
-      this.uploadForm.type = ''
+      this.uploadForm.deadline = ''
       this.uploadDialogVisible = true
     },
     // 关闭上传对话框
@@ -133,10 +133,14 @@ export default {
     fileUpload() {
       console.log(this.fileList)
       if (this.fileList.length != 0) {
-        let date = new Date()
-        let uploadDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-        this.uploadForm.uploadDate = uploadDate
-        this.$refs.upload.submit()
+        if (this.uploadForm.deadline) {
+          let date = new Date()
+          let uploadDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+          this.uploadForm.uploadDate = uploadDate
+          this.$refs.upload.submit()
+        } else {
+          this.$message.error('请选择截止日期！')
+        }
       } else {
         this.$message.error('请选择需要上传的文件！')
       }
@@ -196,24 +200,27 @@ export default {
       }).then(() => {
         this.$axios.post('/experiment/deleteByeID', {
           eID: row.eID
+        }).then(res => {
+          if (res.data.status == 200) {
+            this.getExperimentData()
+            this.$message.success(res.data.result)
+          }
+        }).catch(err => {
+          console.log(err)
         })
-          .then(res => {
-            if (res.data.status == 200) {
-              this.getExperimentData()
-              this.$message.success(res.data.result)
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
+      }).catch(() => {
+        this.$message('已取消删除！')
       })
     },
     // 获取实验内容数据
     getExperimentData() {
       this.$axios.get('/experiment/getAll')
         .then(res => {
+          console.log(res.data)
           if (res.data.status == 200) {
             this.experimentData = res.data.result
+          } else {
+            this.experimentData = []
           }
         })
         .catch(err => {

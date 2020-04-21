@@ -1,11 +1,20 @@
 <template>
   <page class="aduser" title="用户管理">
-    <el-form inline :model="searchForm">
-      <el-form-item>
+    <el-form inline :model="searchForm" ref="searchForm">
+      <el-form-item v-if="activeTabs == '1'" prop="class">
+        <el-select v-model="searchForm.class" placeholder="请选择班级">
+          <el-option v-for="item in classList"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item porp="value">
         <el-input v-model="searchForm.value" placeholder="请输入学号或姓名"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="searchByAccountOrName">查 询</el-button>
+        <el-button type="primary" @click="search">查 询</el-button>
         <el-button @click="reset">重 置</el-button>
       </el-form-item>
       <el-form-item class="button-group">
@@ -172,10 +181,12 @@
 export default {
   data() {
     return {
+      classList: [],
       searchForm: {
+        class: '',
         value: ''
       },
-      activeTabs: '2',
+      activeTabs: '1',
       uIDArray: [],
       addSingleUserDialogVisible: false,
       addUserFromFileDialogVisible: false,
@@ -237,11 +248,12 @@ export default {
   },
   methods: {
     // 查询
-    searchByAccountOrName() {
-      if (this.searchForm.value) {
+    search() {
+      if (this.searchForm.class || this.searchForm.value) {
         if (this.activeTabs == '1') {
-          this.$axios.get('/student/searchByAccountOrName', {
+          this.$axios.get('/student/search', {
             params: {
+              class: this.searchForm.class,
               value: this.searchForm.value
             }
           })
@@ -282,7 +294,7 @@ export default {
     },
     // 重置
     reset() {
-      this.searchForm.value = ''
+      this.$refs.searchForm.resetFields()
       if (this.activeTabs == '1') {
         this.getStudentData()
       } else {
@@ -526,11 +538,32 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    // 获取班级信息
+    getClassList() {
+      this.$axios.get('/student/getClassList')
+        .then(res => {
+          console.log(res)
+          if (res.data.status == 200) {
+            this.classList = []
+            for (let i of res.data.result) {
+              let obj = {
+                label: i.class,
+                value: i.class
+              }
+              this.classList.push(obj)
+            }
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   },
   created() {
-    this.getTeacherData()
     this.getStudentData()
+    this.getTeacherData()
+    this.getClassList()
   }
 }
 </script>

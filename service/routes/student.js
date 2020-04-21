@@ -70,9 +70,19 @@ const student = {
       }
     })
   },
-  searchByAccountOrName(req, res) {
-    let selectSql = 'SELECT * FROM student WHERE account = ? OR name = ?'
-    let sqlParams = [req.query.value, req.query.value]
+  search(req, res) {
+    let selectSql = 'SELECT * FROM student WHERE '
+    let sqlParams = []
+    if (req.query.class && req.query.value) {
+      selectSql += 'class = ? AND (account = ? OR name = ?)'
+      sqlParams = [req.query.class, req.query.value, req.query.value]
+    } else if (req.query.class) {
+      selectSql += 'class = ?'
+      sqlParams = [req.query.class]
+    } else if (req.query.value) {
+      selectSql += 'account = ? OR name = ?'
+      sqlParams = [req.query.value]
+    }
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
@@ -180,6 +190,28 @@ const student = {
           result: '删除成功！'
         }
         res.end(JSON.stringify(response))
+      }
+    })
+  },
+  getClassList(req, res) {
+    let selectSql = 'SELECT DISTINCT class FROM student'
+    connection.query(selectSql, (err, result) => {
+      if (err) {
+        console.log('[SELECT ERROR] - ', err.message)
+      } else {
+        if (result.length != 0) {
+          let response = {
+            status: 200,
+            result: result
+          }
+          res.end(JSON.stringify(response))
+        } else {
+          let response = {
+            status: -1,
+            result: '无数据!'
+          }
+          res.end(JSON.stringify(response))
+        }
       }
     })
   }

@@ -9,12 +9,14 @@
         <p>Management System</p>
         <el-form :model="loginForm">
           <el-form-item>
-            <el-input v-model="loginForm.account" placeholder="学号" v-if="loginForm.role == '1'"></el-input>
-            <el-input v-model="loginForm.account" placeholder="账号" v-else></el-input>
+            <el-input v-model="loginForm.account" placeholder="学号" v-if="loginForm.role == '1'" ref="input"></el-input>
+            <el-input v-model="loginForm.account" placeholder="账号" v-else ref="input"></el-input>
             <el-input v-model="loginForm.password" placeholder="密码" show-password ref="pwdInput"></el-input>
-            <el-radio v-model="loginForm.role" label="1">学生</el-radio>
-            <el-radio v-model="loginForm.role" label="2">教师</el-radio>
-            <el-radio v-model="loginForm.role" label="0">管理员</el-radio>
+            <el-radio-group v-model="loginForm.role" @change="selectRole">
+              <el-radio label="1" >学生</el-radio>
+              <el-radio label="2">教师</el-radio>
+              <el-radio label="0">管理员</el-radio>
+            </el-radio-group>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" round @click="submit">立即登录</el-button>
@@ -41,6 +43,9 @@ export default {
     }
   },
   methods: {
+    selectRole() {
+      this.$refs.input.focus()
+    },
     submit() {
       switch (this.loginForm.role) {
         case '0': // 管理员登录
@@ -119,6 +124,9 @@ export default {
         default: console.log('请选择身份')
       }
     }
+  },
+  mounted() {
+    this.$refs.input.focus()
   }
 }
 </script>

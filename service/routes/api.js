@@ -9,6 +9,7 @@ const student = require('./student')
 const article = require('./article')
 const resource = require('./resource')
 const experiment = require('./experiment')
+const classSubmission = require('./classSubmission')
 
 // 管理员信息表
 router.post('/admin/login', admin.login)
@@ -36,7 +37,7 @@ router.post('/teacher/deleteByuIDArray', teacher.deleteByuIDArray)
 
 // 学生信息表
 router.post('/student/login', student.login)
-router.get('/student/searchByAccountOrName', student.searchByAccountOrName)
+router.get('/student/search', student.search)
 router.get('/student/getAll', student.getAll)
 router.get('/student/getOne', student.getOne)
 router.post('/student/addOne', student.addOne)
@@ -45,6 +46,7 @@ router.post('/student/updateByuID', student.updateByuID)
 router.post('/student/updatePassword', student.updatePassword)
 router.post('/student/deleteByuID', student.deleteByuID)
 router.post('/student/deleteByuIDArray', student.deleteByuIDArray)
+router.get('/student/getClassList', student.getClassList)
 
 // 通知公告表
 router.post('/article/add', article.add)
@@ -89,5 +91,11 @@ router.get('/experiment/getListByDate', experiment.getListByDate)
 router.get('/experiment/getLimited', experiment.getLimited)
 router.post('/experiment/deleteByeID', experiment.deleteByeID)
 router.get('/experiment/getLimited', experiment.getLimited)
+
+// 班级提交实验情况表
+router.get('/classSubmission/getAll', classSubmission.getAll)
+router.get('/classSubmission/getExperimentList', classSubmission.getExperimentList)
+router.get('/classSubmission/getClassList', classSubmission.getClassList)
+router.get('/classSubmission/searchByeIDOrClass', classSubmission.searchByeIDOrClass)
 
 module.exports = router
