@@ -27,17 +27,19 @@
       <el-tab-pane label="学生" name="1">
         <el-table
           :data="studentData"
+          ref="studentTable"
           border
           header-cell-class-name="bgblue"
           max-height="380"
           @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="35" align="center"></el-table-column>
-          <el-table-column prop="name" align="center" label="姓名"></el-table-column>
-          <el-table-column prop="grade" align="center" label="年级"></el-table-column>
-          <el-table-column prop="class" align="center" label="班级"></el-table-column>
-          <el-table-column prop="discipline" align="center" label="专业"></el-table-column>
-          <el-table-column prop="account" align="center" label="学号(账号)"></el-table-column>
-          <el-table-column prop="password" align="center" label="密码"></el-table-column>
+          <el-table-column prop="name" align="center" label="姓名" min-width="40" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="grade" align="center" label="年级" min-width="30" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="class" align="center" label="班级" min-width="40" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="teacher" align="center" label="班级教师" min-width="30" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="discipline" align="center" label="专业" min-width="30" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="account" align="center" label="学号(账号)" min-width="40" show-overflow-tooltip></el-table-column>
+          <el-table-column prop="password" align="center" label="密码" min-width="40" show-overflow-tooltip></el-table-column>
           <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <el-button size="small" type="primary" @click="showUpdateUserDialog(scope.row)">编 辑</el-button>
@@ -49,6 +51,7 @@
       <el-tab-pane label="教师" name="2">
         <el-table
           :data="teacherData"
+          ref="teacherTable"
           border
           header-cell-class-name="bgblue"
           max-height="380"
@@ -68,6 +71,8 @@
     </el-tabs>
     <el-dialog title="新增用户"
       :visible.sync="addSingleUserDialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       class="add-singleuser-dialog"
       width="25%">
       <el-form :model="addUserForm" ref="addUserForm" :rules="addUserFormRules">
@@ -85,6 +90,15 @@
         </el-form-item>
         <el-form-item label="班级" v-if="addUserForm.role=='1'" prop="class">
           <el-input v-model="addUserForm.class" placeholder="请输入班级"></el-input>
+        </el-form-item>
+        <el-form-item label="教师" v-if="addUserForm.role=='1'" prop="teacher">
+          <el-select v-model="addUserForm.teacher" placeholder="请选择教师">
+            <el-option v-for="item in teacherList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="专业" v-if="addUserForm.role=='1'" prop="discipline">
           <el-input v-model="addUserForm.discipline" placeholder="请输入专业"></el-input>
@@ -106,6 +120,8 @@
     </el-dialog>
     <el-dialog title="批量导入"
       :visible.sync="addUserFromFileDialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       class="adduser-dialog"
       width="26%">
       <el-form :model="uploadForm">
@@ -113,6 +129,15 @@
           <el-select v-model="uploadForm.role" placeholder="请选择角色">
             <el-option label="学生" value="1"></el-option>
             <el-option label="教师" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="教师" v-if="uploadForm.role=='1'" prop="teacher">
+          <el-select v-model="uploadForm.teacher" placeholder="请选择教师">
+            <el-option v-for="item in teacherList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -126,6 +151,7 @@
         :on-remove="handleRemove"
         :file-list="fileList"
         :limit="1"
+        :data="uploadForm"
         accept=".xls,.xlsx"
         :action="uploadUrl">
         <i class="el-icon-upload"></i>
@@ -144,6 +170,8 @@
     </el-dialog>
     <el-dialog title="修改信息"
       :visible.sync="updateUserDialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       class="add-singleuser-dialog"
       width="25%">
       <el-form :model="updateUserForm">
@@ -196,6 +224,7 @@ export default {
         name: '',
         grade: '',
         class: '',
+        teacher: '',
         discipline: '',
         account: '',
         password: ''
@@ -213,6 +242,9 @@ export default {
         class: [
           { required: true, message: '请输入班级', trigger: 'blur' }
         ],
+        teacher: [
+          { required: true, message: '请选择教师', trigger: 'blur' }
+        ],
         discipline: [
           { required: true, message: '请输入专业', trigger: 'blur' }
         ],
@@ -224,7 +256,8 @@ export default {
         ]
       },
       uploadForm: {
-        role: '1'
+        role: '1',
+        teacher: ''
       },
       fileList: [],
       updateUserForm: {
@@ -233,10 +266,12 @@ export default {
         name: '',
         grade: '',
         class: '',
+        teacher: '',
         discipline: '',
         account: '',
         password: ''
       },
+      teacherList: [],
       teacherData: [],
       studentData: []
     }
@@ -260,6 +295,7 @@ export default {
             .then(res => {
               if (res.data.status == 200) {
                 this.studentData = res.data.result
+                this.$refs.studentTable.bodyWrapper.scrollTop = 0
                 this.$message.success('查询成功！')
               } else {
                 this.studentData = []
@@ -278,6 +314,7 @@ export default {
             .then(res => {
               if (res.data.status == 200) {
                 this.teacherData = res.data.result
+                this.$refs.teacherTable.bodyWrapper.scrollTop = 0
                 this.$message.success('查询成功！')
               } else {
                 this.teacherData = []
@@ -519,8 +556,18 @@ export default {
     getTeacherData() {
       this.$axios.get('/teacher/getAll')
         .then(res => {
+          console.log(res.data)
           if (res.data.status == 200) {
             this.teacherData = res.data.result
+            this.teacherList = []
+            for (let i of res.data.result) {
+              let obj = {}
+              obj.label = i.name
+              obj.value = i.name
+              this.teacherList.push(obj)
+            }
+            console.log(this.teacherList)
+            this.$refs.teacherTable.bodyWrapper.scrollTop = 0
           }
         })
         .catch(err => {
@@ -533,6 +580,7 @@ export default {
         .then(res => {
           if (res.data.status == 200) {
             this.studentData = res.data.result
+            this.$refs.studentTable.bodyWrapper.scrollTop = 0
           }
         })
         .catch(err => {
@@ -543,7 +591,6 @@ export default {
     getClassList() {
       this.$axios.get('/student/getClassList')
         .then(res => {
-          console.log(res)
           if (res.data.status == 200) {
             this.classList = []
             for (let i of res.data.result) {
@@ -592,7 +639,7 @@ export default {
     padding-bottom: 0;
   }
   .el-input{
-    width: 100px;
+    width: 150px;
   }
 }
 </style>

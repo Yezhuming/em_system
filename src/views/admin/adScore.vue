@@ -31,17 +31,18 @@
       border
       header-cell-class-name="bgblue"
       max-height="450">
-      <el-table-column prop="experimentName" label="实验项目" align="center"></el-table-column>
-      <el-table-column prop="class" label="班级" align="center"></el-table-column>
-      <el-table-column prop="deadline" label="截止日期" align="center"></el-table-column>
-      <el-table-column label="已提交/未提交" align="center">
+      <el-table-column prop="experimentName" label="实验项目" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="class" label="班级" align="center" min-width="50" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="grade" label="年级" align="center" min-width="25" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="deadline" label="截止日期" align="center" min-width="50" show-overflow-tooltip></el-table-column>
+      <el-table-column label="已提交/未提交" align="center" min-width="50">
         <template slot-scope="scope">
           <span style="color:#409eff;">{{scope.row.submittedNum}}</span> / <span style="color:#f56c6c;">{{scope.row.unsubmittedNum}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column label="操作" align="center" min-width="50">
         <template slot-scope="scope">
-          <el-button type="primary" @click="handleEdit(scope.row)">查 看</el-button>
+          <el-button type="primary" @click="toDetail(scope.row)">查 看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -87,8 +88,15 @@ export default {
       this.$refs.searchForm.resetFields()
       this.getClassSubmissionData()
     },
-    handleEdit(row) {
-      this.$router.push('/adIndex/adScoreDetails')
+    toDetail(row) {
+      this.$router.push({
+        name: 'adScoreDetails',
+        query: {
+          eID: row.eID,
+          class: row.class,
+          grade: row.grade
+        }
+      })
     },
     // 获取实验选项
     getExperimentList() {

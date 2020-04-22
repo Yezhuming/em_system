@@ -36,6 +36,8 @@
       title="文件上传"
       class="upload-dialog"
       :visible.sync="uploadDialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       width="26%">
       <el-form :model="uploadForm">
         <el-form-item>
@@ -91,6 +93,7 @@ export default {
         deadline: '',
         uploadDate: ''
       },
+      uploadedeID: '',
       experimentData: [],
       pickerOptions: {
         shortcuts: [
@@ -126,12 +129,10 @@ export default {
       this.uploadDialogVisible = false
     },
     addFile(file, fileList) {
-      console.log(fileList)
       this.fileList = fileList
     },
-    // 上传文件
+    // 上传文件 TODO 发布实验带上发布人参数
     fileUpload() {
-      console.log(this.fileList)
       if (this.fileList.length != 0) {
         if (this.uploadForm.deadline) {
           let date = new Date()
@@ -188,10 +189,9 @@ export default {
     },
     // 查看实验项目(下载ppt) 线上地址可实现预览
     openLink(row) {
-      console.log(row)
       window.open(`http://localhost:8081/experiment/${row.experimentName}`)
     },
-    // 删除实验项目
+    // 删除实验项目 TODO
     deleteExperiment(row) {
       this.$confirm('确定删除该实验?', '提示', {
         confirmButtonText: '确定',
@@ -203,7 +203,15 @@ export default {
         }).then(res => {
           if (res.data.status == 200) {
             this.getExperimentData()
-            this.$message.success(res.data.result)
+            this.$axios.post('/score/deleteByeID', {
+              eID: row.eID
+            }).then(res => {
+              if (res.data.status == 200) {
+                this.$message.success(res.data.result)
+              }
+            })
+          } else {
+            this.$message.error(res.data.result)
           }
         }).catch(err => {
           console.log(err)
@@ -216,7 +224,6 @@ export default {
     getExperimentData() {
       this.$axios.get('/experiment/getAll')
         .then(res => {
-          console.log(res.data)
           if (res.data.status == 200) {
             this.experimentData = res.data.result
           } else {

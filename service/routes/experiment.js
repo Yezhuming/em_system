@@ -1,4 +1,5 @@
 const connection = require('../mysql')
+const score = require('./score')
 const fs = require('fs')
 
 const experiment = {
@@ -25,67 +26,67 @@ const experiment = {
       }
     })
   },
-  upload(req, res) {
+  upload(req, res) { // 带上发布人参数
     let insertSql = 'INSERT INTO experiment(experimentName,experimentUrl,uploadDate,deadline) VALUES(?,?,?,?)'
     let sqlParams = [req.files[0].filename, req.files[0].path, req.body.uploadDate, req.body.deadline]
-    connection.query(insertSql, sqlParams, err => { // 插入实验内容
-      if (err) {
-        console.log('[INSERT ERROR] - ', err.message)
-      } else {
-        let selectSql = `SELECT eID,date_format(deadline,'%Y-%m-%d') as deadline FROM experiment WHERE experimentName = ?`
-        let sqlParams = [req.files[0].filename]
-        connection.query(selectSql, sqlParams, (err, result) => { // 查询刚插入的实验eID和deadline(参数)
-          if (err) {
-            console.log('[SELECT ERROR] - ', err.message)
-          } else {
-            if (result.length != 0) {
-              let eID = result[0].eID
-              let deadline = result[0].deadline
-              let selectSql = 'SELECT DISTINCT class FROM student'
-              let classSubmissionList = []
-              connection.query(selectSql, (err, result) => { // 查询出现有班级
-                if (err) {
-                  console.log('[SELECT ERROR] - ', err.message)
-                } else {
-                  if (result.length != 0) {
-                    classSubmissionList = result
-                    for (let i = 0; i < classSubmissionList.length; i++) {
-                      let selectSql = 'SELECT COUNT(*) as count FROM student WHERE class = ?'
-                      let sqlParams = [classSubmissionList[i].class]
-                      connection.query(selectSql, sqlParams, (err, result) => { // 查询各班级人数(参数)
-                        if (err) {
-                          console.log('[SELECT ERROR] - ', err.message)
-                        } else {
-                          if (result.length != 0) { // 填充参数
-                            // classSubmissionList[i].eID = eID
-                            // classSubmissionList[i].experimentName = req.files[0].filename
-                            // classSubmissionList[i].deadline = deadline
-                            // classSubmissionList[i].submittedNum = 0
-                            // classSubmissionList[i].unsubmittedNum = result[0].count
-                            // console.log(classSubmissionList[i])
-                            let sqlParams = [eID, req.files[0].filename, classSubmissionList[i].class, deadline, 0, result[0].count]
-                            let insertSql = 'INSERT INTO classsubmission(eID,experimentName,class,deadline,submittedNum,unsubmittedNum) VALUES(?,?,?,?,?,?)'
-                            connection.query(insertSql, sqlParams, err => { // 插入数据至班级提交情况表(初始化数据)
-                              if (err) {
-                                console.log('[INSERT ERROR] - ', err)
-                              }
-                            })
+    const promise = new Promise((resolve, reject) => {
+      connection.query(insertSql, sqlParams, err => { // 插入实验内容
+        if (err) {
+          console.log('[INSERT ERROR] - ', err.message)
+        } else {
+          let selectSql = `SELECT eID,date_format(deadline,'%Y-%m-%d') as deadline FROM experiment WHERE experimentName = ?`
+          let sqlParams = [req.files[0].filename]
+          connection.query(selectSql, sqlParams, (err, result) => { // 查询刚插入的实验eID和deadline(参数)
+            if (err) {
+              console.log('[SELECT ERROR] - ', err.message)
+            } else {
+              if (result.length != 0) {
+                let eID = result[0].eID
+                let deadline = result[0].deadline
+                let selectSql = 'SELECT DISTINCT class,grade FROM student'
+                let classSubmissionList = []
+                connection.query(selectSql, (err, result) => { // 查询现有班级数量
+                  if (err) {
+                    console.log('[SELECT ERROR] - ', err.message)
+                  } else {
+                    if (result.length != 0) {
+                      classSubmissionList = result
+                      for (let i = 0; i < classSubmissionList.length; i++) {
+                        let selectSql = 'SELECT COUNT(*) as count FROM student WHERE class = ? AND grade = ?'
+                        let sqlParams = [classSubmissionList[i].class, classSubmissionList[i].grade]
+                        connection.query(selectSql, sqlParams, (err, result) => { // 查询各班级人数(参数)
+                          if (err) {
+                            console.log('[SELECT ERROR] - ', err.message)
+                          } else {
+                            if (result.length != 0) { // 填充参数
+                              let sqlParams = [eID, req.files[0].filename, classSubmissionList[i].class, classSubmissionList[i].grade, deadline, 0, result[0].count]
+                              let insertSql = 'INSERT INTO classsubmission(eID,experimentName,class,grade,deadline,submittedNum,unsubmittedNum) VALUES(?,?,?,?,?,?,?)'
+                              connection.query(insertSql, sqlParams, err => { // 插入数据至班级提交情况表(初始化数据)
+                                if (err) {
+                                  console.log('[INSERT ERROR] - ', err)
+                                } else {
+                                  if (i == classSubmissionList.length - 1) {
+                                    resolve(eID)
+                                  }
+                                }
+                              })
+                            }
                           }
-                        }
-                      })
+                        })
+                      }
                     }
                   }
-                }
-              })
+                })
+              }
             }
-          }
-        })
-        let response = {
-          status: 200,
-          result: '上传成功！'
+          })
         }
-        res.end(JSON.stringify(response))
-      }
+      })
+    })
+    promise.then(value => {
+      score.init(value, res)
+      console.log('上传成功！')
+      res.end()
     })
   },
   getListByDate(req, res) {
@@ -155,8 +156,7 @@ const experiment = {
         })
       }
     })
-  },
-  getLimited(req, res) {}
+  }
 }
 
 module.exports = experiment

@@ -10,6 +10,7 @@ const article = require('./article')
 const resource = require('./resource')
 const experiment = require('./experiment')
 const classSubmission = require('./classSubmission')
+const score = require('./score')
 
 // 管理员信息表
 router.post('/admin/login', admin.login)
@@ -88,14 +89,29 @@ var experimentUpload = multer({ storage: experimentStorage })
 router.get('/experiment/getAll', experiment.getAll)
 router.post('/experiment/upload', experimentUpload.any(), experiment.upload)
 router.get('/experiment/getListByDate', experiment.getListByDate)
-router.get('/experiment/getLimited', experiment.getLimited)
 router.post('/experiment/deleteByeID', experiment.deleteByeID)
-router.get('/experiment/getLimited', experiment.getLimited)
 
 // 班级提交实验情况表
 router.get('/classSubmission/getAll', classSubmission.getAll)
 router.get('/classSubmission/getExperimentList', classSubmission.getExperimentList)
 router.get('/classSubmission/getClassList', classSubmission.getClassList)
 router.get('/classSubmission/searchByeIDOrClass', classSubmission.searchByeIDOrClass)
+
+// 各班成绩表
+var submitFileStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'public/submitFile/') // 文件保存的路径
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname) // 设置保存的文件名
+  }
+})
+var fileUpload = multer({ storage: submitFileStorage })
+// router.post('/score/init', score.init)
+router.get('/score/getByeIDAndClassAndGrade', score.getByeIDAndClassAndGrade)
+router.post('/score/deleteByeID', score.deleteByeID)
+router.get('/score/getLimited', score.getLimited)
+router.post('/score/submitFile', fileUpload.any(), score.submitFile)
+router.post('/score/check', score.check)
 
 module.exports = router

@@ -59,11 +59,6 @@ export default new Router({
                 requireLogin: true
               }
             }
-            // {
-            //   path: 'uExperimentDetails',
-            //   name: 'uExperimentDetails',
-            //   component: () => import('../views/user/uExperimentDetails')
-            // }
           ],
           meta: {
             requireLogin: true

@@ -223,7 +223,6 @@ export default {
     getNoticeList() {
       this.$axios.get('/article/getLimited')
         .then(res => {
-          console.log(res)
           if (res.data.status == 200) {
             this.noticeData = res.data.result
           }
@@ -245,7 +244,6 @@ export default {
     getResourceList() {
       this.$axios.get('/resource/getLimited')
         .then(res => {
-          console.log(res)
           if (res.data.status == 200) {
             this.resourceData = res.data.result
           }

@@ -14,14 +14,14 @@
         <!-- 实验提交状态 0-未提交 1-已提交 2-已批改 -->
         <el-table-column label="状态" align="center" width="100">
           <template slot-scope="scope">
-            <el-tag type="info" effect="dark" v-show="scope.row.status==0">未提交</el-tag>
-            <el-tag effect="dark" v-show="scope.row.status==1">已提交</el-tag>
-            <el-tag type="success" effect="dark" v-show="scope.row.status==2">已批改</el-tag>
+            <el-tag type="danger" v-show="scope.row.status==0">未提交</el-tag>
+            <el-tag v-show="scope.row.status==1">已提交</el-tag>
+            <el-tag type="success" v-show="scope.row.status==2">已批改</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="experimentName" label="实验课程名称" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="deadline" label="截止时间" align="center" width="150"></el-table-column>
-        <el-table-column prop="score" label="成绩" align="center" width="50"></el-table-column>
+        <el-table-column prop="deadline" label="截止时间" align="center" min-width="50"></el-table-column>
+        <el-table-column prop="score" label="成绩" align="center" min-width="20"></el-table-column>
         <el-table-column label="操作" align="center" width="300">
           <template slot-scope="scope">
             <el-button @click="toDetail(scope.row)" type="primary">查 看</el-button>
@@ -38,17 +38,12 @@
 export default {
   data() {
     return {
+      user: {},
       experimentData: {
-        total: 5,
-        size: 7, // 一页最多7条
-        list: [
-          {
-            status: 0,
-            experimentName: '实验一 运算器组成原理',
-            deadline: '2020/3/1',
-            score: 0
-          }
-        ]
+        total: 4,
+        page: 1,
+        size: 4, // 一页最多4条
+        list: []
       }
     }
   },
@@ -59,14 +54,30 @@ export default {
   },
   methods: {
     toDetail(row) {
-      this.$router.push({
-        name: 'uExperimentDetails',
-        query: {
-          eID: '1'
+      window.open(`http://localhost:8081/experiment/${row.experimentName}`)
+    },
+    getExperimentData() {
+      this.$axios.get('/score/getLimited', {
+        params: {
+          uID: this.user.uID,
+          page: this.experimentData.page,
+          size: this.experimentData.size
+        }
+      }).then(res => {
+        console.log(res.data)
+        if (res.data.status == 200) {
+          this.experimentData.total = res.data.total
+          this.experimentData.list = res.data.result
+        } else {
+          this.experimentData.total = 0
+          this.experimentData.list = []
         }
       })
-    },
-    experimentPageChange() {}
+    }
+  },
+  created() {
+    this.user = JSON.parse(sessionStorage.getItem('user'))
+    this.getExperimentData()
   }
 }
 </script>

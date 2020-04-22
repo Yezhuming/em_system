@@ -2,28 +2,55 @@
   <page class="adscroe-details">
     <el-page-header @back="goBack" content="作业批改"></el-page-header>
     <el-table
-      :data="homeworkData"
+      :data="scoreData"
       border
       header-cell-class-name="bgblue"
-      max-height="380">
-      <el-table-column prop="chapter" label="实验章节" align="center"></el-table-column>
-      <el-table-column prop="class" label="学生班级" align="center"></el-table-column>
-      <el-table-column prop="name" label="学生姓名" align="center"></el-table-column>
-      <el-table-column prop="number" label="学生学号" align="center"></el-table-column>
-      <el-table-column prop="status" label="作业状态" align="center">
+      max-height="500">
+      <el-table-column prop="experimentName" label="实验章节" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="class" label="学生班级" align="center" min-width="60" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="grade" label="学生年级" align="center" min-width="40" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="name" label="学生姓名" align="center" min-width="50" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="account" label="学生学号" align="center" min-width="50" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="status" label="作业状态" align="center" min-width="40">
         <template slot-scope="scope">
-              <el-tag type="info" effect="dark" v-show="scope.row.status==0">未提交</el-tag>
+              <el-tag type="danger" effect="dark" v-show="scope.row.status==0">未提交</el-tag>
               <el-tag v-show="scope.row.status==1">已提交</el-tag>
               <el-tag type="success" effect="dark" v-show="scope.row.status==2">已批改</el-tag>
             </template>
       </el-table-column>
-      <el-table-column prop="score" label="成绩" align="center"></el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column prop="score" label="成绩" align="center" min-width="30"></el-table-column>
+      <el-table-column label="操作" align="center" min-width="40">
         <template slot-scope="scope">
-          <el-button size="small" type="primary" @click="handleEdit(scope.$index, scope.row)">批 改</el-button>
+          <el-button size="small" type="primary" @click="showCheckDialog(scope.row)">评 分</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <el-dialog title="批改作业"
+      :visible.sync="checkDialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      width="23%">
+      <el-form :model="checkForm">
+        <el-form-item label="学生作业：">
+          <el-link type="primary" @click="download">{{checkForm.submitFile}}</el-link>
+        </el-form-item>
+        <el-form-item label="分数：">
+          <el-input-number v-model="checkForm.score" :min="0" :max="100"></el-input-number>
+        </el-form-item>
+        <el-form-item label="评语：">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="请输入评语"
+            v-model="checkForm.comment">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="checkDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="check">确 定</el-button>
+      </div>
+    </el-dialog>
   </page>
 </template>
 
@@ -31,22 +58,55 @@
 export default {
   data() {
     return {
-      homeworkData: [
-        {
-          chapter: '实验一 运算器组成原理',
-          class: '网络工程七班',
-          name: '张三',
-          number: '20162180100',
-          status: 1,
-          score: 100
-        }
-      ]
+      scoreData: [],
+      checkDialogVisible: false,
+      checkForm: {
+        submitFile: '',
+        score: '',
+        comment: ''
+      }
     }
   },
   methods: {
     goBack() {
       this.$router.go(-1)
-    }
+    },
+    getScoreData() {
+      this.$axios.get('/score/getByeIDAndClassAndGrade', {
+        params: {
+          eID: this.$route.query.eID,
+          class: this.$route.query.class,
+          grade: this.$route.query.grade
+        }
+      }).then(res => {
+        console.log(res)
+        if (res.data.status == 200) {
+          this.scoreData = res.data.result
+        } else {
+          this.scoreData = []
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    // 打开评分对话框
+    showCheckDialog(row) {
+      if (row.status != 0) {
+        this.checkDialogVisible = true
+        this.checkForm.submitFile = row.submitFile
+        this.checkForm.score = row.score
+        this.checkForm.comment = row.comment
+      } else {
+        this.$message.error('该学生尚未提交作业！')
+      }
+    },
+    download() {
+      window.open(`http://localhost:8081/submitFile/${this.checkForm.submitFile}`)
+    },
+    check() {}
+  },
+  created() {
+    this.getScoreData()
   }
 }
 </script>
@@ -58,6 +118,12 @@ export default {
   }
   .el-page-header__title{
     font-size: 16px;
+  }
+  .el-dialog__body{
+    padding: 10px 20px;
+  }
+  .el-form{
+    width: 300px;
   }
 }
 </style>

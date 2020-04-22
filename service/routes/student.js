@@ -118,8 +118,8 @@ const student = {
     })
   },
   addOne(req, res) {
-    let insertSql = 'INSERT INTO student(account,password,name,role,grade,class,discipline) VALUES(?,?,?,?,?,?,?)'
-    let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.role, req.body.grade, req.body.class, req.body.discipline]
+    let insertSql = 'INSERT INTO student(account,password,name,role,grade,class,discipline,teacher) VALUES(?,?,?,?,?,?,?,?)'
+    let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.role, req.body.grade, req.body.class, req.body.discipline, req.body.teacher]
     connection.query(insertSql, sqlParams, err => {
       if (err) {
         console.log('[INSERT ERROR] - ', err.message)
@@ -132,7 +132,7 @@ const student = {
       }
     })
   },
-  addFromFile(req, res) {
+  addFromFile(req, res) { // TODO
     let obj = xlsx.parse(`public/user/${req.files[0].filename}`)
     let data = obj[0].data
     let insertSql = 'INSERT INTO student(account,password,name,role,grade,class,discipline) VALUES ?'
@@ -141,17 +141,17 @@ const student = {
       if (err) {
         console.log('[INSERT ERROR] - ', err.message)
       } else {
-        let response = {
-          status: 200,
-          result: '导入成功！'
-        }
-        res.end(JSON.stringify(response))
+        // let response = {
+        //   status: 200,
+        //   result: '导入成功！'
+        // }
+        // res.end(JSON.stringify(response))
       }
     })
   },
   updateByuID(req, res) {
-    let updateSql = 'UPDATE student SET account = ?, password = ?, name = ?, grade = ?, class = ?, discipline = ? WHERE uID = ?'
-    let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.grade, req.body.class, req.body.discipline, req.body.uID]
+    let updateSql = 'UPDATE student SET account=?,password=?,name=?,grade=?,class=?,discipline=?,teacher=? WHERE uID=?'
+    let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.grade, req.body.class, req.body.discipline, req.body.teacher, req.body.uID]
     connection.query(updateSql, sqlParams, err => {
       if (err) {
         console.log('[UPDATE ERROR] - ', err.message)

@@ -2,7 +2,7 @@ const connection = require('../mysql')
 
 const classSubmission = {
   getAll(req, res) {
-    let selectSql = `SELECT eID,experimentName,class,date_format(deadline,'%Y-%m-%d') as deadline,submittedNum,unsubmittedNum FROM classsubmission`
+    let selectSql = `SELECT eID,experimentName,class,grade,date_format(deadline,'%Y-%m-%d') as deadline,submittedNum,unsubmittedNum FROM classsubmission`
     connection.query(selectSql, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
