@@ -20,12 +20,17 @@
     <el-table
       :data="experimentData"
       border
+      tooltip-effect="light"
       header-cell-class-name="bgblue"
       max-height="450">
-      <el-table-column prop="experimentName" label="实验项目" align="center"></el-table-column>
-      <el-table-column prop="uploadDate" label="上传日期" align="center"></el-table-column>
-      <el-table-column prop="deadline" label="截止日期" align="center"></el-table-column>
-      <el-table-column label="操作" align="center">
+      <el-table-column label="实验项目" align="center" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.experimentName.substr(0, scope.row.experimentName.indexOf('-'))}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="uploadDate" label="上传日期" align="center" min-width="50"></el-table-column>
+      <el-table-column prop="deadline" label="截止日期" align="center" min-width="50"></el-table-column>
+      <el-table-column label="操作" align="center" min-width="50">
         <template slot-scope="scope">
           <el-button type="primary" @click="openLink(scope.row)">查 看</el-button>
           <el-button type="danger" @click="deleteExperiment(scope.row)">删 除</el-button>
@@ -38,7 +43,7 @@
       :visible.sync="uploadDialogVisible"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
-      width="26%">
+      width="25%">
       <el-form :model="uploadForm">
         <el-form-item>
           <el-upload
@@ -82,6 +87,7 @@
 
 <script>
 export default {
+  props: ['user'],
   data() {
     return {
       searchForm: {
@@ -90,6 +96,7 @@ export default {
       uploadDialogVisible: false,
       fileList: [],
       uploadForm: {
+        uploader: '',
         deadline: '',
         uploadDate: ''
       },
@@ -131,13 +138,14 @@ export default {
     addFile(file, fileList) {
       this.fileList = fileList
     },
-    // 上传文件 TODO 发布实验带上发布人参数
+    // 上传文件
     fileUpload() {
       if (this.fileList.length != 0) {
         if (this.uploadForm.deadline) {
           let date = new Date()
           let uploadDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
           this.uploadForm.uploadDate = uploadDate
+          this.uploadForm.uploader = this.$props.user.name
           this.$refs.upload.submit()
         } else {
           this.$message.error('请选择截止日期！')
@@ -166,21 +174,20 @@ export default {
     searchByDate() {
       this.$axios.get('/experiment/getListByDate', {
         params: {
-          uploadDate: this.searchForm.date
+          uploadDate: this.searchForm.date,
+          uploader: this.$props.user.name
         }
+      }).then(res => {
+        if (res.data.status == 200) {
+          this.experimentData = res.data.result
+          this.$message.success('查询成功！')
+        } else {
+          this.experimentData = []
+          this.$message.warning(res.data.result)
+        }
+      }).catch(err => {
+        console.log(err)
       })
-        .then(res => {
-          if (res.data.status == 200) {
-            this.experimentData = res.data.result
-            this.$message.success('查询成功！')
-          } else {
-            this.experimentData = []
-            this.$message(res.data.result)
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
     },
     // 重置查询
     reset() {
@@ -222,17 +229,19 @@ export default {
     },
     // 获取实验内容数据
     getExperimentData() {
-      this.$axios.get('/experiment/getAll')
-        .then(res => {
-          if (res.data.status == 200) {
-            this.experimentData = res.data.result
-          } else {
-            this.experimentData = []
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      this.$axios.get('/experiment/getAll', {
+        params: {
+          uploader: this.$props.user.name
+        }
+      }).then(res => {
+        if (res.data.status == 200) {
+          this.experimentData = res.data.result
+        } else {
+          this.experimentData = []
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   created() {

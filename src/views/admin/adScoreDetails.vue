@@ -4,9 +4,14 @@
     <el-table
       :data="scoreData"
       border
+      tooltip-effect="light"
       header-cell-class-name="bgblue"
       max-height="500">
-      <el-table-column prop="experimentName" label="实验章节" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column label="实验项目" align="center" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.experimentName.substr(0, scope.row.experimentName.indexOf('-'))}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="class" label="学生班级" align="center" min-width="60" show-overflow-tooltip></el-table-column>
       <el-table-column prop="grade" label="学生年级" align="center" min-width="40" show-overflow-tooltip></el-table-column>
       <el-table-column prop="name" label="学生姓名" align="center" min-width="50" show-overflow-tooltip></el-table-column>

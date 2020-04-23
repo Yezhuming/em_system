@@ -20,14 +20,17 @@
         <i class="el-icon-message-solid"></i>
         <span>通知公告</span>
       </el-menu-item>
+      <el-menu-item index="/adIndex/adResource">
+        <i class="el-icon-folder-opened"></i>
+        <span>资源管理</span>
+      </el-menu-item>
       <el-submenu index='/edu'>
         <template slot="title">
           <i class="el-icon-notebook-1"></i>
           <span>教学管理</span>
         </template>
-        <el-menu-item index="/adIndex/adExperiment">实验内容</el-menu-item>
-        <el-menu-item index="/adIndex/adScore">成绩管理</el-menu-item>
-        <el-menu-item index="/adIndex/adResource">资源管理</el-menu-item>
+        <el-menu-item index="/adIndex/adExperiment" v-if="user.role==2">实验内容</el-menu-item>
+        <el-menu-item index="/adIndex/adScore" v-if="user.role==2">成绩管理</el-menu-item>
         <el-menu-item index="/adIndex/adAttendance">考勤管理</el-menu-item>
       </el-submenu>
     </el-menu>

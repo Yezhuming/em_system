@@ -25,8 +25,8 @@ const student = {
     })
   },
   getOne(req, res) {
-    let selectSql = 'SELECT * FROM student WHERE uID = ?'
-    let sqlParams = [req.query.uID]
+    let selectSql = 'SELECT * FROM student WHERE sID = ?'
+    let sqlParams = [req.query.sID]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
@@ -73,15 +73,19 @@ const student = {
   search(req, res) {
     let selectSql = 'SELECT * FROM student WHERE '
     let sqlParams = []
-    if (req.query.class && req.query.value) {
-      selectSql += 'class = ? AND (account = ? OR name = ?)'
-      sqlParams = [req.query.class, req.query.value, req.query.value]
-    } else if (req.query.class) {
-      selectSql += 'class = ?'
-      sqlParams = [req.query.class]
+    if (req.query.gradeAndClass && req.query.value) {
+      selectSql += '(grade = ? AND class = ?) AND (account = ? OR name = ?)'
+      let grade = req.query.gradeAndClass.substring(0, 5)
+      let Class = req.query.gradeAndClass.substring(5) // class不可用
+      sqlParams = [grade, Class, req.query.value, req.query.value]
+    } else if (req.query.gradeAndClass) {
+      let grade = req.query.gradeAndClass.substring(0, 5)
+      let Class = req.query.gradeAndClass.substring(5)
+      selectSql += 'grade = ? AND class = ?'
+      sqlParams = [grade, Class]
     } else if (req.query.value) {
       selectSql += 'account = ? OR name = ?'
-      sqlParams = [req.query.value]
+      sqlParams = [req.query.value, req.query.value]
     }
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
@@ -104,8 +108,8 @@ const student = {
     })
   },
   updatePassword(req, res) {
-    let updateSql = 'UPDATE student SET password = ? WHERE uID = ?'
-    let sqlParams = [req.body.newPassword, req.body.uID]
+    let updateSql = 'UPDATE student SET password = ? WHERE sID = ?'
+    let sqlParams = [req.body.newPassword, req.body.sID]
     connection.query(updateSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[UPDATE ERROR] - ', err.message)
@@ -118,55 +122,95 @@ const student = {
     })
   },
   addOne(req, res) {
-    let insertSql = 'INSERT INTO student(account,password,name,role,grade,class,discipline,teacher) VALUES(?,?,?,?,?,?,?,?)'
-    let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.role, req.body.grade, req.body.class, req.body.discipline, req.body.teacher]
-    connection.query(insertSql, sqlParams, err => {
+    let selectSql = 'SELECT name FROM teacher WHERE tID = ?'
+    let sqlParams = [req.body.tID]
+    connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
-        console.log('[INSERT ERROR] - ', err.message)
+        console.log('[SELECT ERROR] - ', err.message)
       } else {
-        let response = {
-          status: 200,
-          result: '新增成功！'
+        if (result.length != 0) {
+          let teacher = result[0].name
+          let insertSql = 'INSERT INTO student(account,password,name,role,grade,class,discipline,tID,teacher) VALUES(?,?,?,?,?,?,?,?,?)'
+          let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.role, req.body.grade, req.body.class, req.body.discipline, req.body.tID, teacher]
+          connection.query(insertSql, sqlParams, err => {
+            if (err) {
+              console.log('[INSERT ERROR] - ', err.message)
+            } else {
+              let response = {
+                status: 200,
+                result: '新增成功！'
+              }
+              res.end(JSON.stringify(response))
+            }
+          })
+        } else {
+          let response = {
+            status: -1,
+            result: '不存在此教师'
+          }
+          res.end(JSON.stringify(response))
         }
-        res.end(JSON.stringify(response))
       }
     })
   },
-  addFromFile(req, res) { // TODO
-    let obj = xlsx.parse(`public/user/${req.files[0].filename}`)
-    let data = obj[0].data
-    let insertSql = 'INSERT INTO student(account,password,name,role,grade,class,discipline) VALUES ?'
-    let sqlParams = data.slice(1)
-    connection.query(insertSql, [sqlParams], err => {
+  addFromFile(req, res) {
+    let selectSql = 'SELECT name FROM teacher WHERE tID = ?'
+    let sqlParams = [req.body.tID]
+    connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
-        console.log('[INSERT ERROR] - ', err.message)
+        console.log('[SELECT ERROR] - ', err.message)
       } else {
-        // let response = {
-        //   status: 200,
-        //   result: '导入成功！'
-        // }
-        // res.end(JSON.stringify(response))
-      }
-    })
-  },
-  updateByuID(req, res) {
-    let updateSql = 'UPDATE student SET account=?,password=?,name=?,grade=?,class=?,discipline=?,teacher=? WHERE uID=?'
-    let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.grade, req.body.class, req.body.discipline, req.body.teacher, req.body.uID]
-    connection.query(updateSql, sqlParams, err => {
-      if (err) {
-        console.log('[UPDATE ERROR] - ', err.message)
-      } else {
-        let response = {
-          status: 200,
-          result: '修改成功！'
+        if (result.length != 0) {
+          let teacher = result[0].name
+          let obj = xlsx.parse(`public/user/${req.files[0].filename}`)
+          let data = obj[0].data
+          let sqlParams = data.slice(1)
+          for (let i = 0; i < sqlParams.length; i++) {
+            sqlParams[i].push(req.body.tID, teacher)
+          }
+          let insertSql = 'INSERT INTO student(account,password,name,role,grade,class,discipline,tID,teacher) VALUES ?'
+          connection.query(insertSql, [sqlParams], err => {
+            if (err) {
+              console.log('[INSERT ERROR] - ', err.message)
+            } else {
+              let response = {
+                status: 200,
+                result: '导入成功！'
+              }
+              res.end(JSON.stringify(response))
+            }
+          })
         }
-        res.end(JSON.stringify(response))
       }
     })
   },
-  deleteByuID(req, res) {
-    let deleteSql = 'DELETE FROM student WHERE uID = ?'
-    let sqlParams = [req.body.uID]
+  updateBysID(req, res) {
+    let selectSql = 'SELECT name FROM teacher WHERE tID = ?'
+    let sqlParams = [req.body.tID]
+    connection.query(selectSql, sqlParams, (err, result) => {
+      if (err) {
+        console.log('[SELECT ERROR] - ', err.message)
+      } else {
+        let teacher = result[0].name
+        let updateSql = 'UPDATE student SET account=?,password=?,name=?,grade=?,class=?,discipline=?,tID=?,teacher=? WHERE sID=?'
+        let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.grade, req.body.class, req.body.discipline, req.body.tID, teacher, req.body.sID]
+        connection.query(updateSql, sqlParams, err => {
+          if (err) {
+            console.log('[UPDATE ERROR] - ', err.message)
+          } else {
+            let response = {
+              status: 200,
+              result: '修改成功！'
+            }
+            res.end(JSON.stringify(response))
+          }
+        })
+      }
+    })
+  },
+  deleteBysID(req, res) {
+    let deleteSql = 'DELETE FROM student WHERE sID = ?'
+    let sqlParams = [req.body.sID]
     connection.query(deleteSql, sqlParams, err => {
       if (err) {
         console.log('[DELETE ERROR] - ', err.message)
@@ -179,8 +223,8 @@ const student = {
       }
     })
   },
-  deleteByuIDArray(req, res) {
-    let deleteSql = `DELETE FROM student WHERE uID IN (${req.body.uIDArray})`
+  deleteByidArray(req, res) {
+    let deleteSql = `DELETE FROM student WHERE sID IN (${req.body.idArray})`
     connection.query(deleteSql, err => {
       if (err) {
         console.log('[DELETE ERROR] - ', err.message)
@@ -194,7 +238,7 @@ const student = {
     })
   },
   getClassList(req, res) {
-    let selectSql = 'SELECT DISTINCT class FROM student'
+    let selectSql = 'SELECT DISTINCT class,grade FROM student'
     connection.query(selectSql, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)

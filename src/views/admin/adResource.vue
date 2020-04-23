@@ -57,11 +57,11 @@
           :file-list="fileList"
           :data="uploadForm"
           :limit="1"
-          accept=".xls,.xlsx,.doc,.docx"
+          accept=".xls,.xlsx,.doc,.docx,.pdf"
           action="http://127.0.0.1:8081/resource/upload">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip"></div>
+          <div class="el-upload__tip" slot="tip">只能上传word/excel/pdf文件</div>
         </el-upload>
         <el-form-item
           label="类型"
@@ -110,12 +110,10 @@ export default {
       this.uploadDialogVisible = false
     },
     addFile(file, fileList) {
-      console.log(fileList)
       this.fileList = fileList
     },
     // 上传文件
     fileUpload() {
-      console.log(this.fileList)
       if (this.fileList.length != 0) {
         if (this.uploadForm.type) {
           let date = new Date()
@@ -143,20 +141,17 @@ export default {
     },
     // 移除文件后
     handleRemove(file, fileList) {
-      console.log(file, fileList)
       this.fileList = fileList
     },
     // 获取资源数据
     getResourceData() {
-      this.$axios.get('/resource/getAll')
-        .then(res => {
-          if (res.data.status == 200) {
-            this.resourceData = res.data.result
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      this.$axios.get('/resource/getAll').then(res => {
+        if (res.data.status == 200) {
+          this.resourceData = res.data.result
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     // 按日期查询资源
     searchByDate() {
@@ -164,19 +159,17 @@ export default {
         params: {
           uploadDate: this.searchForm.date
         }
+      }).then(res => {
+        if (res.data.status == 200) {
+          this.resourceData = res.data.result
+          this.$message.success('查询成功！')
+        } else {
+          this.resourceData = []
+          this.$message(res.data.result)
+        }
+      }).catch(err => {
+        console.log(err)
       })
-        .then(res => {
-          if (res.data.status == 200) {
-            this.resourceData = res.data.result
-            this.$message.success('查询成功！')
-          } else {
-            this.resourceData = []
-            this.$message(res.data.result)
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
     },
     // 重置查询
     reset() {
@@ -185,7 +178,6 @@ export default {
     },
     // 下载资源
     openLink(row) {
-      console.log(row)
       window.open(`http://localhost:8081/resource/${row.fileName}`)
     },
     // 删除资源
@@ -197,16 +189,16 @@ export default {
       }).then(() => {
         this.$axios.post('/resource/deleteByrID', {
           rID: row.rID
+        }).then(res => {
+          if (res.data.status == 200) {
+            this.getResourceData()
+            this.$message.success(res.data.result)
+          }
+        }).catch(err => {
+          console.log(err)
         })
-          .then(res => {
-            if (res.data.status == 200) {
-              this.getResourceData()
-              this.$message.success(res.data.result)
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
+      }).catch(err => {
+        console.log(err)
       })
     }
   },
@@ -218,12 +210,8 @@ export default {
 
 <style lang="scss">
 .upload-dialog{
-  .el-form{
-    width: 200px;
-    margin: 0 auto;
-  }
   .el-upload-dragger{
-    width: 200px;
+    width: 340px;
   }
   .el-form-item{
     margin-top: 10px;

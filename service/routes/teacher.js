@@ -25,8 +25,8 @@ const teacher = {
     })
   },
   getOne(req, res) {
-    let selectSql = 'SELECT * FROM teacher WHERE uID = ?'
-    let sqlParams = [req.query.uID]
+    let selectSql = 'SELECT * FROM teacher WHERE tID = ?'
+    let sqlParams = [req.query.tID]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
@@ -94,8 +94,8 @@ const teacher = {
     })
   },
   updatePassword(req, res) {
-    let updateSql = 'UPDATE teacher SET password = ? WHERE uID = ?'
-    let sqlParams = [req.body.newPassword, req.body.uID]
+    let updateSql = 'UPDATE teacher SET password = ? WHERE tID = ?'
+    let sqlParams = [req.body.newPassword, req.body.tID]
     connection.query(updateSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[UPDATE ERROR] - ', err.message)
@@ -139,9 +139,9 @@ const teacher = {
       }
     })
   },
-  updateByuID(req, res) {
-    let updateSql = 'UPDATE teacher SET account = ?, password = ?, name = ? WHERE uID = ?'
-    let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.uID]
+  updateBytID(req, res) {
+    let updateSql = 'UPDATE teacher SET account = ?, password = ?, name = ? WHERE tID = ?'
+    let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.tID]
     connection.query(updateSql, sqlParams, err => {
       if (err) {
         console.log('[UPDATE ERROR] - ', err.message)
@@ -154,9 +154,9 @@ const teacher = {
       }
     })
   },
-  deleteByuID(req, res) {
-    let deleteSql = 'DELETE FROM teacher WHERE uID = ?'
-    let sqlParams = [req.body.uID]
+  deleteBytID(req, res) {
+    let deleteSql = 'DELETE FROM teacher WHERE tID = ?'
+    let sqlParams = [req.body.tID]
     connection.query(deleteSql, sqlParams, err => {
       if (err) {
         console.log('[DELETE ERROR] - ', err.message)
@@ -169,8 +169,8 @@ const teacher = {
       }
     })
   },
-  deleteByuIDArray(req, res) {
-    let deleteSql = `DELETE FROM teacher WHERE uID IN (${req.body.uIDArray})`
+  deleteByidArray(req, res) {
+    let deleteSql = `DELETE FROM teacher WHERE tID IN (${req.body.idArray})`
     connection.query(deleteSql, err => {
       if (err) {
         console.log('[DELETE ERROR] - ', err.message)

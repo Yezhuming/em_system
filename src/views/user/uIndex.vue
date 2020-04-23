@@ -57,9 +57,10 @@
           <el-table
             :data="noticeData"
             :show-header="false"
+            tooltip-effect="light"
             style="width: 100%">
             <el-table-column label="order" width="18">•</el-table-column>
-            <el-table-column label="标题" width="250">
+            <el-table-column label="标题" width="250" show-overflow-tooltip>
               <template slot-scope="scope">
                 <el-link @click="toDetail(scope.row)" :underline="false">{{scope.row.title}}</el-link>
               </template>
@@ -77,9 +78,10 @@
           <el-table
             :data="resourceData"
             :show-header="false"
+            tooltip-effect="light"
             style="width: 100%">
             <el-table-column label="order" width="18">•</el-table-column>
-            <el-table-column label="文件名" width="250">
+            <el-table-column label="文件名" width="250" show-overflow-tooltip>
               <template slot-scope="scope">
                 <el-link @click="openLink(scope.row)" :underline="false">{{scope.row.fileName}}</el-link>
               </template>
@@ -181,7 +183,7 @@ export default {
         if (valid) {
           this.$axios.get('/student/getOne', {
             params: {
-              uID: this.user.uID
+              sID: this.user.sID
             }
           })
             .then(res => {
@@ -193,7 +195,7 @@ export default {
                   this.$refs.oldPwdInput.select()
                 } else {
                   this.$axios.post('/student/updatePassword', {
-                    uID: this.user.uID,
+                    sID: this.user.sID,
                     newPassword: this.pwdForm.newPassword
                   })
                     .then(res => {
@@ -254,7 +256,6 @@ export default {
     },
     // 下载资源
     openLink(row) {
-      console.log(row)
       window.open(`http://localhost:8081/resource/${row.fileName}`)
     },
     // 退出
@@ -266,7 +267,6 @@ export default {
   created() {
     this.interval = setInterval(this.calculatTime)
     this.user = JSON.parse(sessionStorage.getItem('user'))
-    console.log(this.user)
     this.getNoticeList()
     this.getResourceList()
   },
@@ -370,6 +370,14 @@ export default {
       .el-link{
         margin: 0;
       }
+    }
+  }
+  .index-notice,.index-resource{
+    .el-link--inner{
+      width: 250px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
 </style>

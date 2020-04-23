@@ -34,7 +34,6 @@ export default {
   },
   created() {
     this.user = JSON.parse(sessionStorage.getItem('user'))
-    console.log(this.user)
   },
   beforeMount() {
     if (this.user.role == 0) {

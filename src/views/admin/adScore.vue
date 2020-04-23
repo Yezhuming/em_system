@@ -29,9 +29,14 @@
     <el-table
       :data="classSubmissionData"
       border
+      tooltip-effect="light"
       header-cell-class-name="bgblue"
       max-height="450">
-      <el-table-column prop="experimentName" label="实验项目" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column label="实验项目" align="center" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span>{{scope.row.experimentName.substr(0, scope.row.experimentName.indexOf('-'))}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="class" label="班级" align="center" min-width="50" show-overflow-tooltip></el-table-column>
       <el-table-column prop="grade" label="年级" align="center" min-width="25" show-overflow-tooltip></el-table-column>
       <el-table-column prop="deadline" label="截止日期" align="center" min-width="50" show-overflow-tooltip></el-table-column>
@@ -51,6 +56,7 @@
 
 <script>
 export default {
+  props: ['user'],
   data() {
     return {
       experimentList: [],
@@ -100,57 +106,63 @@ export default {
     },
     // 获取实验选项
     getExperimentList() {
-      this.$axios.get('/classSubmission/getExperimentList')
-        .then(res => {
-          if (res.data.status == 200) {
-            let obj = {}
-            for (let i of res.data.result) {
-              obj.label = i.experimentName
-              obj.value = i.eID
-              this.experimentList.push(obj)
-              obj = {}
-            }
-          } else {
-            this.experimentList = []
+      this.$axios.get('/classSubmission/getExperimentList', {
+        params: {
+          teacher: this.$props.user.name
+        }
+      }).then(res => {
+        if (res.data.status == 200) {
+          let obj = {}
+          for (let i of res.data.result) {
+            obj.label = i.experimentName
+            obj.value = i.eID
+            this.experimentList.push(obj)
+            obj = {}
           }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+        } else {
+          this.experimentList = []
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     // 获取班级选项
     getClassList() {
-      this.$axios.get('/classSubmission/getClassList')
-        .then(res => {
-          if (res.data.status == 200) {
-            let obj = {}
-            for (let i of res.data.result) {
-              obj.label = i.class
-              obj.value = i.class
-              this.classList.push(obj)
-              obj = {}
-            }
-          } else {
-            this.classList = []
+      this.$axios.get('/classSubmission/getClassList', {
+        params: {
+          teacher: this.$props.user.name
+        }
+      }).then(res => {
+        if (res.data.status == 200) {
+          let obj = {}
+          for (let i of res.data.result) {
+            obj.label = i.class
+            obj.value = i.class
+            this.classList.push(obj)
+            obj = {}
           }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+        } else {
+          this.classList = []
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     // 获取各班级实验提交数据
     getClassSubmissionData() {
-      this.$axios.get('/classSubmission/getAll')
-        .then(res => {
-          if (res.data.status == 200) {
-            this.classSubmissionData = res.data.result
-          } else {
-            this.classSubmissionData = []
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      this.$axios.get('/classSubmission/getAll', {
+        params: {
+          teacher: this.$props.user.name
+        }
+      }).then(res => {
+        if (res.data.status == 200) {
+          this.classSubmissionData = res.data.result
+        } else {
+          this.classSubmissionData = []
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   created() {

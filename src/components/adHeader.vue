@@ -5,8 +5,7 @@
       <div class="username">
         <el-dropdown @command="handleCommand">
           <span class="el-dropdown-link">
-            <span v-if="user.role==0">Admin</span>
-            <span v-else>{{user.name}}</span>
+            <span>{{user.name}}</span>
             <i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">

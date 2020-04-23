@@ -1,8 +1,8 @@
 <template>
   <page class="aduser" title="用户管理">
     <el-form inline :model="searchForm" ref="searchForm">
-      <el-form-item v-if="activeTabs == '1'" prop="class">
-        <el-select v-model="searchForm.class" placeholder="请选择班级">
+      <el-form-item v-if="activeTabs == '1'" prop="gradeAndClass">
+        <el-select v-model="searchForm.gradeAndClass" placeholder="请选择班级">
           <el-option v-for="item in classList"
             :key="item.value"
             :label="item.label"
@@ -10,7 +10,7 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item porp="value">
+      <el-form-item porp="value" prop="value">
         <el-input v-model="searchForm.value" placeholder="请输入学号或姓名"></el-input>
       </el-form-item>
       <el-form-item>
@@ -91,8 +91,8 @@
         <el-form-item label="班级" v-if="addUserForm.role=='1'" prop="class">
           <el-input v-model="addUserForm.class" placeholder="请输入班级"></el-input>
         </el-form-item>
-        <el-form-item label="教师" v-if="addUserForm.role=='1'" prop="teacher">
-          <el-select v-model="addUserForm.teacher" placeholder="请选择教师">
+        <el-form-item label="教师" v-if="addUserForm.role=='1'" prop="tID">
+          <el-select v-model="addUserForm.tID" placeholder="请选择教师">
             <el-option v-for="item in teacherList"
               :key="item.value"
               :label="item.label"
@@ -131,8 +131,8 @@
             <el-option label="教师" value="2"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="教师" v-if="uploadForm.role=='1'" prop="teacher">
-          <el-select v-model="uploadForm.teacher" placeholder="请选择教师">
+        <el-form-item label="班级教师" v-if="uploadForm.role=='1'" prop="teacher">
+          <el-select v-model="uploadForm.tID" placeholder="请选择教师">
             <el-option v-for="item in teacherList"
               :key="item.value"
               :label="item.label"
@@ -184,6 +184,15 @@
         <el-form-item label="班级" v-if="updateUserForm.role=='1'" prop="class">
           <el-input v-model="updateUserForm.class" placeholder="请输入班级"></el-input>
         </el-form-item>
+        <el-form-item label="教师" v-if="updateUserForm.role=='1'" prop="tID">
+          <el-select v-model="updateUserForm.tID" placeholder="请选择教师">
+            <el-option v-for="item in teacherList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="专业" v-if="updateUserForm.role=='1'" prop="discipline">
           <el-input v-model="updateUserForm.discipline" placeholder="请输入专业"></el-input>
         </el-form-item>
@@ -211,11 +220,11 @@ export default {
     return {
       classList: [],
       searchForm: {
-        class: '',
+        gradeAndClass: '',
         value: ''
       },
       activeTabs: '1',
-      uIDArray: [],
+      idArray: [],
       addSingleUserDialogVisible: false,
       addUserFromFileDialogVisible: false,
       updateUserDialogVisible: false,
@@ -224,7 +233,7 @@ export default {
         name: '',
         grade: '',
         class: '',
-        teacher: '',
+        tID: '',
         discipline: '',
         account: '',
         password: ''
@@ -242,7 +251,7 @@ export default {
         class: [
           { required: true, message: '请输入班级', trigger: 'blur' }
         ],
-        teacher: [
+        tID: [
           { required: true, message: '请选择教师', trigger: 'blur' }
         ],
         discipline: [
@@ -257,11 +266,12 @@ export default {
       },
       uploadForm: {
         role: '1',
-        teacher: ''
+        tID: ''
       },
       fileList: [],
       updateUserForm: {
-        uID: '',
+        tID: '',
+        sID: '',
         role: '',
         name: '',
         grade: '',
@@ -284,11 +294,11 @@ export default {
   methods: {
     // 查询
     search() {
-      if (this.searchForm.class || this.searchForm.value) {
+      if (this.searchForm.gradeAndClass || this.searchForm.value) {
         if (this.activeTabs == '1') {
           this.$axios.get('/student/search', {
             params: {
-              class: this.searchForm.class,
+              gradeAndClass: this.searchForm.gradeAndClass,
               value: this.searchForm.value
             }
           })
@@ -353,6 +363,7 @@ export default {
             if (valid) {
               this.$axios.post('/student/addOne', this.addUserForm)
                 .then(res => {
+                  console.log(res)
                   if (res.data.status == 200) {
                     this.$message.success(res.data.result)
                     this.getStudentData()
@@ -395,6 +406,7 @@ export default {
     showAddUserDialog() {
       this.addUserFromFileDialogVisible = true
       this.uploadForm.role = '1'
+      this.uploadForm.tID = ''
       this.fileList = []
       setTimeout(() => {
         this.$refs.upload.clearFiles()
@@ -433,9 +445,15 @@ export default {
     },
     // 多选数据
     handleSelectionChange(val) {
-      this.uIDArray = []
-      for (let i of val) {
-        this.uIDArray.push(i.uID)
+      this.idArray = []
+      if (this.activeTabs == '1') {
+        for (let i of val) {
+          this.idArray.push(i.sID)
+        }
+      } else {
+        for (let i of val) {
+          this.idArray.push(i.sID)
+        }
       }
     },
     // 批量删除
@@ -446,8 +464,8 @@ export default {
         type: 'warning'
       }).then(() => {
         if (this.activeTabs == '1') {
-          this.$axios.post('/student/deleteByuIDArray', {
-            uIDArray: this.uIDArray
+          this.$axios.post('/student/deleteByidArray', {
+            idArray: this.idArray
           })
             .then(res => {
               if (res.data.status == 200) {
@@ -458,8 +476,8 @@ export default {
               console.log(err)
             })
         } else {
-          this.$axios.post('/teacher/deleteByuIDArray', {
-            uIDArray: this.uIDArray
+          this.$axios.post('/teacher/deleteByidArray', {
+            idArray: this.idArray
           })
             .then(res => {
               if (res.data.status == 200) {
@@ -478,13 +496,12 @@ export default {
     showUpdateUserDialog(row) {
       this.updateUserDialogVisible = true
       this.updateUserForm = JSON.parse(JSON.stringify(row))
-      console.log(this.updateUserForm)
     },
     // 更新信息
     updateUser() {
       switch (this.updateUserForm.role) {
         case 1:
-          this.$axios.post('/student/updateByuID', this.updateUserForm)
+          this.$axios.post('/student/updateBysID', this.updateUserForm)
             .then(res => {
               if (res.data.status == 200) {
                 this.$message.success(res.data.result)
@@ -497,7 +514,7 @@ export default {
             })
           break
         case 2:
-          this.$axios.post('/teacher/updateByuID', this.updateUserForm)
+          this.$axios.post('/teacher/updateBytID', this.updateUserForm)
             .then(res => {
               if (res.data.status == 200) {
                 this.$message.success(res.data.result)
@@ -520,8 +537,8 @@ export default {
       }).then(() => {
         switch (row.role) {
           case 1:
-            this.$axios.post('/student/deleteByuID', {
-              uID: row.uID
+            this.$axios.post('/student/deleteBysID', {
+              sID: row.sID
             })
               .then(res => {
                 if (res.data.status == 200) {
@@ -534,8 +551,8 @@ export default {
               })
             break
           case 2:
-            this.$axios.post('/teacher/deleteByuID', {
-              uID: row.uID
+            this.$axios.post('/teacher/deleteBytID', {
+              tID: row.tID
             })
               .then(res => {
                 if (res.data.status == 200) {
@@ -556,17 +573,15 @@ export default {
     getTeacherData() {
       this.$axios.get('/teacher/getAll')
         .then(res => {
-          console.log(res.data)
           if (res.data.status == 200) {
             this.teacherData = res.data.result
             this.teacherList = []
             for (let i of res.data.result) {
               let obj = {}
               obj.label = i.name
-              obj.value = i.name
+              obj.value = i.tID
               this.teacherList.push(obj)
             }
-            console.log(this.teacherList)
             this.$refs.teacherTable.bodyWrapper.scrollTop = 0
           }
         })
@@ -595,8 +610,8 @@ export default {
             this.classList = []
             for (let i of res.data.result) {
               let obj = {
-                label: i.class,
-                value: i.class
+                label: `${i.grade}${i.class}`,
+                value: `${i.grade}${i.class}`
               }
               this.classList.push(obj)
             }

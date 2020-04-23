@@ -4,9 +4,10 @@ const fs = require('fs')
 
 const experiment = {
   getAll(req, res) {
-    let selectSql = `SELECT eID,experimentName,experimentUrl,date_format(uploadDate,'%Y-%m-%d') as uploadDate,date_format(deadline,'%Y-%m-%d') as deadline
-                     FROM experiment order by uploadDate DESC`
-    connection.query(selectSql, (err, result) => {
+    let selectSql = `SELECT eID,experimentName,experimentUrl,uploader,date_format(uploadDate,'%Y-%m-%d') as uploadDate,date_format(deadline,'%Y-%m-%d') as deadline
+                     FROM experiment WHERE uploader = ? order by uploadDate DESC`
+    let sqlParams = [req.query.uploader]
+    connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
       } else {
@@ -27,8 +28,8 @@ const experiment = {
     })
   },
   upload(req, res) { // 带上发布人参数
-    let insertSql = 'INSERT INTO experiment(experimentName,experimentUrl,uploadDate,deadline) VALUES(?,?,?,?)'
-    let sqlParams = [req.files[0].filename, req.files[0].path, req.body.uploadDate, req.body.deadline]
+    let insertSql = 'INSERT INTO experiment(experimentName,experimentUrl,uploader,uploadDate,deadline) VALUES(?,?,?,?,?)'
+    let sqlParams = [req.files[0].filename, req.files[0].path, req.body.uploader, req.body.uploadDate, req.body.deadline]
     const promise = new Promise((resolve, reject) => {
       connection.query(insertSql, sqlParams, err => { // 插入实验内容
         if (err) {
@@ -43,9 +44,10 @@ const experiment = {
               if (result.length != 0) {
                 let eID = result[0].eID
                 let deadline = result[0].deadline
-                let selectSql = 'SELECT DISTINCT class,grade FROM student'
+                let selectSql = 'SELECT DISTINCT class,grade FROM student WHERE teacher = ?'
+                let sqlParams = [req.body.uploader]
                 let classSubmissionList = []
-                connection.query(selectSql, (err, result) => { // 查询现有班级数量
+                connection.query(selectSql, sqlParams, (err, result) => { // 查询现有班级数量
                   if (err) {
                     console.log('[SELECT ERROR] - ', err.message)
                   } else {
@@ -59,11 +61,11 @@ const experiment = {
                             console.log('[SELECT ERROR] - ', err.message)
                           } else {
                             if (result.length != 0) { // 填充参数
-                              let sqlParams = [eID, req.files[0].filename, classSubmissionList[i].class, classSubmissionList[i].grade, deadline, 0, result[0].count]
-                              let insertSql = 'INSERT INTO classsubmission(eID,experimentName,class,grade,deadline,submittedNum,unsubmittedNum) VALUES(?,?,?,?,?,?,?)'
+                              let sqlParams = [eID, req.files[0].filename, classSubmissionList[i].class, classSubmissionList[i].grade, req.body.uploader, deadline, 0, result[0].count]
+                              let insertSql = 'INSERT INTO classsubmission(eID,experimentName,class,grade,teacher,deadline,submittedNum,unsubmittedNum) VALUES(?,?,?,?,?,?,?,?)'
                               connection.query(insertSql, sqlParams, err => { // 插入数据至班级提交情况表(初始化数据)
                                 if (err) {
-                                  console.log('[INSERT ERROR] - ', err)
+                                  console.log('[INSERT ERROR] - ', err.message)
                                 } else {
                                   if (i == classSubmissionList.length - 1) {
                                     resolve(eID)
@@ -91,8 +93,8 @@ const experiment = {
   },
   getListByDate(req, res) {
     let selectSql = `SELECT eID,experimentName,experimentUrl,date_format(uploadDate,'%Y-%m-%d') as uploadDate,date_format(deadline,'%Y-%m-%d') as deadline
-                     FROM experiment WHERE uploadDate = ?`
-    let sqlParams = [req.query.uploadDate]
+                     FROM experiment WHERE uploadDate = ? AND uploader = ?`
+    let sqlParams = [req.query.uploadDate, req.query.uploader]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)

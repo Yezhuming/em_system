@@ -14,6 +14,8 @@ const score = require('./score')
 
 // 管理员信息表
 router.post('/admin/login', admin.login)
+router.get('/admin/getOne', admin.getOne)
+router.post('/admin/updatePassword', admin.updatePassword)
 
 // 教师信息表
 var userStorage = multer.diskStorage({
@@ -21,7 +23,7 @@ var userStorage = multer.diskStorage({
     cb(null, 'public/user/') // 文件保存的路径
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname) // 设置保存的文件名
+    cb(null, file.originalname + '-' + Date.now()) // 设置保存的文件名
   }
 })
 var userUpload = multer({ storage: userStorage })
@@ -31,10 +33,10 @@ router.get('/teacher/getAll', teacher.getAll)
 router.get('/teacher/getOne', teacher.getOne)
 router.post('/teacher/addOne', teacher.addOne)
 router.post('/teacher/addFromFile', userUpload.any(), teacher.addFromFile)
-router.post('/teacher/updateByuID', teacher.updateByuID)
+router.post('/teacher/updateBytID', teacher.updateBytID)
 router.post('/teacher/updatePassword', teacher.updatePassword)
-router.post('/teacher/deleteByuID', teacher.deleteByuID)
-router.post('/teacher/deleteByuIDArray', teacher.deleteByuIDArray)
+router.post('/teacher/deleteBytID', teacher.deleteBytID)
+router.post('/teacher/deleteByidArray', teacher.deleteByidArray)
 
 // 学生信息表
 router.post('/student/login', student.login)
@@ -43,10 +45,10 @@ router.get('/student/getAll', student.getAll)
 router.get('/student/getOne', student.getOne)
 router.post('/student/addOne', student.addOne)
 router.post('/student/addFromFile', userUpload.any(), student.addFromFile)
-router.post('/student/updateByuID', student.updateByuID)
+router.post('/student/updateBysID', student.updateBysID)
 router.post('/student/updatePassword', student.updatePassword)
-router.post('/student/deleteByuID', student.deleteByuID)
-router.post('/student/deleteByuIDArray', student.deleteByuIDArray)
+router.post('/student/deleteBysID', student.deleteBysID)
+router.post('/student/deleteByidArray', student.deleteByidArray)
 router.get('/student/getClassList', student.getClassList)
 
 // 通知公告表
@@ -82,7 +84,7 @@ var experimentStorage = multer.diskStorage({
     cb(null, 'public/experiment/') // 文件保存的路径
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname) // 设置保存的文件名
+    cb(null, file.originalname + '-' + Date.now()) // 设置保存的文件名
   }
 })
 var experimentUpload = multer({ storage: experimentStorage })
@@ -103,7 +105,7 @@ var submitFileStorage = multer.diskStorage({
     cb(null, 'public/submitFile/') // 文件保存的路径
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname) // 设置保存的文件名
+    cb(null, file.originalname + '-' + Date.now()) // 设置保存的文件名
   }
 })
 var fileUpload = multer({ storage: submitFileStorage })

@@ -2,8 +2,8 @@ const connection = require('../mysql')
 
 const article = {
   add(req, res) {
-    let insertSql = 'INSERT INTO article(title,content,type,publishDate) VALUES(?,?,?,?)'
-    let sqlParams = [req.body.title, req.body.content, req.body.type, req.body.publishDate]
+    let insertSql = 'INSERT INTO article(title,publisher,content,type,publishDate) VALUES(?,?,?,?,?)'
+    let sqlParams = [req.body.title, req.body.publisher, req.body.content, req.body.type, req.body.publishDate]
     connection.query(insertSql, sqlParams, err => {
       if (err) {
         console.log('[INSERT ERROR] - ', err.message)
@@ -17,7 +17,7 @@ const article = {
     })
   },
   getAll(req, res) {
-    let selectSql = `SELECT aID,title,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate FROM article order by publishDate DESC;`
+    let selectSql = `SELECT aID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate FROM article order by publishDate DESC;`
     connection.query(selectSql, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
@@ -54,7 +54,7 @@ const article = {
     })
   },
   getListByDate(req, res) {
-    let selectSql = `SELECT aID,title,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
+    let selectSql = `SELECT aID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
                      FROM article WHERE publishDate = ?;`
     let sqlParams = [req.query.publishDate]
     connection.query(selectSql, sqlParams, (err, result) => {
@@ -101,7 +101,7 @@ const article = {
       } else {
         let total = result[0].total
         if (total != 0) {
-          let selectSql = `SELECT aID,title,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
+          let selectSql = `SELECT aID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
                            FROM article WHERE type = ? order by publishDate DESC limit ?,?`
           let startIndex = req.query.page * req.query.size - req.query.size
           let sqlParams = [req.query.type, startIndex, Number(req.query.size)]
@@ -131,7 +131,7 @@ const article = {
     })
   },
   getLimited(req, res) {
-    let selectSql = `SELECT aID,title,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
+    let selectSql = `SELECT aID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
     FROM article order by publishDate DESC limit 0,5`
     connection.query(selectSql, (err, result) => {
       if (err) {
@@ -154,7 +154,7 @@ const article = {
     })
   },
   getContentByaID(req, res) {
-    let selectSql = `SELECT aID,title,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate FROM article WHERE aID = ?`
+    let selectSql = `SELECT aID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate FROM article WHERE aID = ?`
     let sqlParams = [req.query.aID]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {

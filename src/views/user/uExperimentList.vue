@@ -19,17 +19,59 @@
             <el-tag type="success" v-show="scope.row.status==2">已批改</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="experimentName" label="实验课程名称" align="center" show-overflow-tooltip></el-table-column>
+        <el-table-column label="实验项目" align="center" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <span>{{scope.row.experimentName.substr(0, scope.row.experimentName.indexOf('-'))}}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="deadline" label="截止时间" align="center" min-width="50"></el-table-column>
         <el-table-column prop="score" label="成绩" align="center" min-width="20"></el-table-column>
         <el-table-column label="操作" align="center" width="300">
           <template slot-scope="scope">
             <el-button @click="toDetail(scope.row)" type="primary">查 看</el-button>
-            <el-button type="primary">提 交</el-button>
-            <el-button type="primary">修 改</el-button>
+            <el-button @click="showUploadDialog(scope.row)" type="primary">提 交</el-button>
+            <el-button @click="showUploadDialog(scope.row)" type="primary">修 改</el-button>
           </template>
         </el-table-column>
       </el-table>
+      <el-dialog
+      title="作业上传"
+      class="upload-dialog"
+      :visible.sync="uploadDialogVisible"
+      width="25%">
+      <el-form :model="uploadForm">
+        <el-upload
+          ref="upload"
+          drag
+          :auto-upload="false"
+          :on-success="uploadSuccess"
+          :on-change="addFile"
+          :before-remove="beforeRemove"
+          :on-remove="handleRemove"
+          :file-list="fileList"
+          :data="uploadForm"
+          :limit="1"
+          accept=".rar,.zip"
+          action="http://127.0.0.1:8081/resource/upload">
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+          <div class="el-upload__tip" slot="tip">只能上传压缩包</div>
+        </el-upload>
+        <el-form-item
+          label="类型"
+          prop="type"
+          :rules="{ required: true, trigger: 'blur'}">
+          <el-select v-model="uploadForm.type" placeholder="请选择" ref="selectType">
+            <el-option label="实验室课表" value="1"></el-option>
+            <el-option label="模板表格" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="closeUploadDialog">取 消</el-button>
+        <el-button type="primary" @click="fileUpload">确 定</el-button>
+      </span>
+    </el-dialog>
     </div>
   </div>
 </template>
@@ -44,6 +86,12 @@ export default {
         page: 1,
         size: 4, // 一页最多4条
         list: []
+      },
+      uploadDialogVisible: false,
+      fileList: [],
+      uploadForm: {
+        eID: '',
+        sID: ''
       }
     }
   },
@@ -53,13 +101,26 @@ export default {
     }
   },
   methods: {
+    // 下载实验ppt
     toDetail(row) {
       window.open(`http://localhost:8081/experiment/${row.experimentName}`)
     },
+    // 打开提交/修改对话框
+    showUploadDialog(row) {
+      this.uploadForm.type = ''
+      this.uploadDialogVisible = true
+      this.fileList = []
+    },
+    // 关闭上传对话框
+    closeUploadDialog() {
+      this.fileList = []
+      this.uploadDialogVisible = false
+    },
+    // 获取实验内容
     getExperimentData() {
       this.$axios.get('/score/getLimited', {
         params: {
-          uID: this.user.uID,
+          sID: this.user.sID,
           page: this.experimentData.page,
           size: this.experimentData.size
         }

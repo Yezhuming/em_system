@@ -21,14 +21,15 @@
       :data="articleData"
       border
       header-cell-class-name="bgblue"
-      max-height="380">
-      <el-table-column prop="title" label="标题" align="center"></el-table-column>
-      <el-table-column prop="type" label="类型" align="center">
+      max-height="450">
+      <el-table-column prop="title" label="标题" align="center" show-overflow-tooltip></el-table-column>
+      <el-table-column prop="type" label="类型" align="center" min-width="50">
         <template slot-scope="scope">
           <span v-if="scope.row.type=='1'">通知</span>
           <span v-else>公告</span>
         </template>
       </el-table-column>
+      <el-table-column prop="publisher" label="发布人" align="center" min-width="50"></el-table-column>
       <el-table-column prop="publishDate" label="发布日期" align="center"></el-table-column>
       <el-table-column label="操作" align="center">
         <template slot-scope="scope">
@@ -42,6 +43,7 @@
 
 <script>
 export default {
+  props: ['user'],
   data() {
     return {
       searchForm: {
@@ -53,22 +55,25 @@ export default {
   methods: {
     // 查询
     searchByDate() {
-      console.log(this.searchForm.date)
-      this.$axios.get('/article/getListByDate', {
-        params: {
-          publishDate: this.searchForm.date
-        }
-      })
-        .then(res => {
-          console.log(res)
+      if (this.searchForm.date) {
+        this.$axios.get('/article/getListByDate', {
+          params: {
+            publishDate: this.searchForm.date
+          }
+        }).then(res => {
           if (res.data.status == 200) {
             this.articleData = res.data.result
             this.$message.success('查询成功！')
           } else {
             this.articleData = []
-            this.$message(res.data.result)
+            this.$message.warning(res.data.result)
           }
+        }).catch(err => {
+          console.log(err)
         })
+      } else {
+        this.$message.error('请选择日期！')
+      }
     },
     // 重置
     reset() {
@@ -77,47 +82,48 @@ export default {
     },
     // 发布
     publish() {
-      this.$router.push({
-        path: '/adIndex/adArticleDetails',
-        query: {
-          page: 'announcement'
-        }
-      })
+      this.$router.push('/adIndex/adArticleDetails')
     },
     // 编辑
     updateAnnouncement(row) {
-      console.log(row)
-      this.$router.push({
-        name: 'adArticleDetails',
-        query: {
-          page: 'announcement',
-          aID: row.aID
-        },
-        params: {
-          form: row
-        }
-      })
+      if (this.$props.user.role == '0' || row.publisher == this.$props.user.name) {
+        this.$router.push({
+          name: 'adArticleDetails',
+          query: {
+            aID: row.aID
+          },
+          params: {
+            form: row
+          }
+        })
+      } else {
+        this.$message.error(`您没有权限修改该${row.type == '1' ? '通知' : '公告'}`)
+      }
     },
     // 删除
     deleteAnnouncement(row) {
-      this.$confirm(`确定删除该${row.type == '1' ? '通知' : '公告'}?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.$axios.post('/article/deleteByaID', {
-          aID: row.aID
+      if (this.$props.user.role == '0' || row.publisher == this.$props.user.name) {
+        this.$confirm(`确定删除该${row.type == '1' ? '通知' : '公告'}?`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$axios.post('/article/deleteByaID', {
+            aID: row.aID
+          })
+            .then(res => {
+              if (res.data.status == 200) {
+                this.getArticleData()
+                this.$message.success(res.data.result)
+              }
+            })
+            .catch(err => {
+              console.log(err)
+            })
         })
-          .then(res => {
-            if (res.data.status == 200) {
-              this.getArticleData()
-              this.$message.success(res.data.result)
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
-      })
+      } else {
+        this.$message.error(`您没有权限修改该${row.type == '1' ? '通知' : '公告'}`)
+      }
     },
     // 获取全部数据
     getArticleData() {

@@ -36,40 +36,47 @@ export default {
       }
     }
     return {
+      path: '',
       pwdForm: {
         oldPassword: '',
         newPassword: '',
         checkPassword: ''
       },
       rules: {
+        oldPassword: [
+          { required: true, message: '请输入原密码', trigger: 'blur' }
+        ],
+        newPassword: [
+          { required: true, message: '请输入新密码', trigger: 'blur' }
+        ],
         checkPassword: [
-          {validator: pwdCheck, trigger: 'blur'}
+          {required: true, validator: pwdCheck, trigger: 'blur'}
         ]
       }
     }
   },
   methods: {
     reset() {
-      this.pwdForm.newPassword = ''
-      this.pwdForm.checkPassword = ''
+      this.$refs.pwdForm.resetFields()
+      this.$refs.pwdForm.clearValidate()
     },
     updatePassword() {
-      this.$refs.pwdForm.validate((valid) => {
-        if (valid) {
-          this.$axios.get('/teacher/getOne', {
-            params: {
-              uID: this.$props.user.uID
-            }
-          })
-            .then(res => {
+      if (this.$props.user.role == '0') {
+        this.$refs.pwdForm.validate((valid) => {
+          if (valid) {
+            this.$axios.get(`/admin/getOne`, {
+              params: {
+                aID: this.$props.user.aID
+              }
+            }).then(res => {
               if (res.data.status == 200) {
                 let oldPassword = res.data.result[0].password
                 if (oldPassword != this.pwdForm.oldPassword) {
                   this.$message.error('原密码错误！')
                   this.$refs.oldPwdInput.select()
                 } else {
-                  this.$axios.post('/teacher/updatePassword', {
-                    uID: this.$props.user.uID,
+                  this.$axios.post('/admin/updatePassword', {
+                    aID: this.$props.user.aID,
                     newPassword: this.pwdForm.newPassword
                   })
                     .then(res => {
@@ -83,15 +90,52 @@ export default {
                     })
                 }
               }
-            })
-            .catch(err => {
+            }).catch(err => {
               console.log(err)
             })
-        } else {
-          this.$message.error('修改失败！')
-          return false
-        }
-      })
+          } else {
+            this.$message.error('修改失败！')
+            return false
+          }
+        })
+      } else {
+        this.$refs.pwdForm.validate((valid) => {
+          if (valid) {
+            this.$axios.get(`/teacher/getOne`, {
+              params: {
+                tID: this.$props.user.tID
+              }
+            }).then(res => {
+              if (res.data.status == 200) {
+                let oldPassword = res.data.result[0].password
+                if (oldPassword != this.pwdForm.oldPassword) {
+                  this.$message.error('原密码错误！')
+                  this.$refs.oldPwdInput.select()
+                } else {
+                  this.$axios.post('/teacher/updatePassword', {
+                    tID: this.$props.user.tID,
+                    newPassword: this.pwdForm.newPassword
+                  })
+                    .then(res => {
+                      if (res.data.status == 200) {
+                        this.$message.success('修改成功！')
+                        this.$refs.pwdForm.resetFields()
+                      }
+                    })
+                    .catch(err => {
+                      console.log(err)
+                    })
+                }
+              }
+            }).catch(err => {
+              console.log(err)
+            })
+          } else {
+            this.$message.error('修改失败！')
+            return false
+          }
+        })
+      }
     }
   }
 }

@@ -78,7 +78,7 @@ export default {
               console.log(res)
               if (res.data.status == 200) {
                 let user = {
-                  uID: res.data.result[0].uID,
+                  sID: res.data.result[0].sID,
                   name: res.data.result[0].name,
                   account: res.data.result[0].account,
                   role: res.data.result[0].role
@@ -104,7 +104,7 @@ export default {
               console.log(res)
               if (res.data.status == 200) {
                 let user = {
-                  uID: res.data.result[0].uID,
+                  tID: res.data.result[0].tID,
                   name: res.data.result[0].name,
                   account: res.data.result[0].account,
                   role: res.data.result[0].role

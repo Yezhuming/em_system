@@ -2,8 +2,12 @@ const connection = require('../mysql')
 
 const classSubmission = {
   getAll(req, res) {
-    let selectSql = `SELECT eID,experimentName,class,grade,date_format(deadline,'%Y-%m-%d') as deadline,submittedNum,unsubmittedNum FROM classsubmission`
-    connection.query(selectSql, (err, result) => {
+    let selectSql = `SELECT eID,experimentName,class,grade,date_format(deadline,'%Y-%m-%d') as deadline,submittedNum,unsubmittedNum
+                     FROM classsubmission
+                     WHERE teacher = ?
+                     ORDER BY deadline DESC`
+    let sqlParams = [req.query.teacher]
+    connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
       } else {
@@ -24,8 +28,9 @@ const classSubmission = {
     })
   },
   getExperimentList(req, res) {
-    let selectSql = 'SELECT DISTINCT eID,experimentName FROM classsubmission'
-    connection.query(selectSql, (err, result) => {
+    let selectSql = 'SELECT DISTINCT eID,experimentName FROM classsubmission WHERE teacher = ?'
+    let sqlParams = [req.query.teacher]
+    connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
       } else {
@@ -46,8 +51,9 @@ const classSubmission = {
     })
   },
   getClassList(req, res) {
-    let selectSql = 'SELECT DISTINCT class FROM classsubmission'
-    connection.query(selectSql, (err, result) => {
+    let selectSql = 'SELECT DISTINCT class FROM classsubmission WHERE teacher = ?'
+    let sqlParams = [req.query.teacher]
+    connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
       } else {
@@ -68,7 +74,7 @@ const classSubmission = {
     })
   },
   searchByeIDOrClass(req, res) {
-    let selectSql = `SELECT eID,experimentName,class,date_format(deadline,'%Y-%m-%d') as deadline,submittedNum,unsubmittedNum
+    let selectSql = `SELECT eID,experimentName,class,grade,date_format(deadline,'%Y-%m-%d') as deadline,submittedNum,unsubmittedNum
                      FROM classsubmission WHERE `
     let sqlParams = []
     if (req.query.eID && req.query.class) {
