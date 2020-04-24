@@ -113,7 +113,7 @@ var fileUpload = multer({ storage: submitFileStorage })
 router.get('/score/getByeIDAndClassAndGrade', score.getByeIDAndClassAndGrade)
 router.post('/score/deleteByeID', score.deleteByeID)
 router.get('/score/getLimited', score.getLimited)
-router.post('/score/submitFile', fileUpload.any(), score.submitFile)
+router.post('/score/upload', fileUpload.any(), score.upload)
 router.post('/score/check', score.check)
 
 module.exports = router

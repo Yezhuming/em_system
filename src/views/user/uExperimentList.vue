@@ -38,6 +38,8 @@
       title="作业上传"
       class="upload-dialog"
       :visible.sync="uploadDialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       width="25%">
       <el-form :model="uploadForm">
         <el-upload
@@ -52,20 +54,11 @@
           :data="uploadForm"
           :limit="1"
           accept=".rar,.zip"
-          action="http://127.0.0.1:8081/resource/upload">
+          action="http://127.0.0.1:8081/score/upload">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
           <div class="el-upload__tip" slot="tip">只能上传压缩包</div>
         </el-upload>
-        <el-form-item
-          label="类型"
-          prop="type"
-          :rules="{ required: true, trigger: 'blur'}">
-          <el-select v-model="uploadForm.type" placeholder="请选择" ref="selectType">
-            <el-option label="实验室课表" value="1"></el-option>
-            <el-option label="模板表格" value="2"></el-option>
-          </el-select>
-        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="closeUploadDialog">取 消</el-button>
@@ -116,6 +109,32 @@ export default {
       this.fileList = []
       this.uploadDialogVisible = false
     },
+    // 添加文件
+    addFile(file, fileList) {
+      this.fileList = fileList
+    },
+    // 上传文件 TODO
+    fileUpload() {
+      if (this.fileList.length != 0) {
+      } else {
+        this.$message.error('请选择需要上传的文件！')
+      }
+    },
+    // 文件上传成功
+    uploadSuccess() {
+      this.$message.success('上传成功！')
+      this.uploadDialogVisible = false
+      this.$refs.upload.clearFiles()
+      this.getExperimentData()
+    },
+    // 移除文件前
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`)
+    },
+    // 移除文件后
+    handleRemove(file, fileList) {
+      this.fileList = fileList
+    },
     // 获取实验内容
     getExperimentData() {
       this.$axios.get('/score/getLimited', {
@@ -142,3 +161,11 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.uexperiment-list{
+  .el-upload-dragger{
+    width: 340px;
+  }
+}
+</style>

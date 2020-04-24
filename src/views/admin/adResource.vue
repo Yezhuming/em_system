@@ -44,6 +44,8 @@
       title="文件上传"
       class="upload-dialog"
       :visible.sync="uploadDialogVisible"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
       width="25%">
       <el-form :model="uploadForm">
         <el-upload
@@ -109,6 +111,7 @@ export default {
       this.fileList = []
       this.uploadDialogVisible = false
     },
+    // 添加文件
     addFile(file, fileList) {
       this.fileList = fileList
     },

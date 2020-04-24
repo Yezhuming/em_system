@@ -117,7 +117,7 @@ const score = {
       }
     })
   },
-  submitFile(req, res) {},
+  upload(req, res) {},
   check(req, res) {}
 }
 
