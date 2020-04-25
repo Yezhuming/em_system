@@ -260,8 +260,15 @@ export default {
     },
     // 退出
     exit() {
-      sessionStorage.removeItem('user')
-      this.user = null
+      this.$axios.post('/attendanceRecord/update', {
+        quitTime: new Date().getTime(),
+        rID: this.user.rID
+      }).then(res => {
+        sessionStorage.removeItem('user')
+        this.user = null
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   created() {

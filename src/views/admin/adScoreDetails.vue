@@ -37,7 +37,7 @@
       width="23%">
       <el-form :model="checkForm">
         <el-form-item label="学生作业：">
-          <el-link type="primary" @click="download">{{checkForm.submitFile}}</el-link>
+          <el-link type="primary" @click="download">{{checkForm.submitFile.substring(11, checkForm.submitFile.indexOf('-'))}}</el-link>
         </el-form-item>
         <el-form-item label="分数：">
           <el-input-number v-model="checkForm.score" :min="0" :max="100"></el-input-number>
@@ -66,6 +66,8 @@ export default {
       scoreData: [],
       checkDialogVisible: false,
       checkForm: {
+        eID: '',
+        sID: '',
         submitFile: '',
         score: '',
         comment: ''
@@ -98,7 +100,9 @@ export default {
     showCheckDialog(row) {
       if (row.status != 0) {
         this.checkDialogVisible = true
-        this.checkForm.submitFile = row.submitFile
+        this.checkForm.eID = row.eID
+        this.checkForm.sID = row.sID
+        this.checkForm.submitFile = row.submitFile.substr(7)
         this.checkForm.score = row.score
         this.checkForm.comment = row.comment
       } else {
@@ -106,9 +110,24 @@ export default {
       }
     },
     download() {
-      window.open(`http://localhost:8081/submitFile/${this.checkForm.submitFile}`)
+      window.open(`http://localhost:8081/${this.checkForm.submitFile}`)
     },
-    check() {}
+    check() {
+      this.$axios.post('/score/check', {
+        eID: this.checkForm.eID,
+        sID: this.checkForm.sID,
+        score: this.checkForm.score,
+        comment: this.checkForm.comment
+      }).then(res => {
+        if (res.data.status == 200) {
+          this.$message.success(res.data.result)
+          this.getScoreData()
+          this.checkDialogVisible = false
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    }
   },
   created() {
     this.getScoreData()

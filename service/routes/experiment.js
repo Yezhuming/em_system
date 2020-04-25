@@ -61,8 +61,8 @@ const experiment = {
                             console.log('[SELECT ERROR] - ', err.message)
                           } else {
                             if (result.length != 0) { // 填充参数
-                              let sqlParams = [eID, req.files[0].filename, classSubmissionList[i].class, classSubmissionList[i].grade, req.body.uploader, deadline, 0, result[0].count]
                               let insertSql = 'INSERT INTO classsubmission(eID,experimentName,class,grade,teacher,deadline,submittedNum,unsubmittedNum) VALUES(?,?,?,?,?,?,?,?)'
+                              let sqlParams = [eID, req.files[0].filename, classSubmissionList[i].class, classSubmissionList[i].grade, req.body.uploader, deadline, 0, result[0].count]
                               connection.query(insertSql, sqlParams, err => { // 插入数据至班级提交情况表(初始化数据)
                                 if (err) {
                                   console.log('[INSERT ERROR] - ', err.message)

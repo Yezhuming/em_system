@@ -44,8 +44,7 @@
       :close-on-click-modal="false"
       :close-on-press-escape="false"
       width="25%">
-      <el-form :model="uploadForm">
-        <el-form-item>
+      <el-form :model="uploadForm" ref="uploadForm">
           <el-upload
             ref="upload"
             drag
@@ -61,9 +60,8 @@
             action="http://127.0.0.1:8081/experiment/upload">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip"></div>
+            <div class="el-upload__tip" slot="tip">只能上传课件ppt</div>
           </el-upload>
-        </el-form-item>
         <el-form-item
           label="截止日期"
           prop="deadline"
@@ -127,8 +125,9 @@ export default {
   methods: {
     // 打开上传对话框
     showUploadDialog() {
-      this.uploadForm.deadline = ''
       this.uploadDialogVisible = true
+      this.$refs.uploadForm.resetFields()
+      this.$refs.uploadForm.clearValidate()
     },
     // 关闭上传对话框
     closeUploadDialog() {
@@ -254,6 +253,11 @@ export default {
 .adexperience-content{
   .el-dialog__body{
     padding-bottom: 0;
+    width: 300px;
+    margin: 0 auto;
+  }
+  .el-upload-dragger{
+    width: 300px;
   }
 }
 </style>

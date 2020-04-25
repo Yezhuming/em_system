@@ -137,7 +137,7 @@ export default new Router({
           component: () => import('../views/admin/adAttendance.vue')
         },
         {
-          path: 'adAttendanceDetails',
+          path: 'adAttendanceDetails/:sID',
           name: 'adAttendanceDetails',
           component: () => import('../views/admin/adAttendanceDetails.vue')
         }

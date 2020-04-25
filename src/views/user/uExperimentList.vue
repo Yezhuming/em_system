@@ -25,12 +25,27 @@
           </template>
         </el-table-column>
         <el-table-column prop="deadline" label="截止时间" align="center" min-width="50"></el-table-column>
-        <el-table-column prop="score" label="成绩" align="center" min-width="20"></el-table-column>
+        <el-table-column label="成绩" align="center" min-width="20">
+          <template slot-scope="scope">
+            <el-popover
+              v-if="scope.row.status=='2'"
+              placement="top-start"
+              title="评语"
+              width="200"
+              trigger="hover">
+              <span>{{ scope.row.comment }}</span>
+              <el-link type="primary" slot="reference">{{ scope.row.score }}</el-link>
+            </el-popover>
+            <span v-else>0</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center" width="300">
           <template slot-scope="scope">
-            <el-button @click="toDetail(scope.row)" type="primary">查 看</el-button>
-            <el-button @click="showUploadDialog(scope.row)" type="primary">提 交</el-button>
-            <el-button @click="showUploadDialog(scope.row)" type="primary">修 改</el-button>
+            <el-button @click="toDetail(scope.row)" type="primary" size="small">下载课件</el-button>
+            <el-button @click="showUploadDialog(scope.row)" type="primary" size="small" v-if="scope.row.status!='2'">
+              <span v-if="!scope.row.submitFile">提 交</span>
+              <span v-else>修 改</span>
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -50,6 +65,7 @@
           :on-change="addFile"
           :before-remove="beforeRemove"
           :on-remove="handleRemove"
+          :on-exceed="handleExceed"
           :file-list="fileList"
           :data="uploadForm"
           :limit="1"
@@ -57,7 +73,8 @@
           action="http://127.0.0.1:8081/score/upload">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">只能上传压缩包</div>
+          <div class="el-upload__tip" slot="tip">请将实验结果和实验报告打包上传</div>
+          <div class="el-upload__tip" slot="tip">命名格式：学号+姓名+实验项目(不需要+号)</div>
         </el-upload>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -100,9 +117,17 @@ export default {
     },
     // 打开提交/修改对话框
     showUploadDialog(row) {
-      this.uploadForm.type = ''
+      if (row.submitFile) {
+        let file = {
+          name: `${row.submitFile.slice(18)}`,
+          url: `http://localhost:8081/submitFile/${row.submitFile}`
+        }
+        this.fileList.push(file)
+      } else {
+        this.fileList = []
+      }
+      this.uploadForm.eID = row.eID
       this.uploadDialogVisible = true
-      this.fileList = []
     },
     // 关闭上传对话框
     closeUploadDialog() {
@@ -116,6 +141,8 @@ export default {
     // 上传文件 TODO
     fileUpload() {
       if (this.fileList.length != 0) {
+        this.uploadForm.sID = this.user.sID
+        this.$refs.upload.submit()
       } else {
         this.$message.error('请选择需要上传的文件！')
       }
@@ -135,6 +162,10 @@ export default {
     handleRemove(file, fileList) {
       this.fileList = fileList
     },
+    // 超出文件个数限制
+    handleExceed(file, fileList) {
+      this.$message.error('只能上传一个文件！')
+    },
     // 获取实验内容
     getExperimentData() {
       this.$axios.get('/score/getLimited', {
@@ -144,7 +175,6 @@ export default {
           size: this.experimentData.size
         }
       }).then(res => {
-        console.log(res.data)
         if (res.data.status == 200) {
           this.experimentData.total = res.data.total
           this.experimentData.list = res.data.result

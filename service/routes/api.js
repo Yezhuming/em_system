@@ -11,6 +11,8 @@ const resource = require('./resource')
 const experiment = require('./experiment')
 const classSubmission = require('./classSubmission')
 const score = require('./score')
+const attendance = require('./attendance')
+const attendanceRecord = require('./attendanceRecord')
 
 // 管理员信息表
 router.post('/admin/login', admin.login)
@@ -115,5 +117,13 @@ router.post('/score/deleteByeID', score.deleteByeID)
 router.get('/score/getLimited', score.getLimited)
 router.post('/score/upload', fileUpload.any(), score.upload)
 router.post('/score/check', score.check)
+
+// 考勤管理表
+router.get('/attendance/getAll', attendance.getAll)
+
+// 各学生考勤记录
+router.post('/attendanceRecord/update', attendanceRecord.handleQuit)
+router.get('/attendanceRecord/getRecords', attendanceRecord.getRecords)
+router.post('/attendanceRecord/search', attendanceRecord.search)
 
 module.exports = router

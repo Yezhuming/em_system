@@ -11,7 +11,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'
-import './assets/style/common.scss'
+import './common/css/common.scss'
 
 Vue.use(ElementUI)
 Vue.use(VueQuillEditor)
@@ -23,6 +23,10 @@ Vue.component('page', adPage)
 Vue.prototype.$axios = axios
 // 配置公共的url
 axios.defaults.baseURL = 'http://127.0.0.1:8081'
+
+// 中央事件总线
+// eslint-disable-next-line no-unused-vars
+let eventBus = new Vue()
 
 /* eslint-disable no-new */
 new Vue({

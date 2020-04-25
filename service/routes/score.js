@@ -3,23 +3,22 @@ const connection = require('../mysql')
 const score = {
   init(eID, res) {
     let selectSql = 'SELECT eID,experimentName,class,grade FROM classsubmission WHERE eID = ?'
-    connection.query(selectSql, eID, (err, result) => { // 查询班级数量
+    connection.query(selectSql, eID, (err, classList) => { // 查询班级数量
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
       } else {
-        if (result.length != 0) {
-          for (let i = 0; i < result.length; i++) {
+        if (classList.length != 0) {
+          for (let i = 0; i < classList.length; i++) {
             let selectSql = 'SELECT sID FROM student WHERE class = ? AND grade = ?'
-            let sqlParams = [result[i].class, result[i].grade]
-            let eID = result[i].eID
-            let experimentName = result[i].experimentName
-            connection.query(selectSql, sqlParams, (err, result) => {
+            let sqlParams = [classList[i].class, classList[i].grade]
+            let experimentName = classList[i].experimentName
+            connection.query(selectSql, sqlParams, (err, result) => { // 查询该班级学生数量
               if (err) {
                 console.log('[SELECT ERROR] - ', err.message)
               } else {
-                for (let i = 0; i < result.length; i++) {
-                  let insertSql = 'INSERT INTO score(eID,experimentName,sID) VALUES(?,?,?)'
-                  let sqlParams = [eID, experimentName, result[i].sID]
+                for (let j = 0; j < result.length; j++) {
+                  let insertSql = 'INSERT INTO score(eID,experimentName,sID,class,grade) VALUES(?,?,?,?,?)'
+                  let sqlParams = [eID, experimentName, result[j].sID, classList[i].class, classList[i].grade]
                   connection.query(insertSql, sqlParams, err => {
                     if (err) {
                       console.log('[INSERT ERROR] - score', err.message)
@@ -36,7 +35,7 @@ const score = {
     })
   },
   getByeIDAndClassAndGrade(req, res) {
-    let selectSql = `SELECT eID,experimentName,student.class,student.grade,student.name,student.account,status,score,comment,submitFile
+    let selectSql = `SELECT eID,score.sID,experimentName,student.class,student.grade,student.name,student.account,status,score,comment,submitFile
                      FROM score INNER JOIN student
                      ON score.sID =  student.sID
                      WHERE eID = ? AND student.class = ? AND student.grade = ?`
@@ -117,8 +116,69 @@ const score = {
       }
     })
   },
-  upload(req, res) {},
-  check(req, res) {}
+  upload(req, res) {
+    let updateSql = 'UPDATE score SET status = ?,submitFile = ? WHERE eID = ? AND sID = ?'
+    let sqlParams = [1, req.files[0].path, req.body.eID, req.body.sID]
+    connection.query(updateSql, sqlParams, err => {
+      if (err) {
+        console.log('[UPDATE ERROR] - ', err.message)
+      } else {
+        let selectSql = 'SELECT class,grade FROM student WHERE sID = ?'
+        let sqlParams = [req.body.sID]
+        connection.query(selectSql, sqlParams, (err, result) => {
+          if (err) {
+            console.log('[SELECT ERROR] - ', err.message)
+          } else {
+            let Class = result[0].class
+            let grade = result[0].grade
+            let selectSql = `SELECT
+                             count(*) as total,
+                             sum(CASE status WHEN '0' THEN 1 ELSE 0 END) as unsubmittedNum
+                             FROM score WHERE eID = ? AND class = ? AND grade = ?`
+            let sqlParams = [req.body.eID, Class, grade]
+            connection.query(selectSql, sqlParams, (err, result) => {
+              if (err) {
+                console.log('[SELECT ERROR] - ', err.message)
+              } else {
+                if (result.length != 0) {
+                  let submittedNum = result[0].total - result[0].unsubmittedNum
+                  let unsubmittedNum = result[0].unsubmittedNum
+                  let updateSql = 'UPDATE classsubmission SET submittedNum = ?,unsubmittedNum = ? WHERE eID = ? AND class = ? AND grade = ?'
+                  let sqlParams = [submittedNum, unsubmittedNum, req.body.eID, Class, grade]
+                  connection.query(updateSql, sqlParams, err => {
+                    if (err) {
+                      console.log('[UPDATE ERROR] - ', err.message)
+                    } else {
+                      let response = {
+                        status: 200,
+                        result: '提交成功'
+                      }
+                      res.end(JSON.stringify(response))
+                    }
+                  })
+                }
+              }
+            })
+          }
+        })
+      }
+    })
+  },
+  check(req, res) {
+    let updateSql = 'UPDATE score SET score = ?,comment = ?,status = ? WHERE eID = ? AND sID = ?'
+    let sqlParams = [req.body.score, req.body.comment, 2, req.body.eID, req.body.sID]
+    connection.query(updateSql, sqlParams, (err, result) => {
+      if (err) {
+        console.log('[UPDATE ERROR] - ', err.message)
+      } else {
+        let response = {
+          status: 200,
+          result: '评分成功'
+        }
+        res.end(JSON.stringify(response))
+      }
+    })
+  }
 }
 
 module.exports = score

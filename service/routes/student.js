@@ -1,9 +1,10 @@
 const connection = require('../mysql')
 const xlsx = require('node-xlsx')
+const attendance = require('./attendance')
 
 const student = {
   getAll(req, res) {
-    let selectSql = 'SELECT * FROM student'
+    let selectSql = 'SELECT * FROM student ORDER BY account ASC'
     connection.query(selectSql, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
@@ -50,16 +51,48 @@ const student = {
   login(req, res) {
     let selectSql = 'SELECT * FROM student WHERE account = ? AND password = ?'
     let sqlParams = [req.body.account, req.body.password]
-    connection.query(selectSql, sqlParams, (err, result) => {
+    connection.query(selectSql, sqlParams, (err, stuInfo) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
       } else {
-        if (result.length != 0) {
-          let response = {
-            status: 200,
-            result: result
-          }
-          res.end(JSON.stringify(response))
+        if (stuInfo.length != 0) {
+          let selectSql = 'SELECT loginTimes FROM attendance WHERE account = ?'
+          let sqlParams = [req.body.account]
+          connection.query(selectSql, sqlParams, (err, result) => {
+            if (err) {
+              console.log('[SELECT ERROR] - ', err.message)
+            } else {
+              let updateSql = 'UPDATE attendance SET loginTimes = ?,lastLoginDate = ? WHERE account = ?'
+              let sqlParams = [result[0].loginTimes + 1, req.body.loginDate, req.body.account]
+              connection.query(updateSql, sqlParams, err => {
+                if (err) {
+                  console.log('[UPDATE ERROR] - ', err.message)
+                } else {
+                  let insertSql = 'INSERT INTO attendancerecord(sID,name,account,loginDate, loginTime) VALUES (?,?,?,?,?)'
+                  let sqlParams = [stuInfo[0].sID, stuInfo[0].name, req.body.account, req.body.loginDate, new Date().getTime()]
+                  connection.query(insertSql, sqlParams, err => {
+                    if (err) {
+                      console.log('[INSERT ERROR] - ', err.message)
+                    } else {
+                      let selectSql = 'SELECT rID from attendancerecord ORDER BY rID DESC'
+                      connection.query(selectSql, (err, result) => {
+                        if (err) {
+                          console.log('[SELECT ERROR] -', err.message)
+                        } else {
+                          let response = {
+                            status: 200,
+                            result: stuInfo,
+                            rID: result[0].rID
+                          }
+                          res.end(JSON.stringify(response))
+                        }
+                      })
+                    }
+                  })
+                }
+              })
+            }
+          })
         } else {
           let response = {
             status: -1,
@@ -136,11 +169,20 @@ const student = {
             if (err) {
               console.log('[INSERT ERROR] - ', err.message)
             } else {
-              let response = {
-                status: 200,
-                result: '新增成功！'
+              let init = attendance.init(req.body.account)
+              if (init) {
+                let response = {
+                  status: 200,
+                  result: '新增成功！'
+                }
+                res.end(JSON.stringify(response))
+              } else {
+                let response = {
+                  status: -1,
+                  result: '新增失败！'
+                }
+                res.end(JSON.stringify(response))
               }
-              res.end(JSON.stringify(response))
             }
           })
         } else {
@@ -153,7 +195,7 @@ const student = {
       }
     })
   },
-  addFromFile(req, res) {
+  addFromFile(req, res) { // init
     let selectSql = 'SELECT name FROM teacher WHERE tID = ?'
     let sqlParams = [req.body.tID]
     connection.query(selectSql, sqlParams, (err, result) => {
@@ -177,6 +219,7 @@ const student = {
                 status: 200,
                 result: '导入成功！'
               }
+              // 遍历文件数据根据account查找学生信息
               res.end(JSON.stringify(response))
             }
           })

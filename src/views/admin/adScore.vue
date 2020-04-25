@@ -12,7 +12,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="班级" prop="class">
-        <el-select v-model="searchForm.class" placeholder="请选择">
+        <el-select v-model="searchForm.gradeAndClass" placeholder="请选择">
           <el-option
             v-for="item in classList"
             :key="item.value"
@@ -63,7 +63,7 @@ export default {
       classList: [],
       searchForm: {
         eID: '',
-        class: ''
+        gradeAndClass: ''
       },
       classSubmissionData: []
     }
@@ -71,11 +71,11 @@ export default {
   methods: {
     // 查询
     search() {
-      if (this.searchForm.eID || this.searchForm.class) {
+      if (this.searchForm.eID || this.searchForm.gradeAndClass) {
         this.$axios.get('/classSubmission/searchByeIDOrClass', {
           params: {
             eID: this.searchForm.eID,
-            class: this.searchForm.class
+            gradeAndClass: this.searchForm.gradeAndClass
           }
         }).then(res => {
           if (res.data.status == 200) {
@@ -114,7 +114,7 @@ export default {
         if (res.data.status == 200) {
           let obj = {}
           for (let i of res.data.result) {
-            obj.label = i.experimentName
+            obj.label = i.experimentName.substr(0, i.experimentName.indexOf('-'))
             obj.value = i.eID
             this.experimentList.push(obj)
             obj = {}
@@ -134,12 +134,12 @@ export default {
         }
       }).then(res => {
         if (res.data.status == 200) {
-          let obj = {}
           for (let i of res.data.result) {
-            obj.label = i.class
-            obj.value = i.class
+            let obj = {
+              label: `${i.grade}${i.class}`,
+              value: `${i.grade}${i.class}`
+            }
             this.classList.push(obj)
-            obj = {}
           }
         } else {
           this.classList = []

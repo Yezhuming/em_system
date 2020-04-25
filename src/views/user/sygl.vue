@@ -4,9 +4,6 @@
       <div class="header">
         <Header />
       </div>
-        <!-- <el-aside class="aside" v-show="this.$route.path!='/'">
-          aside
-        </el-aside> -->
       <div class="main">
         <router-view></router-view>
       </div>
@@ -28,11 +25,42 @@ export default {
   },
   data() {
     return {
-      headerImg: ''
+      headerImg: '',
+      beforeUnload_time: ''
+    }
+  },
+  methods: {
+    beforeunloadHandler() {
+      this.beforeUnload_time = new Date().getTime()
+    },
+    unloadHandler(e) {
+      let gapTime = new Date().getTime() - this.beforeUnload_time
+      if (gapTime <= 5) {
+        let user = JSON.parse(sessionStorage.getItem('user'))
+        if (user) {
+          let quitTime = new Date().getTime()
+          let params = 'quitTime=' + quitTime + '&rID=' + user.rID
+          let xmlhttp = new XMLHttpRequest()
+          xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+              console.log(xmlhttp.responseText)
+            }
+          }
+          xmlhttp.open('POST', 'http://127.0.0.1:8081/attendanceRecord/update', false)
+          xmlhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+          xmlhttp.send(params)
+        }
+      }
     }
   },
   mounted() {
+    window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
+    window.addEventListener('unload', e => this.unloadHandler(e))
     this.$router.push('/uIndex')
+  },
+  destroyed() {
+    window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))
+    window.removeEventListener('unload', e => this.unloadHandler(e))
   }
 }
 </script>

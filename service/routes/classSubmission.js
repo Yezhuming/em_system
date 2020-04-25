@@ -5,7 +5,7 @@ const classSubmission = {
     let selectSql = `SELECT eID,experimentName,class,grade,date_format(deadline,'%Y-%m-%d') as deadline,submittedNum,unsubmittedNum
                      FROM classsubmission
                      WHERE teacher = ?
-                     ORDER BY deadline DESC`
+                     ORDER BY deadline ASC`
     let sqlParams = [req.query.teacher]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
@@ -51,7 +51,7 @@ const classSubmission = {
     })
   },
   getClassList(req, res) {
-    let selectSql = 'SELECT DISTINCT class FROM classsubmission WHERE teacher = ?'
+    let selectSql = 'SELECT DISTINCT class,grade FROM classsubmission WHERE teacher = ?'
     let sqlParams = [req.query.teacher]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
@@ -77,15 +77,19 @@ const classSubmission = {
     let selectSql = `SELECT eID,experimentName,class,grade,date_format(deadline,'%Y-%m-%d') as deadline,submittedNum,unsubmittedNum
                      FROM classsubmission WHERE `
     let sqlParams = []
-    if (req.query.eID && req.query.class) {
-      selectSql += 'eID = ? AND class = ?'
-      sqlParams = [req.query.eID, req.query.class]
+    if (req.query.eID && req.query.gradeAndClass) {
+      selectSql += 'eID = ? AND grade = ? AND class = ? ORDER BY deadline ASC'
+      let grade = req.query.gradeAndClass.substring(0, 5)
+      let Class = req.query.gradeAndClass.substring(5) // class不可用
+      sqlParams = [req.query.eID, grade, Class]
     } else if (req.query.eID) {
-      selectSql += 'eID = ?'
+      selectSql += 'eID = ? ORDER BY deadline ASC'
       sqlParams = [req.query.eID]
-    } else if (req.query.class) {
-      selectSql += 'class = ?'
-      sqlParams = [req.query.class]
+    } else if (req.query.gradeAndClass) {
+      selectSql += 'grade = ? AND class = ? ORDER BY deadline ASC'
+      let grade = req.query.gradeAndClass.substring(0, 5)
+      let Class = req.query.gradeAndClass.substring(5)
+      sqlParams = [grade, Class]
     }
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {

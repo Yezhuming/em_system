@@ -47,79 +47,77 @@ export default {
       this.$refs.input.focus()
     },
     submit() {
+      let date = new Date()
+      let loginDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
       switch (this.loginForm.role) {
         case '0': // 管理员登录
           this.$axios.post('/admin/login', {
             account: this.loginForm.account,
             password: this.loginForm.password
+          }).then(res => {
+            console.log(res)
+            if (res.data.status == 200) {
+              let user = JSON.parse(JSON.stringify(res.data.result[0]))
+              sessionStorage.setItem('user', JSON.stringify(user))
+              this.$router.push('/adIndex')
+              this.$message.success('登录成功！')
+            } else {
+              this.$message.error(res.data.result)
+              this.$refs.pwdInput.select()
+            }
+          }).catch(err => {
+            console.log(err)
           })
-            .then(res => {
-              console.log(res)
-              if (res.data.status == 200) {
-                let user = JSON.parse(JSON.stringify(res.data.result[0]))
-                sessionStorage.setItem('user', JSON.stringify(user))
-                this.$router.push('/adIndex')
-                this.$message.success('登录成功！')
-              } else {
-                this.$message.error(res.data.result)
-                this.$refs.pwdInput.select()
-              }
-            })
-            .catch(err => {
-              console.log(err)
-            })
           break
         case '1': // 学生登录
           this.$axios.post('/student/login', {
             account: this.loginForm.account,
-            password: this.loginForm.password
-          })
-            .then(res => {
-              console.log(res)
-              if (res.data.status == 200) {
-                let user = {
-                  sID: res.data.result[0].sID,
-                  name: res.data.result[0].name,
-                  account: res.data.result[0].account,
-                  role: res.data.result[0].role
-                }
-                sessionStorage.setItem('user', JSON.stringify(user))
-                this.$router.push('/uIndex')
-                this.$message.success('登录成功！')
-              } else {
-                this.$message.error(res.data.result)
-                this.$refs.pwdInput.select()
+            password: this.loginForm.password,
+            loginDate: loginDate
+          }).then(res => {
+            console.log(res)
+            if (res.data.status == 200) {
+              let user = {
+                sID: res.data.result[0].sID,
+                name: res.data.result[0].name,
+                account: res.data.result[0].account,
+                role: res.data.result[0].role,
+                rID: res.data.rID
               }
-            })
-            .catch(err => {
-              console.log(err)
-            })
+              sessionStorage.setItem('user', JSON.stringify(user))
+              this.$router.push('/')
+              this.$message.success('登录成功！')
+            } else {
+              this.$message.error(res.data.result)
+              this.$refs.pwdInput.select()
+            }
+          }).catch(err => {
+            console.log(err)
+          })
           break
         case '2': // 教师登录
           this.$axios.post('/teacher/login', {
             account: this.loginForm.account,
             password: this.loginForm.password
-          })
-            .then(res => {
-              console.log(res)
-              if (res.data.status == 200) {
-                let user = {
-                  tID: res.data.result[0].tID,
-                  name: res.data.result[0].name,
-                  account: res.data.result[0].account,
-                  role: res.data.result[0].role
-                }
-                sessionStorage.setItem('user', JSON.stringify(user))
-                this.$router.push('/adIndex')
-                this.$message.success('登录成功！')
-              } else {
-                this.$message.error(res.data.result)
-                this.$refs.pwdInput.select()
+          }).then(res => {
+            console.log(res)
+            if (res.data.status == 200) {
+              let user = {
+                tID: res.data.result[0].tID,
+                name: res.data.result[0].name,
+                account: res.data.result[0].account,
+                role: res.data.result[0].role
               }
-            })
-            .catch(err => {
-              console.log(err)
-            })
+              sessionStorage.setItem('user', JSON.stringify(user))
+              this.$router.push('/adIndex')
+              this.$message.success('登录成功！')
+            } else {
+              this.$message.error(res.data.result)
+              this.$refs.pwdInput.select()
+            }
+          }).catch(err => {
+            console.log(err)
+          })
           break
         default: console.log('请选择身份')
       }
