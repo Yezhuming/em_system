@@ -40,7 +40,7 @@ export default {
     modifyPath(index) {
       switch (index) {
         case 'onlineExperiment':
-          window.open('http://127.0.0.1:8081/experiment-online/index.html')
+          window.open('http://127.0.0.1:8081/experiment-online/dist/index.html')
           break
         default :
           this.$router.push({

@@ -3,6 +3,7 @@ node_modules/
 /dist/
 service/public/resource/
 service/public/experiment/
+service/public/experiment-online/
 service/public/user/
 service/public/submitFile/
 npm-debug.log*
