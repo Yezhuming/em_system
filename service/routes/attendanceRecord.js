@@ -43,8 +43,7 @@ const attendanceRecord = {
         }
       }
     })
-  },
-  search(req, res) {}
+  }
 }
 
 module.exports = attendanceRecord

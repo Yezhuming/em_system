@@ -25,6 +25,7 @@ export default {
     goBack() {
       this.$router.go(-1)
     },
+    search() {},
     getAttendanceRecordsData() {
       this.$axios.get('/attendancerecord/getRecords', {
         params: {

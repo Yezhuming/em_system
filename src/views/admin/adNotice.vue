@@ -122,7 +122,7 @@ export default {
             })
         })
       } else {
-        this.$message.error(`您没有权限修改该${row.type == '1' ? '通知' : '公告'}`)
+        this.$message.error(`您没有权限删除该${row.type == '1' ? '通知' : '公告'}`)
       }
     },
     // 获取全部数据

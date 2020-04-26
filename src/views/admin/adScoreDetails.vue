@@ -9,7 +9,7 @@
       max-height="500">
       <el-table-column label="实验项目" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{scope.row.experimentName.substr(0, scope.row.experimentName.indexOf('-'))}}</span>
+          <span>{{scope.row.experimentName.slice(scope.row.experimentName.indexOf('-')+1)}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="class" label="学生班级" align="center" min-width="60" show-overflow-tooltip></el-table-column>
@@ -37,7 +37,7 @@
       width="23%">
       <el-form :model="checkForm">
         <el-form-item label="学生作业：">
-          <el-link type="primary" @click="download">{{checkForm.submitFile.substring(11, checkForm.submitFile.indexOf('-'))}}</el-link>
+          <el-link type="primary" @click="download">{{checkForm.submitFile.slice(checkForm.submitFile.indexOf('-')+1)}}</el-link>
         </el-form-item>
         <el-form-item label="分数：">
           <el-input-number v-model="checkForm.score" :min="0" :max="100"></el-input-number>

@@ -169,20 +169,12 @@ const student = {
             if (err) {
               console.log('[INSERT ERROR] - ', err.message)
             } else {
-              let init = attendance.init(req.body.account)
-              if (init) {
-                let response = {
-                  status: 200,
-                  result: '新增成功！'
-                }
-                res.end(JSON.stringify(response))
-              } else {
-                let response = {
-                  status: -1,
-                  result: '新增失败！'
-                }
-                res.end(JSON.stringify(response))
+              attendance.init(req.body.account)
+              let response = {
+                status: 200,
+                result: '新增成功！'
               }
+              res.end(JSON.stringify(response))
             }
           })
         } else {
@@ -195,7 +187,7 @@ const student = {
       }
     })
   },
-  addFromFile(req, res) { // init
+  addFromFile(req, res) {
     let selectSql = 'SELECT name FROM teacher WHERE tID = ?'
     let sqlParams = [req.body.tID]
     connection.query(selectSql, sqlParams, (err, result) => {
@@ -207,19 +199,22 @@ const student = {
           let obj = xlsx.parse(`public/user/${req.files[0].filename}`)
           let data = obj[0].data
           let sqlParams = data.slice(1)
+          console.log(sqlParams)
           for (let i = 0; i < sqlParams.length; i++) {
             sqlParams[i].push(req.body.tID, teacher)
           }
           let insertSql = 'INSERT INTO student(account,password,name,role,grade,class,discipline,tID,teacher) VALUES ?'
           connection.query(insertSql, [sqlParams], err => {
             if (err) {
-              console.log('[INSERT ERROR] - ', err.message)
+              console.log('[INSERT ERROR] - ', err)
             } else {
+              for (let i = 0; i < sqlParams.length; i++) {
+                attendance.init(sqlParams[i][0])
+              }
               let response = {
                 status: 200,
                 result: '导入成功！'
               }
-              // 遍历文件数据根据account查找学生信息
               res.end(JSON.stringify(response))
             }
           })

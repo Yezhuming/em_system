@@ -34,7 +34,7 @@
       max-height="450">
       <el-table-column label="实验项目" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
-          <span>{{scope.row.experimentName.substr(0, scope.row.experimentName.indexOf('-'))}}</span>
+          <span>{{scope.row.experimentName.slice(scope.row.experimentName.indexOf('-')+1)}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="class" label="班级" align="center" min-width="50" show-overflow-tooltip></el-table-column>

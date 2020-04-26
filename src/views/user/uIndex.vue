@@ -93,13 +93,13 @@
     </div>
     <el-dialog title="修改密码" :visible.sync="pwdFormVisible" width="22%">
       <el-form :model="pwdForm" ref="pwdForm" :rules="rules" label-width="100px" label-position="left">
-        <el-form-item label="原密码" prop="oldPassword" label-width="70px">
+        <el-form-item label="原密码" prop="oldPassword" label-width="80px">
           <el-input type="password" v-model="pwdForm.oldPassword" show-password ref="oldPwdInput"></el-input>
         </el-form-item>
-        <el-form-item label="新密码" prop="newPassword" label-width="70px">
+        <el-form-item label="新密码" prop="newPassword" label-width="80px">
           <el-input type="password" v-model="pwdForm.newPassword" show-password></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" prop="checkPassword" label-width="70px">
+        <el-form-item label="确认密码" prop="checkPassword" label-width="80px">
           <el-input type="password" v-model="pwdForm.checkPassword" show-password></el-input>
         </el-form-item>
       </el-form>
@@ -140,7 +140,14 @@ export default {
         checkPassword: ''
       },
       rules: {
+        oldPassword: [
+          { required: true, message: '请输入原密码', trigger: 'blur' }
+        ],
+        newPassword: [
+          { required: true, message: '请输入新密码', trigger: 'blur' }
+        ],
         checkPassword: [
+          {required: true, message: '请再次输入密码', trigger: blur},
           {validator: pwdCheck, trigger: 'blur'}
         ]
       },
@@ -174,8 +181,10 @@ export default {
     },
     // 弹出修改密码对话框
     showUpdatePwdDialog() {
-      this.$refs.pwdForm.resetFields()
       this.pwdFormVisible = true
+      setTimeout(() => {
+        this.$refs.pwdForm.resetFields()
+      }, 0)
     },
     // 修改密码
     updatePassword() {
@@ -288,6 +297,9 @@ export default {
 <style lang="scss">
   .uindex{
     flex-direction: column;
+    .el-dialog__body{
+      padding: 5px 20px;
+    }
   }
   .row{
     justify-content: space-between;

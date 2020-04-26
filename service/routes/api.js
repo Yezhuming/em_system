@@ -20,12 +20,12 @@ router.get('/admin/getOne', admin.getOne)
 router.post('/admin/updatePassword', admin.updatePassword)
 
 // 教师信息表
-var userStorage = multer.diskStorage({
+var userStorage = multer.diskStorage({ // 保存批量导入学生和教师的excel文件
   destination: function (req, file, cb) {
     cb(null, 'public/user/') // 文件保存的路径
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname + '-' + Date.now()) // 设置保存的文件名
+    cb(null, Date.now() + '-' + file.originalname) // 设置保存的文件名
   }
 })
 var userUpload = multer({ storage: userStorage })
@@ -64,7 +64,7 @@ router.get('/article/getContentByaID', article.getContentByaID)
 router.get('/article/getLimited', article.getLimited)
 
 // 资源信息表
-var resourceStorage = multer.diskStorage({
+var resourceStorage = multer.diskStorage({ // 保存资源文件
   destination: function (req, file, cb) {
     cb(null, 'public/resource/') // 文件保存的路径
   },
@@ -81,12 +81,12 @@ router.post('/resource/deleteByrID', resource.deleteByrID)
 router.get('/resource/getLimited', resource.getLimited)
 
 // 实验内容表
-var experimentStorage = multer.diskStorage({
+var experimentStorage = multer.diskStorage({ // 保存上传的实验课件
   destination: function (req, file, cb) {
     cb(null, 'public/experiment/') // 文件保存的路径
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname + '-' + Date.now()) // 设置保存的文件名
+    cb(null, Date.now() + '-' + file.originalname) // 设置保存的文件名
   }
 })
 var experimentUpload = multer({ storage: experimentStorage })
@@ -102,12 +102,12 @@ router.get('/classSubmission/getClassList', classSubmission.getClassList)
 router.get('/classSubmission/searchByeIDOrClass', classSubmission.searchByeIDOrClass)
 
 // 各班成绩表
-var submitFileStorage = multer.diskStorage({
+var submitFileStorage = multer.diskStorage({ // 保存学生上传的作业
   destination: function (req, file, cb) {
     cb(null, 'public/submitFile/') // 文件保存的路径
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname + '-' + Date.now()) // 设置保存的文件名
+    cb(null, Date.now() + '-' + file.originalname) // 设置保存的文件名
   }
 })
 var fileUpload = multer({ storage: submitFileStorage })
@@ -120,10 +120,10 @@ router.post('/score/check', score.check)
 
 // 考勤管理表
 router.get('/attendance/getAll', attendance.getAll)
+router.get('/attendance/search', attendance.search)
 
 // 各学生考勤记录
 router.post('/attendanceRecord/update', attendanceRecord.handleQuit)
 router.get('/attendanceRecord/getRecords', attendanceRecord.getRecords)
-router.post('/attendanceRecord/search', attendanceRecord.search)
 
 module.exports = router

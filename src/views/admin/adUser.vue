@@ -301,39 +301,35 @@ export default {
               gradeAndClass: this.searchForm.gradeAndClass,
               value: this.searchForm.value
             }
+          }).then(res => {
+            if (res.data.status == 200) {
+              this.studentData = res.data.result
+              this.$refs.studentTable.bodyWrapper.scrollTop = 0
+              this.$message.success('查询成功！')
+            } else {
+              this.studentData = []
+              this.$message.error(res.data.result)
+            }
+          }).catch(err => {
+            console.log(err)
           })
-            .then(res => {
-              if (res.data.status == 200) {
-                this.studentData = res.data.result
-                this.$refs.studentTable.bodyWrapper.scrollTop = 0
-                this.$message.success('查询成功！')
-              } else {
-                this.studentData = []
-                this.$message.error(res.data.result)
-              }
-            })
-            .catch(err => {
-              console.log(err)
-            })
         } else {
           this.$axios.get('/teacher/searchByName', {
             params: {
               value: this.searchForm.value
             }
+          }).then(res => {
+            if (res.data.status == 200) {
+              this.teacherData = res.data.result
+              this.$refs.teacherTable.bodyWrapper.scrollTop = 0
+              this.$message.success('查询成功！')
+            } else {
+              this.teacherData = []
+              this.$message.error(res.data.result)
+            }
+          }).catch(err => {
+            console.log(err)
           })
-            .then(res => {
-              if (res.data.status == 200) {
-                this.teacherData = res.data.result
-                this.$refs.teacherTable.bodyWrapper.scrollTop = 0
-                this.$message.success('查询成功！')
-              } else {
-                this.teacherData = []
-                this.$message.error(res.data.result)
-              }
-            })
-            .catch(err => {
-              console.log(err)
-            })
         }
       } else {
         this.$message.error('请输入所需信息！')
@@ -367,6 +363,7 @@ export default {
                   if (res.data.status == 200) {
                     this.$message.success(res.data.result)
                     this.getStudentData()
+                    this.getClassList()
                     this.addSingleUserDialogVisible = false
                   }
                 })
@@ -430,6 +427,7 @@ export default {
       if (this.uploadForm.role == '1') {
         this.activeTabs = '1'
         this.getStudentData()
+        this.getClassList()
       } else {
         this.activeTabs = '2'
         this.getTeacherData()
@@ -458,16 +456,16 @@ export default {
     },
     // 批量删除
     deleteUsers() {
-      this.$confirm('确定删除选定的用户？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        if (this.activeTabs == '1') {
-          this.$axios.post('/student/deleteByidArray', {
-            idArray: this.idArray
-          })
-            .then(res => {
+      if (this.idArray.length != 0) {
+        this.$confirm('确定删除选定的用户？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          if (this.activeTabs == '1') {
+            this.$axios.post('/student/deleteByidArray', {
+              idArray: this.idArray
+            }).then(res => {
               if (res.data.status == 200) {
                 this.getStudentData()
                 this.$message.success(res.data.result)
@@ -475,11 +473,10 @@ export default {
             }).catch(err => {
               console.log(err)
             })
-        } else {
-          this.$axios.post('/teacher/deleteByidArray', {
-            idArray: this.idArray
-          })
-            .then(res => {
+          } else {
+            this.$axios.post('/teacher/deleteByidArray', {
+              idArray: this.idArray
+            }).then(res => {
               if (res.data.status == 200) {
                 this.getTeacherData()
                 this.$message.success(res.data.result)
@@ -487,10 +484,13 @@ export default {
             }).catch(err => {
               console.log(err)
             })
-        }
-      }).catch(() => {
-        this.$message('已取消删除')
-      })
+          }
+        }).catch(() => {
+          this.$message('已取消删除')
+        })
+      } else {
+        this.$message.error('请选择要删除的用户！')
+      }
     },
     // 打开修改信息对话框
     showUpdateUserDialog(row) {
@@ -539,30 +539,26 @@ export default {
           case 1:
             this.$axios.post('/student/deleteBysID', {
               sID: row.sID
+            }).then(res => {
+              if (res.data.status == 200) {
+                this.$message.success(res.data.result)
+                this.getStudentData()
+              }
+            }).catch(err => {
+              console.log(err)
             })
-              .then(res => {
-                if (res.data.status == 200) {
-                  this.$message.success(res.data.result)
-                  this.getStudentData()
-                }
-              })
-              .catch(err => {
-                console.log(err)
-              })
             break
           case 2:
             this.$axios.post('/teacher/deleteBytID', {
               tID: row.tID
+            }).then(res => {
+              if (res.data.status == 200) {
+                this.$message.success(res.data.result)
+                this.getTeacherData()
+              }
+            }).catch(err => {
+              console.log(err)
             })
-              .then(res => {
-                if (res.data.status == 200) {
-                  this.$message.success(res.data.result)
-                  this.getTeacherData()
-                }
-              })
-              .catch(err => {
-                console.log(err)
-              })
             break
         }
       }).catch(() => {
@@ -583,6 +579,8 @@ export default {
               this.teacherList.push(obj)
             }
             this.$refs.teacherTable.bodyWrapper.scrollTop = 0
+          } else {
+            this.teacherData = []
           }
         })
         .catch(err => {
@@ -596,6 +594,8 @@ export default {
           if (res.data.status == 200) {
             this.studentData = res.data.result
             this.$refs.studentTable.bodyWrapper.scrollTop = 0
+          } else {
+            this.studentData = []
           }
         })
         .catch(err => {
@@ -604,22 +604,22 @@ export default {
     },
     // 获取班级信息
     getClassList() {
-      this.$axios.get('/student/getClassList')
-        .then(res => {
-          if (res.data.status == 200) {
-            this.classList = []
-            for (let i of res.data.result) {
-              let obj = {
-                label: `${i.grade}${i.class}`,
-                value: `${i.grade}${i.class}`
-              }
-              this.classList.push(obj)
+      this.$axios.get('/student/getClassList').then(res => {
+        if (res.data.status == 200) {
+          this.classList = []
+          for (let i of res.data.result) {
+            let obj = {
+              label: `${i.grade}${i.class}`,
+              value: `${i.grade}${i.class}`
             }
+            this.classList.push(obj)
           }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+        } else {
+          this.classList = []
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   created() {

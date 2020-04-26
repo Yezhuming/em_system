@@ -22,7 +22,7 @@
             <el-button type="primary" round @click="submit">立即登录</el-button>
           </el-form-item>
         </el-form>
-        <p>Copyright © 2020 华南师范大学</p>
+        <p>Copyright © 2020 YEZHUMING</p>
       </div>
     </div>
   </div>
