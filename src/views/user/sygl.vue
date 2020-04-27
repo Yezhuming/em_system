@@ -54,13 +54,13 @@ export default {
     }
   },
   mounted() {
-    window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
-    window.addEventListener('unload', e => this.unloadHandler(e))
+    window.addEventListener('beforeunload', this.beforeunloadHandler)
+    window.addEventListener('unload', this.unloadHandler)
     this.$router.push('/uIndex')
   },
-  destroyed() {
-    window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e))
-    window.removeEventListener('unload', e => this.unloadHandler(e))
+  beforeDestroy() {
+    window.removeEventListener('beforeunload', this.beforeunloadHandler)
+    window.removeEventListener('unload', this.unloadHandler)
   }
 }
 </script>

@@ -49,39 +49,47 @@
           </template>
         </el-table-column>
       </el-table>
+      <el-pagination
+        style="float:right;margin-top:5px;"
+        :hide-on-single-page="true"
+        @current-change="experimentPageChange"
+        :page-size="experimentData.size"
+        layout="prev, pager, next, jumper"
+        :total="experimentData.total">
+      </el-pagination>
       <el-dialog
-      title="作业上传"
-      class="upload-dialog"
-      :visible.sync="uploadDialogVisible"
-      :close-on-click-modal="false"
-      :close-on-press-escape="false"
-      width="25%">
-      <el-form :model="uploadForm">
-        <el-upload
-          ref="upload"
-          drag
-          :auto-upload="false"
-          :on-success="uploadSuccess"
-          :on-change="addFile"
-          :before-remove="beforeRemove"
-          :on-remove="handleRemove"
-          :on-exceed="handleExceed"
-          :file-list="fileList"
-          :data="uploadForm"
-          :limit="1"
-          accept=".rar,.zip"
-          action="http://127.0.0.1:8081/score/upload">
-          <i class="el-icon-upload"></i>
-          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">请将实验结果和实验报告打包上传</div>
-          <div class="el-upload__tip" slot="tip">命名格式：学号+姓名+实验项目(不需要+号)</div>
-        </el-upload>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="closeUploadDialog">取 消</el-button>
-        <el-button type="primary" @click="fileUpload">确 定</el-button>
-      </span>
-    </el-dialog>
+        title="作业上传"
+        class="upload-dialog"
+        :visible.sync="uploadDialogVisible"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        width="25%">
+        <el-form :model="uploadForm">
+          <el-upload
+            ref="upload"
+            drag
+            :auto-upload="false"
+            :on-success="uploadSuccess"
+            :on-change="addFile"
+            :before-remove="beforeRemove"
+            :on-remove="handleRemove"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
+            :data="uploadForm"
+            :limit="1"
+            accept=".rar,.zip"
+            action="http://127.0.0.1:8081/score/upload">
+            <i class="el-icon-upload"></i>
+            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+            <div class="el-upload__tip" slot="tip">请将实验结果和实验报告打包上传</div>
+            <div class="el-upload__tip" slot="tip">命名格式：学号+姓名+实验项目(不需要+号)</div>
+          </el-upload>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="closeUploadDialog">取 消</el-button>
+          <el-button type="primary" @click="fileUpload">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -94,7 +102,7 @@ export default {
       experimentData: {
         total: 4,
         page: 1,
-        size: 4, // 一页最多4条
+        size: 5, // 一页最多4条
         list: []
       },
       uploadDialogVisible: false,
@@ -138,7 +146,7 @@ export default {
     addFile(file, fileList) {
       this.fileList = fileList
     },
-    // 上传文件 TODO
+    // 上传文件
     fileUpload() {
       if (this.fileList.length != 0) {
         this.uploadForm.sID = this.user.sID
@@ -165,6 +173,11 @@ export default {
     // 超出文件个数限制
     handleExceed(file, fileList) {
       this.$message.error('只能上传一个文件！')
+    },
+    // 换页
+    experimentPageChange(page) {
+      this.experimentData.page = page
+      this.getExperimentData()
     },
     // 获取实验内容
     getExperimentData() {

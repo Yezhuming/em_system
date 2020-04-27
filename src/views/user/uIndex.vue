@@ -52,6 +52,7 @@
         <div class="subtitle">
           <i class="el-icon-office-building"></i>
           <span>通知公告</span>
+          <el-link @click="toNotice" class="more" :underline="false">更多>></el-link>
         </div>
         <div class="content flex">
           <el-table
@@ -73,6 +74,7 @@
         <div class="subtitle">
           <i class="el-icon-office-building"></i>
           <span>资源下载</span>
+          <el-link href="http://localhost:8080/#/uResource/uResourceList/curriculum" class="more" :underline="false">更多>></el-link>
         </div>
         <div class="content flex">
           <el-table
@@ -229,6 +231,9 @@ export default {
           return false
         }
       })
+    },
+    toNotice() {
+      this.$router.push('/uNotice/uNoticeList/notice')
     },
     // 获取通知公告列表
     getNoticeList() {
@@ -397,6 +402,12 @@ export default {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
+    }
+  }
+  .subtitle{
+    .more{
+      float:right;
+      width: 50px;
     }
   }
 </style>

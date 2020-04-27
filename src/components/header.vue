@@ -7,6 +7,7 @@
     <el-menu
       mode="horizontal"
       class="header-menu"
+      :default-active="activeRoute"
       background-color="#0066CC"
       text-color="#fff"
       active-text-color="#fff"
@@ -27,6 +28,11 @@ export default {
   data() {
     return {
       headerImg: headerImg
+    }
+  },
+  computed: {
+    activeRoute() {
+      return this.$route.path
     }
   }
 }
