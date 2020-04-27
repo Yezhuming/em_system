@@ -113,20 +113,24 @@ export default {
       window.open(`http://localhost:8081/${this.checkForm.submitFile}`)
     },
     check() {
-      this.$axios.post('/score/check', {
-        eID: this.checkForm.eID,
-        sID: this.checkForm.sID,
-        score: this.checkForm.score,
-        comment: this.checkForm.comment
-      }).then(res => {
-        if (res.data.status == 200) {
-          this.$message.success(res.data.result)
-          this.getScoreData()
-          this.checkDialogVisible = false
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+      if (this.checkForm.score) {
+        this.$axios.post('/score/check', {
+          eID: this.checkForm.eID,
+          sID: this.checkForm.sID,
+          score: this.checkForm.score,
+          comment: this.checkForm.comment
+        }).then(res => {
+          if (res.data.status == 200) {
+            this.$message.success(res.data.result)
+            this.getScoreData()
+            this.checkDialogVisible = false
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      } else {
+        this.$message.error('请选择一个分数')
+      }
     }
   },
   created() {

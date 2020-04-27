@@ -33,7 +33,8 @@
               title="评语"
               width="200"
               trigger="hover">
-              <span>{{ scope.row.comment }}</span>
+              <span v-if="scope.row.comment">{{ scope.row.comment }}</span>
+              <span v-else>教师暂未添加评语</span>
               <el-link type="primary" slot="reference">{{ scope.row.score }}</el-link>
             </el-popover>
             <span v-else>0</span>
