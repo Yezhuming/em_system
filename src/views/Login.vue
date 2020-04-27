@@ -48,7 +48,8 @@ export default {
     },
     submit() {
       let date = new Date()
-      let loginDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+      let loginDay = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+      let loginTime = `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
       switch (this.loginForm.role) {
         case '0': // 管理员登录
           this.$axios.post('/admin/login', {
@@ -73,7 +74,7 @@ export default {
           this.$axios.post('/student/login', {
             account: this.loginForm.account,
             password: this.loginForm.password,
-            loginDate: loginDate
+            loginDate: `${loginDay} ${loginTime}`
           }).then(res => {
             console.log(res)
             if (res.data.status == 200) {

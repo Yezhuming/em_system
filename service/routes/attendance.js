@@ -20,7 +20,7 @@ const attendance = {
     })
   },
   getAll(req, res) {
-    let selectSql = `SELECT sID,name,grade,class,account,loginTimes,date_format(lastLoginDate,'%Y-%m-%d') as lastLoginDate FROM attendance WHERE teacher = ?`
+    let selectSql = `SELECT sID,name,grade,class,account,loginTimes,date_format(lastLoginDate,'%Y-%m-%d %H:%i:%s') as lastLoginDate FROM attendance WHERE teacher = ?`
     let sqlParams = [req.query.teacher]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {

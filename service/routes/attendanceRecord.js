@@ -14,7 +14,7 @@ const attendanceRecord = {
     })
   },
   getRecords(req, res) {
-    let selectSql = `SELECT rID,sID,name,account,date_format(loginDate, '%Y-%m-%d') as loginDate,loginTime,quitTime FROM attendancerecord WHERE sID = ?`
+    let selectSql = `SELECT rID,sID,name,account,date_format(loginDate, '%Y-%m-%d %H:%i:%s') as loginDate,loginTime,quitTime FROM attendancerecord WHERE sID = ?`
     let sqlParams = [req.query.sID]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
