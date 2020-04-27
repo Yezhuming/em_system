@@ -12,7 +12,7 @@
           active-text-color="#0066CC"
           @select="modifyPath">
           <el-menu-item index="curriculum">实验室课表</el-menu-item>
-          <el-menu-item index="template">模板表格</el-menu-item>
+          <el-menu-item index="template">教学资源</el-menu-item>
         </el-menu>
       </div>
     </div>
@@ -38,7 +38,7 @@ export default {
   methods: {
     modifyPath(index) {
       this.$router.push({name: 'uResourceList', params: {type: index}})
-      this.title = index == 'curriculum' ? '实验室课表' : '模板表格'
+      this.title = index == 'curriculum' ? '实验室课表' : '教学资源'
     }
   }
 }

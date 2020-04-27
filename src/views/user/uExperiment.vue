@@ -12,7 +12,8 @@
           active-text-color="#0066CC"
           @select="modifyPath">
           <el-menu-item index="courseIntro">课程介绍</el-menu-item>
-          <el-menu-item index="experimentCourse">实验内容</el-menu-item>
+          <el-menu-item index="experimentWork">实验内容</el-menu-item>
+          <el-menu-item index="experimentCourse">实验教学</el-menu-item>
           <el-menu-item index="onlineExperiment">在线实验</el-menu-item>
         </el-menu>
       </div>
@@ -41,6 +42,9 @@ export default {
       switch (index) {
         case 'onlineExperiment':
           window.open('http://127.0.0.1:8081/experiment-online/dist/index.html')
+          break
+        case 'experimentCourse':
+          window.open('http://elab.scnu.edu.cn')
           break
         default :
           this.$router.push({

@@ -4,7 +4,7 @@
       <h3>计算机组成原理实验</h3>
       <p class="paragraph">“计算机组成原理”是计算机专业的一门专业基础课。本课程实践性强，因此,该实验课程必须有相应的实验平台支持，这里选用的是：TEC-4计算机组成原理实验系统。它是一个8位计算机模型实验系统，简单、实用,运算器数据通路、控制器、控制台各部分划分清晰。对提高学生的动手能力;提高学生对计算机整体和各组成部分的理解都会有很大帮助。</p>
     </div>
-    <div v-show="type=='experimentCourse'">
+    <div v-show="type=='experimentWork'">
       <el-table
         :data="experimentData.list"
         style="width: 100%"

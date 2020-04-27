@@ -5,7 +5,7 @@
       :show-header="false"
       style="width: 100%">
       <el-table-column label="order" width="18">•</el-table-column>
-      <el-table-column label="标题" width="250">
+      <el-table-column label="标题" width="600">
         <template slot-scope="scope">
           <el-link @click="toDetail(scope.row)" :underline="false">{{scope.row.title}}</el-link>
         </template>
@@ -81,3 +81,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.unotice-list{
+  .el-link--inner{
+    width: 580px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+</style>

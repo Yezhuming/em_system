@@ -1,11 +1,12 @@
 <template>
-  <div class="unotice-list">
+  <div class="uresource-list">
     <el-table
       :data="resourceData.list"
       :show-header="false"
+      tooltip-effect="light"
       style="width: 100%">
       <el-table-column label="order" width="18">•</el-table-column>
-      <el-table-column label="文件名" width="250">
+      <el-table-column label="文件名" width="600" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link @click="openLink(scope.row)" :underline="false">{{scope.row.fileName}}</el-link>
         </template>
@@ -75,3 +76,14 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+.uresource-list{
+  .el-link--inner{
+    width: 580px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+</style>

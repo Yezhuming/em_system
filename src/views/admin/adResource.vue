@@ -20,9 +20,10 @@
     <el-table
       :data="resourceData"
       border
+      tooltip-effect="light"
       header-cell-class-name="bgblue"
       max-height="450">
-      <el-table-column label="文件名" align="center">
+      <el-table-column label="文件名" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           <el-link @click="openLink(scope.row)" :underline="false">{{scope.row.fileName}}</el-link>
         </template>
@@ -30,7 +31,7 @@
       <el-table-column label="类型" align="center">
         <template slot-scope="scope">
           <span v-if="scope.row.fileType=='1'">实验室课表</span>
-          <span v-else>模板表格</span>
+          <span v-else>教学资源</span>
         </template>
       </el-table-column>
       <el-table-column prop="uploadDate" label="上传日期" align="center"></el-table-column>
@@ -59,11 +60,9 @@
           :file-list="fileList"
           :data="uploadForm"
           :limit="1"
-          accept=".xls,.xlsx,.doc,.docx,.pdf"
           action="http://127.0.0.1:8081/resource/upload">
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-          <div class="el-upload__tip" slot="tip">只能上传word/excel/pdf文件</div>
         </el-upload>
         <el-form-item
           label="类型"
@@ -71,7 +70,7 @@
           :rules="{ required: true, trigger: 'blur'}">
           <el-select v-model="uploadForm.type" placeholder="请选择" ref="selectType">
             <el-option label="实验室课表" value="1"></el-option>
-            <el-option label="模板表格" value="2"></el-option>
+            <el-option label="教学资源" value="2"></el-option>
           </el-select>
         </el-form-item>
       </el-form>
@@ -222,6 +221,14 @@ export default {
   }
   .el-input{
     width: 149px;
+  }
+}
+.adresource{
+  .el-link--inner{
+    width: 280px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 }
 </style>
