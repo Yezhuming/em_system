@@ -121,9 +121,11 @@ router.post('/score/check', score.check)
 // 考勤管理表
 router.get('/attendance/getAll', attendance.getAll)
 router.get('/attendance/search', attendance.search)
+router.post('/attendance/exportExcel', attendance.exportExcel)
 
 // 各学生考勤记录
 router.post('/attendanceRecord/update', attendanceRecord.handleQuit)
 router.get('/attendanceRecord/getRecords', attendanceRecord.getRecords)
+router.post('/attendanceRecord/exportExcel', attendanceRecord.exportExcel)
 
 module.exports = router

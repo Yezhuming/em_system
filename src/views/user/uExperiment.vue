@@ -21,7 +21,7 @@
     <div class="sygl-main">
       <div class="main-header">
         <span>{{title}}</span>
-        <span style="float:right;">您的位置：首页 >> 实验教学 >> {{title}}</span>
+        <span style="float:right;">您的位置：首页 >> 实验相关 >> {{title}}</span>
       </div>
       <div class="main-content">
         <router-view></router-view>

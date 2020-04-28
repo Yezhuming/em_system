@@ -1,6 +1,7 @@
 <template>
   <page class="adattendance-details">
     <el-page-header @back="goBack" content="考勤记录"></el-page-header>
+    <el-button type="primary" @click="exportExcel" class="export-btn">导出表格</el-button>
     <el-table
       :data="attendanceRecordsData"
       border
@@ -24,6 +25,21 @@ export default {
   methods: {
     goBack() {
       this.$router.go(-1)
+    },
+    exportExcel() {
+      if (this.attendanceRecordsData.length != 0) {
+        this.$axios.post('/attendanceRecord/exportExcel', {
+          excelData: this.attendanceRecordsData
+        }).then(res => {
+          if (res.data.status == 200) {
+            window.open(`http://127.0.0.1:8081${res.data.path}`)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      } else {
+        this.$message.error('该表格无数据！')
+      }
     },
     getAttendanceRecordsData() {
       this.$axios.get('/attendancerecord/getRecords', {
@@ -49,11 +65,17 @@ export default {
 
 <style lang="scss">
 .adattendance-details{
+  position: relative;
   .el-page-header{
     margin-bottom: 20px;
   }
   .el-page-header__title{
     font-size: 16px;
   }
+}
+.export-btn{
+  position: absolute;
+  top: 15px;
+  right: 20px;
 }
 </style>

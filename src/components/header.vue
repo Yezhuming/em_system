@@ -15,7 +15,7 @@
       <el-menu-item index="/uIndex">首页</el-menu-item>
       <el-menu-item index="/uIntroduction">实验室概况</el-menu-item>
       <el-menu-item index="/uNotice/uNoticeList/notice">通知公告</el-menu-item>
-      <el-menu-item index="/uExperiment/uExperimentList/courseIntro">实验教学</el-menu-item>
+      <el-menu-item index="/uExperiment/uExperimentList/courseIntro">实验相关</el-menu-item>
       <el-menu-item index="/uResource/uResourceList/curriculum">资源下载</el-menu-item>
     </el-menu>
   </div>

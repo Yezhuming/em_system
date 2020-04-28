@@ -10,6 +10,7 @@
     "browser-sync": "^2.26.7",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "excel-export": "^0.5.1",
     "express": "~4.16.1",
     "gulp": "^3.9.1",
     "gulp-nodemon": "^2.5.0",

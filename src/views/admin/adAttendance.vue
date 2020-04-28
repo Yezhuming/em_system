@@ -17,6 +17,9 @@
         <el-button type="primary" @click="search">查 询</el-button>
         <el-button @click="reset">重 置</el-button>
       </el-form-item>
+      <el-form-item style="float:right;">
+        <el-button type="primary" @click="exportExcel">导出表格</el-button>
+      </el-form-item>
     </el-form>
     <el-table
       ref="attendanceTable"
@@ -82,6 +85,18 @@ export default {
     reset() {
       this.$refs.searchForm.resetFields()
       this.getAttendanceData()
+    },
+    // 导出表格
+    exportExcel() {
+      this.$axios.post('/attendance/exportExcel', {
+        excelData: this.attendanceData
+      }).then(res => {
+        if (res.data.status == 200) {
+          window.open(`http://127.0.0.1:8081${res.data.path}`)
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     },
     toDetails(row) {
       this.$router.push({name: 'adAttendanceDetails', query: {sID: row.sID}})

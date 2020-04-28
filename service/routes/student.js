@@ -74,7 +74,7 @@ const student = {
                     if (err) {
                       console.log('[INSERT ERROR] - ', err.message)
                     } else {
-                      let selectSql = 'SELECT rID from attendancerecord ORDER BY rID DESC'
+                      let selectSql = 'SELECT rcID from attendancerecord ORDER BY rcID DESC'
                       connection.query(selectSql, (err, result) => {
                         if (err) {
                           console.log('[SELECT ERROR] -', err.message)
@@ -82,7 +82,7 @@ const student = {
                           let response = {
                             status: 200,
                             result: stuInfo,
-                            rID: result[0].rID
+                            rcID: result[0].rcID
                           }
                           res.end(JSON.stringify(response))
                         }

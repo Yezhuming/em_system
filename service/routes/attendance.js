@@ -1,4 +1,6 @@
 const connection = require('../mysql')
+const fs = require('fs')
+const nodeExcel = require('excel-export')
 
 const attendance = {
   init(account) {
@@ -70,6 +72,70 @@ const attendance = {
           }
           res.end(JSON.stringify(response))
         }
+      }
+    })
+  },
+  exportExcel(req, res) {
+    let conf = {}
+    // 定义sheet名称
+    conf.name = 'ALL'
+    // 定义列的名称以及数据类型
+    conf.cols = [
+      {
+        caption: '学生姓名',
+        type: 'String'
+      },
+      {
+        caption: '学生年级',
+        type: 'String'
+      },
+      {
+        caption: '学生班级',
+        type: 'String'
+      },
+      {
+        caption: '学生学号',
+        type: 'String'
+      },
+      {
+        caption: '登录次数',
+        type: 'String'
+      },
+      {
+        caption: '最近一次登录日期',
+        type: 'String',
+        width: 20
+      }
+    ]
+    // 定义row的数据
+    conf.rows = []
+    let acceptData = req.body.excelData
+    for (let i = 0; i < acceptData.length; i++) {
+      let row = []
+      row.push(acceptData[i].name)
+      row.push(acceptData[i].grade)
+      row.push(acceptData[i].class)
+      row.push(acceptData[i].account)
+      row.push(acceptData[i].loginTimes + '次')
+      if (acceptData[i].lastLoginDate == null) {
+        row.push('暂未登录')
+      } else {
+        row.push(acceptData[i].lastLoginDate)
+      }
+      conf.rows.push(row)
+    }
+    console.log(conf.rows)
+    let result = nodeExcel.execute(conf)
+    let path = `public/exportExcel/${new Date().getTime()}-Record.xlsx`
+    fs.writeFile(path, result, 'binary', err => {
+      if (err) {
+        console.log(err)
+      } else {
+        let response = {
+          status: 200,
+          path: path.slice(6)
+        }
+        res.end(JSON.stringify(response))
       }
     })
   }
