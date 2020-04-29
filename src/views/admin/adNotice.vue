@@ -90,7 +90,7 @@ export default {
         this.$router.push({
           name: 'adArticleDetails',
           query: {
-            aID: row.aID
+            atID: row.atID
           },
           params: {
             form: row
@@ -109,17 +109,15 @@ export default {
           type: 'warning'
         }).then(() => {
           this.$axios.post('/article/deleteByaID', {
-            aID: row.aID
+            atID: row.atID
+          }).then(res => {
+            if (res.data.status == 200) {
+              this.getArticleData()
+              this.$message.success(res.data.result)
+            }
+          }).catch(err => {
+            console.log(err)
           })
-            .then(res => {
-              if (res.data.status == 200) {
-                this.getArticleData()
-                this.$message.success(res.data.result)
-              }
-            })
-            .catch(err => {
-              console.log(err)
-            })
         })
       } else {
         this.$message.error(`您没有权限删除该${row.type == '1' ? '通知' : '公告'}`)
@@ -127,15 +125,13 @@ export default {
     },
     // 获取全部数据
     getArticleData() {
-      this.$axios.get('/article/getAll')
-        .then(res => {
-          if (res.data.status == 200) {
-            this.articleData = res.data.result
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
+      this.$axios.get('/article/getAll').then(res => {
+        if (res.data.status == 200) {
+          this.articleData = res.data.result
+        }
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   created() {

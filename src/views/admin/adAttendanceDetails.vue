@@ -6,7 +6,7 @@
       :data="attendanceRecordsData"
       border
       header-cell-class-name="bgblue"
-      max-height="500">
+      max-height="530">
       <el-table-column prop="name" label="学生姓名" align="center"></el-table-column>
       <el-table-column prop="account" label="学生学号" align="center"></el-table-column>
       <el-table-column prop="loginDate" label="登录日期" align="center"></el-table-column>
@@ -26,6 +26,7 @@ export default {
     goBack() {
       this.$router.go(-1)
     },
+    // 导出表格
     exportExcel() {
       if (this.attendanceRecordsData.length != 0) {
         this.$axios.post('/attendanceRecord/exportExcel', {
@@ -41,6 +42,7 @@ export default {
         this.$message.error('该表格无数据！')
       }
     },
+    // 获取学生详细考勤记录
     getAttendanceRecordsData() {
       this.$axios.get('/attendancerecord/getRecords', {
         params: {

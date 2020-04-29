@@ -5,8 +5,8 @@
         <el-image :src="src"></el-image>
       </div>
       <div class="right">
-        <p>计组实验管理系统</p>
-        <p>Management System</p>
+        <p>计组虚拟实验管理网站</p>
+        <p>Management Website</p>
         <el-form :model="loginForm">
           <el-form-item>
             <el-input v-model="loginForm.account" placeholder="学号" v-if="loginForm.role == '1'" ref="input"></el-input>
@@ -29,7 +29,7 @@
 </template>
 
 <script scoped>
-import img from '../assets/xiaohui.jpg'
+import img from '../assets/computer.png'
 
 export default {
   data () {
@@ -142,8 +142,15 @@ export default {
     width: 700px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
     .left{
+      min-width:400px;
+      height:400px;
+      position: relative;
       .el-image{
-        width: 400px;
+        width: 350px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
       }
     }
     .right{

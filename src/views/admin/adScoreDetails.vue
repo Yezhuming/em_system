@@ -112,6 +112,7 @@ export default {
     download() {
       window.open(`http://localhost:8081/${this.checkForm.submitFile}`)
     },
+    // 评分
     check() {
       if (this.checkForm.score) {
         this.$axios.post('/score/check', {

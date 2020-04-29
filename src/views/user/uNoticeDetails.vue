@@ -22,24 +22,22 @@ export default {
     }
   },
   methods: {
+    // 获取文章内容
     getArticle() {
       this.$axios.get('/article/getContentByaID', {
         params: {
-          aID: this.$route.query.aID
+          atID: this.$route.query.atID
         }
+      }).then(res => {
+        if (res.data.status == 200) {
+          this.article.title = res.data.result[0].title
+          this.article.publishDate = res.data.result[0].publishDate
+          this.article.publisher = res.data.result[0].publisher
+          this.article.content = res.data.result[0].content
+        }
+      }).catch(err => {
+        console.log(err)
       })
-        .then(res => {
-          console.log(res)
-          if (res.data.status == 200) {
-            this.article.title = res.data.result[0].title
-            this.article.publishDate = res.data.result[0].publishDate
-            this.article.publisher = res.data.result[0].publisher
-            this.article.content = res.data.result[0].content
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
     }
   },
   created() {

@@ -68,27 +68,24 @@ export default {
     articlePulish() {
       let date = new Date()
       let publishDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-      console.log(publishDate)
-      if (this.$route.query.aID) { // 更新文章
+      if (this.$route.query.atID) { // 更新文章
         this.$axios.post('/article/update', {
           title: this.articleEditorForm.title,
           content: this.articleEditorForm.content,
           type: this.articleEditorForm.type,
           publishDate: publishDate,
-          aID: this.$route.query.aID
+          atID: this.$route.query.atID
+        }).then(res => {
+          if (res.data.status == 200) {
+            this.$message.success(res.data.result)
+            this.$refs.articleEditorForm.resetFields()
+            this.goBack()
+          } else {
+            this.$message.error('修改失败！')
+          }
+        }).catch(err => {
+          console.log(err)
         })
-          .then(res => {
-            if (res.data.status == 200) {
-              this.$message.success(res.data.result)
-              this.$refs.articleEditorForm.resetFields()
-              this.goBack()
-            } else {
-              this.$message.error('修改失败！')
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
       } else { // 发布新文章
         this.$axios.post('/article/add', {
           title: this.articleEditorForm.title,
@@ -96,20 +93,17 @@ export default {
           content: this.articleEditorForm.content,
           type: this.articleEditorForm.type,
           publishDate: publishDate
+        }).then(res => {
+          if (res.data.status == 200) {
+            this.$message.success(res.data.result)
+            this.$refs.articleEditorForm.resetFields()
+            this.goBack()
+          } else {
+            this.$message.success('发布失败！')
+          }
+        }).catch(err => {
+          console.log(err)
         })
-          .then(res => {
-            console.log(res)
-            if (res.data.status == 200) {
-              this.$message.success(res.data.result)
-              this.$refs.articleEditorForm.resetFields()
-              this.goBack()
-            } else {
-              this.$message.success('发布失败！')
-            }
-          })
-          .catch(err => {
-            console.log(err)
-          })
       }
     },
     getFormData() {
@@ -120,7 +114,7 @@ export default {
     }
   },
   created() {
-    if (this.$route.query.aID) {
+    if (this.$route.query.atID) {
       this.getFormData()
     }
   }

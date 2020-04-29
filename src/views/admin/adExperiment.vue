@@ -197,7 +197,7 @@ export default {
     openLink(row) {
       window.open(`http://localhost:8081/experiment/${row.experimentName}`)
     },
-    // 删除实验项目 TODO
+    // 删除实验项目
     deleteExperiment(row) {
       this.$confirm('确定删除该实验?', '提示', {
         confirmButtonText: '确定',

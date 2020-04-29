@@ -61,7 +61,7 @@ export default {
       this.$refs.pwdForm.clearValidate()
     },
     updatePassword() {
-      if (this.$props.user.role == '0') {
+      if (this.$props.user.role == '0') { // 管理员修改密码
         this.$refs.pwdForm.validate((valid) => {
           if (valid) {
             this.$axios.get(`/admin/getOne`, {
@@ -78,16 +78,14 @@ export default {
                   this.$axios.post('/admin/updatePassword', {
                     aID: this.$props.user.aID,
                     newPassword: this.pwdForm.newPassword
+                  }).then(res => {
+                    if (res.data.status == 200) {
+                      this.$message.success('修改成功！')
+                      this.$refs.pwdForm.resetFields()
+                    }
+                  }).catch(err => {
+                    console.log(err)
                   })
-                    .then(res => {
-                      if (res.data.status == 200) {
-                        this.$message.success('修改成功！')
-                        this.$refs.pwdForm.resetFields()
-                      }
-                    })
-                    .catch(err => {
-                      console.log(err)
-                    })
                 }
               }
             }).catch(err => {
@@ -98,7 +96,7 @@ export default {
             return false
           }
         })
-      } else {
+      } else { // 教师修改密码
         this.$refs.pwdForm.validate((valid) => {
           if (valid) {
             this.$axios.get(`/teacher/getOne`, {
@@ -115,16 +113,14 @@ export default {
                   this.$axios.post('/teacher/updatePassword', {
                     tID: this.$props.user.tID,
                     newPassword: this.pwdForm.newPassword
+                  }).then(res => {
+                    if (res.data.status == 200) {
+                      this.$message.success('修改成功！')
+                      this.$refs.pwdForm.resetFields()
+                    }
+                  }).catch(err => {
+                    console.log(err)
                   })
-                    .then(res => {
-                      if (res.data.status == 200) {
-                        this.$message.success('修改成功！')
-                        this.$refs.pwdForm.resetFields()
-                      }
-                    })
-                    .catch(err => {
-                      console.log(err)
-                    })
                 }
               }
             }).catch(err => {

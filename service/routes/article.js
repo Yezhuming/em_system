@@ -17,7 +17,7 @@ const article = {
     })
   },
   getAll(req, res) {
-    let selectSql = `SELECT aID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate FROM article order by publishDate DESC;`
+    let selectSql = `SELECT atID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate FROM article order by publishDate DESC;`
     connection.query(selectSql, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
@@ -39,8 +39,8 @@ const article = {
     })
   },
   update(req, res) {
-    let updateSql = 'UPDATE article SET title = ?, content = ?, type = ?, publishDate = ? WHERE aID = ?'
-    let sqlParams = [req.body.title, req.body.content, req.body.type, req.body.publishDate, req.body.aID]
+    let updateSql = 'UPDATE article SET title = ?, content = ?, type = ?, publishDate = ? WHERE atID = ?'
+    let sqlParams = [req.body.title, req.body.content, req.body.type, req.body.publishDate, req.body.atID]
     connection.query(updateSql, sqlParams, err => {
       if (err) {
         console.log('[UPDATE ERROR] - ', err.message)
@@ -54,7 +54,7 @@ const article = {
     })
   },
   getListByDate(req, res) {
-    let selectSql = `SELECT aID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
+    let selectSql = `SELECT atID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
                      FROM article WHERE publishDate = ?;`
     let sqlParams = [req.query.publishDate]
     connection.query(selectSql, sqlParams, (err, result) => {
@@ -78,8 +78,8 @@ const article = {
     })
   },
   deleteByaID(req, res) {
-    let deleteSql = 'DELETE FROM article where aID = ?'
-    let sqlParams = [req.body.aID]
+    let deleteSql = 'DELETE FROM article where atID = ?'
+    let sqlParams = [req.body.atID]
     connection.query(deleteSql, sqlParams, err => {
       if (err) {
         console.log('[DELETE ERROR] - ', err.message)
@@ -101,7 +101,7 @@ const article = {
       } else {
         let total = result[0].total
         if (total != 0) {
-          let selectSql = `SELECT aID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
+          let selectSql = `SELECT atID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
                            FROM article WHERE type = ? order by publishDate DESC limit ?,?`
           let startIndex = req.query.page * req.query.size - req.query.size
           let sqlParams = [req.query.type, startIndex, Number(req.query.size)]
@@ -131,7 +131,7 @@ const article = {
     })
   },
   getLimited(req, res) {
-    let selectSql = `SELECT aID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
+    let selectSql = `SELECT atID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate 
     FROM article order by publishDate DESC limit 0,5`
     connection.query(selectSql, (err, result) => {
       if (err) {
@@ -154,8 +154,8 @@ const article = {
     })
   },
   getContentByaID(req, res) {
-    let selectSql = `SELECT aID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate FROM article WHERE aID = ?`
-    let sqlParams = [req.query.aID]
+    let selectSql = `SELECT atID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate FROM article WHERE atID = ?`
+    let sqlParams = [req.query.atID]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)

@@ -357,19 +357,17 @@ export default {
         case '1': // 新增学生
           this.$refs.addUserForm.validate(valid => {
             if (valid) {
-              this.$axios.post('/student/addOne', this.addUserForm)
-                .then(res => {
-                  console.log(res)
-                  if (res.data.status == 200) {
-                    this.$message.success(res.data.result)
-                    this.getStudentData()
-                    this.getClassList()
-                    this.addSingleUserDialogVisible = false
-                  }
-                })
-                .catch(err => {
-                  console.log(err)
-                })
+              this.$axios.post('/student/addOne', this.addUserForm).then(res => {
+                console.log(res)
+                if (res.data.status == 200) {
+                  this.$message.success(res.data.result)
+                  this.getStudentData()
+                  this.getClassList()
+                  this.addSingleUserDialogVisible = false
+                }
+              }).catch(err => {
+                console.log(err)
+              })
             } else {
               this.$message.error('请填写所需信息！')
             }
@@ -378,17 +376,15 @@ export default {
         case '2': // 新增教师
           this.$refs.addUserForm.validate(valid => {
             if (valid) {
-              this.$axios.post('/teacher/addOne', this.addUserForm)
-                .then(res => {
-                  if (res.data.status == 200) {
-                    this.$message.success(res.data.result)
-                    this.getTeacherData()
-                    this.addSingleUserDialogVisible = false
-                  }
-                })
-                .catch(err => {
-                  console.log(err)
-                })
+              this.$axios.post('/teacher/addOne', this.addUserForm).then(res => {
+                if (res.data.status == 200) {
+                  this.$message.success(res.data.result)
+                  this.getTeacherData()
+                  this.addSingleUserDialogVisible = false
+                }
+              }).catch(err => {
+                console.log(err)
+              })
             } else {
               this.$message.error('请填写所需信息！')
             }

@@ -58,8 +58,7 @@
         layout="prev, pager, next, jumper"
         :total="experimentData.total">
       </el-pagination>
-      <el-dialog
-        title="作业上传"
+      <el-dialog title="作业上传"
         class="upload-dialog"
         :visible.sync="uploadDialogVisible"
         :close-on-click-modal="false"

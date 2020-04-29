@@ -196,36 +196,32 @@ export default {
             params: {
               sID: this.user.sID
             }
-          })
-            .then(res => {
-              console.log(res)
-              if (res.data.status == 200) {
-                let oldPassword = res.data.result[0].password
-                if (this.pwdForm.oldPassword != oldPassword) {
-                  this.$message.error('原密码错误！')
-                  this.$refs.oldPwdInput.select()
-                } else {
-                  this.$axios.post('/student/updatePassword', {
-                    sID: this.user.sID,
-                    newPassword: this.pwdForm.newPassword
-                  })
-                    .then(res => {
-                      console.log(res)
-                      if (res.data.status == 200) {
-                        this.pwdFormVisible = false
-                        this.$message.success('修改成功！')
-                        this.$refs.pwdForm.resetFields()
-                      }
-                    })
-                    .catch(err => {
-                      console.log(err)
-                    })
-                }
+          }).then(res => {
+            console.log(res)
+            if (res.data.status == 200) {
+              let oldPassword = res.data.result[0].password
+              if (this.pwdForm.oldPassword != oldPassword) {
+                this.$message.error('原密码错误！')
+                this.$refs.oldPwdInput.select()
+              } else {
+                this.$axios.post('/student/updatePassword', {
+                  sID: this.user.sID,
+                  newPassword: this.pwdForm.newPassword
+                }).then(res => {
+                  console.log(res)
+                  if (res.data.status == 200) {
+                    this.pwdFormVisible = false
+                    this.$message.success('修改成功！')
+                    this.$refs.pwdForm.resetFields()
+                  }
+                }).catch(err => {
+                  console.log(err)
+                })
               }
-            })
-            .catch(err => {
-              console.log(err)
-            })
+            }
+          }).catch(err => {
+            console.log(err)
+          })
         } else {
           this.$message.error('修改失败！')
           return false

@@ -42,11 +42,10 @@ export default {
   },
   methods: {
     toDetail(row) {
-      console.log(row)
       this.$router.push({
         name: 'uNoticeDetails',
         query: {
-          aID: row.aID
+          atID: row.atID
         }
       })
     },
@@ -63,17 +62,14 @@ export default {
           size: this.noticeData.size,
           type: this.$route.params.type == 'notice' ? 1 : 2
         }
+      }).then(res => {
+        if (res.data.status == 200) {
+          this.noticeData.total = res.data.total
+          this.noticeData.list = res.data.result
+        }
+      }).catch(err => {
+        console.log(err)
       })
-        .then(res => {
-          console.log(res)
-          if (res.data.status == 200) {
-            this.noticeData.total = res.data.total
-            this.noticeData.list = res.data.result
-          }
-        })
-        .catch(err => {
-          console.log(err)
-        })
     }
   },
   created() {

@@ -61,6 +61,7 @@ export default {
     }
   },
   methods: {
+    // 查询
     search() {
       if (this.searchForm.gradeAndClass || this.searchForm.value) {
         this.$axios.get('/attendance/search', {
@@ -101,6 +102,7 @@ export default {
     toDetails(row) {
       this.$router.push({name: 'adAttendanceDetails', query: {sID: row.sID}})
     },
+    // 获取学生简略考勤记录
     getAttendanceData() {
       this.$axios.get('/attendance/getAll', {
         params: {
