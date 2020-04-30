@@ -155,34 +155,50 @@ const student = {
     })
   },
   addOne(req, res) {
-    let selectSql = 'SELECT name FROM teacher WHERE tID = ?'
-    let sqlParams = [req.body.tID]
+    let selectSql = 'SELECT * FROM student WHERE account = ?'
+    let sqlParams = [req.body.account]
     connection.query(selectSql, sqlParams, (err, result) => {
       if (err) {
         console.log('[SELECT ERROR] - ', err.message)
       } else {
         if (result.length != 0) {
-          let teacher = result[0].name
-          let insertSql = 'INSERT INTO student(account,password,name,role,grade,class,discipline,tID,teacher) VALUES(?,?,?,?,?,?,?,?,?)'
-          let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.role, req.body.grade, req.body.class, req.body.discipline, req.body.tID, teacher]
-          connection.query(insertSql, sqlParams, err => {
-            if (err) {
-              console.log('[INSERT ERROR] - ', err.message)
-            } else {
-              attendance.init(req.body.account)
-              let response = {
-                status: 200,
-                result: '新增成功！'
-              }
-              res.end(JSON.stringify(response))
-            }
-          })
-        } else {
           let response = {
             status: -1,
-            result: '不存在此教师'
+            result: '已存在该学生！'
           }
           res.end(JSON.stringify(response))
+        } else {
+          let selectSql = 'SELECT name FROM teacher WHERE tID = ?'
+          let sqlParams = [req.body.tID]
+          connection.query(selectSql, sqlParams, (err, result) => {
+            if (err) {
+              console.log('[SELECT ERROR] - ', err.message)
+            } else {
+              if (result.length != 0) {
+                let teacher = result[0].name
+                let insertSql = 'INSERT INTO student(account,password,name,role,grade,class,discipline,tID,teacher) VALUES(?,?,?,?,?,?,?,?,?)'
+                let sqlParams = [req.body.account, req.body.password, req.body.name, req.body.role, req.body.grade, req.body.class, req.body.discipline, req.body.tID, teacher]
+                connection.query(insertSql, sqlParams, err => {
+                  if (err) {
+                    console.log('[INSERT ERROR] - ', err.message)
+                  } else {
+                    attendance.init(req.body.account)
+                    let response = {
+                      status: 200,
+                      result: '新增成功！'
+                    }
+                    res.end(JSON.stringify(response))
+                  }
+                })
+              } else {
+                let response = {
+                  status: -1,
+                  result: '不存在此教师'
+                }
+                res.end(JSON.stringify(response))
+              }
+            }
+          })
         }
       }
     })

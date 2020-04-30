@@ -358,12 +358,13 @@ export default {
           this.$refs.addUserForm.validate(valid => {
             if (valid) {
               this.$axios.post('/student/addOne', this.addUserForm).then(res => {
-                console.log(res)
                 if (res.data.status == 200) {
                   this.$message.success(res.data.result)
                   this.getStudentData()
                   this.getClassList()
                   this.addSingleUserDialogVisible = false
+                } else {
+                  this.$message.error(res.data.result)
                 }
               }).catch(err => {
                 console.log(err)
