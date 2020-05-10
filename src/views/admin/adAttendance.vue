@@ -89,15 +89,19 @@ export default {
     },
     // 导出表格
     exportExcel() {
-      this.$axios.post('/attendance/exportExcel', {
-        excelData: this.attendanceData
-      }).then(res => {
-        if (res.data.status == 200) {
-          window.open(`http://127.0.0.1:8081${res.data.path}`)
-        }
-      }).catch(err => {
-        console.log(err)
-      })
+      if (this.attendanceData.length != 0) {
+        this.$axios.post('/attendance/exportExcel', {
+          excelData: this.attendanceData
+        }).then(res => {
+          if (res.data.status == 200) {
+            window.open(`http://127.0.0.1:8081${res.data.path}`)
+          }
+        }).catch(err => {
+          console.log(err)
+        })
+      } else {
+        this.$message.error('该表格无数据！')
+      }
     },
     toDetails(row) {
       this.$router.push({name: 'adAttendanceDetails', query: {sID: row.sID}})

@@ -108,7 +108,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$axios.post('/article/deleteByaID', {
+          this.$axios.post('/article/deleteByatID', {
             atID: row.atID
           }).then(res => {
             if (res.data.status == 200) {

@@ -58,9 +58,9 @@ router.post('/article/add', article.add)
 router.get('/article/getAll', article.getAll)
 router.post('/article/update', article.update)
 router.get('/article/getListByDate', article.getListByDate)
-router.post('/article/deleteByaID', article.deleteByaID)
+router.post('/article/deleteByatID', article.deleteByatID)
 router.get('/article/getByTypeLimited', article.getByTypeLimited)
-router.get('/article/getContentByaID', article.getContentByaID)
+router.get('/article/getContentByatID', article.getContentByatID)
 router.get('/article/getLimited', article.getLimited)
 
 // 资源信息表

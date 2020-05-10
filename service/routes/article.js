@@ -77,7 +77,7 @@ const article = {
       }
     })
   },
-  deleteByaID(req, res) {
+  deleteByatID(req, res) {
     let deleteSql = 'DELETE FROM article where atID = ?'
     let sqlParams = [req.body.atID]
     connection.query(deleteSql, sqlParams, err => {
@@ -153,7 +153,7 @@ const article = {
       }
     })
   },
-  getContentByaID(req, res) {
+  getContentByatID(req, res) {
     let selectSql = `SELECT atID,title,publisher,content,type,date_format(publishDate,'%Y-%m-%d') as publishDate FROM article WHERE atID = ?`
     let sqlParams = [req.query.atID]
     connection.query(selectSql, sqlParams, (err, result) => {

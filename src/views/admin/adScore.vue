@@ -114,7 +114,7 @@ export default {
         if (res.data.status == 200) {
           let obj = {}
           for (let i of res.data.result) {
-            obj.label = i.experimentName.substr(0, i.experimentName.indexOf('-'))
+            obj.label = i.experimentName.slice(i.experimentName.indexOf('-') + 1)
             obj.value = i.eID
             this.experimentList.push(obj)
             obj = {}

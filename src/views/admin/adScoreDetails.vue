@@ -52,6 +52,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="onlineExperiment" style="float:left;">在线实验入口</el-button>
         <el-button @click="checkDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="check">确 定</el-button>
       </div>
@@ -111,6 +112,9 @@ export default {
     },
     download() {
       window.open(`http://localhost:8081/${this.checkForm.submitFile}`)
+    },
+    onlineExperiment() {
+      window.open('http://127.0.0.1:8081/experiment-online/dist/index.html')
     },
     // 评分
     check() {

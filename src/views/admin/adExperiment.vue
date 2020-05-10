@@ -56,7 +56,7 @@
             :file-list="fileList"
             :data="uploadForm"
             :limit="1"
-            accept=".ppt,.pptx"
+            accept=".ppt,.pptx,.doc,.docx"
             action="http://127.0.0.1:8081/experiment/upload">
             <i class="el-icon-upload"></i>
             <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -126,8 +126,10 @@ export default {
     // 打开上传对话框
     showUploadDialog() {
       this.uploadDialogVisible = true
-      this.$refs.uploadForm.resetFields()
-      this.$refs.uploadForm.clearValidate()
+      setTimeout(() => {
+        this.$refs.uploadForm.resetFields()
+        this.$refs.uploadForm.clearValidate()
+      }, 0)
     },
     // 关闭上传对话框
     closeUploadDialog() {
